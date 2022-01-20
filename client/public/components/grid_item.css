@@ -1,0 +1,42 @@
+:root {
+	--text-muted: hsl(var(--body-color), calc(var(--body-color-light) - 15%));
+	--grid-gutter: 1rem;
+	--border-radius: 0.625rem;
+}
+
+.card {
+	background-color: #2C394B !important;
+	border-radius: var(--border-radius) !important;
+	color: var(--bs-body-color);
+	text-decoration: none;
+	transition: border-color 0.2s ease;
+	margin: 0 calc(var(--grid-gutter) / 2) var(--grid-gutter);
+}
+
+.card:hover {
+	color: var(--bs-body-color);
+	border-color: var(--bs-primary) !important;
+}
+
+.card, .card .grid-item-profile-pic {
+	border: 0.125rem solid white !important;
+}
+
+.card img {
+	border-top-left-radius: calc(var(--border-radius) - 2.5px) !important;
+	border-top-right-radius: calc(var(--border-radius) - 2.5px) !important;
+}
+
+.card .card-subtitle span {
+  vertical-align: middle;
+  line-height: 100%;
+}
+
+.card .grid-item-profile-pic {
+	border-radius: 100% !important;
+	height: 2rem;
+}
+
+span.text-muted, small.text-muted {
+	color: var(--text-muted) !important;
+}
