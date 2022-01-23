@@ -1,0 +1,14 @@
+:root {
+	--body-color: 0, 0%;
+	--body-color-light: 100%;
+
+  --bs-primary: #FF4C29 !important;
+	--bs-body-bg: #334756 !important;
+	--bs-body-color: hsl(var(--body-color), var(--body-color-light)) !important;
+}
+
+body {
+	background: linear-gradient(120deg, #334756, #2679AD);
+	min-height: 100vh;
+	padding-top: 1rem;
+}
