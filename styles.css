@@ -12,3 +12,42 @@ body {
 	min-height: 100vh;
 	padding-top: 1rem;
 }
+
+.profile-container{
+   padding-top: 1rem;
+   text-align: center;
+   margin: 5px;
+}
+.profile-container img{
+  border: 0.1rem solid white;
+  border-radius: 50%;
+}
+.btn{
+   margin:5px;
+}
+.links{
+   text-decoration: none;
+   color: rgb(156, 156, 156);
+   margin: 5px;
+   
+}
+.links:hover{
+   color: #FF4C29;
+}
+
+
+.card{
+   margin: 10px;
+   padding: 10px;
+   background-color: #2679AD;
+   text-decoration: none;
+   color: rgb(51, 49, 49);
+}
+.card:hover{
+   color: #FF4C29;
+}
+
+.img-container img{
+   width:100%;
+   border-radius: 5px;
+}
