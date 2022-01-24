@@ -19,7 +19,7 @@ body {
    margin: 5px;
 }
 .profile-container img{
-  border: 0.1rem solid white;
+  border: 0.2rem solid white;
   border-radius: 50%;
 }
 .btn{
@@ -43,11 +43,10 @@ body {
    text-decoration: none;
    color: rgb(51, 49, 49);
 }
+.card img{
+   border-radius: 3px;
+}
 .card:hover{
    color: #FF4C29;
 }
 
-.img-container img{
-   width:100%;
-   border-radius: 5px;
-}
