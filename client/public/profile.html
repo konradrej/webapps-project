@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" type="text/css" href="main.css" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+
+  <!--Masonry-->
+  <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+    integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous"
+    async>
+    </script>
+
+  <title>Hello, world!</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="./index.html">N</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav " style="
+            display: flex;
+            flex: 1 1;
+            justify-content: end;
+          ">
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+              </svg>
+            </button>
+          </form>
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" onclick="document.getElementById('sign-in-div').style.display='block'">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" onclick="document.getElementById('sign-up-div').style.display='block'">Sign up</a>
+            </li>
+          </ul>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="profile-container">
+          <!--Source: https://www.frontendmentor.io/challenges/nft-preview-card-component-SbdUL_w0U -->
+          <img src="./images/image-avatar.png" alt="profile-picture">
+          <h2>Jules Wyvern</h2>
+          <button class="btn btn-success" type="submit">Message</button>
+          <div class="links-container">
+            <a href="#" class="links">
+              <!--Source https://materialdesignicons.com/icon/link -->
+              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                <path fill="currentColor"
+                  d="M3.9,12C3.9,10.29 5.29,8.9 7,8.9H11V7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H11V15.1H7C5.29,15.1 3.9,13.71 3.9,12M8,13H16V11H8V13M17,7H13V8.9H17C18.71,8.9 20.1,10.29 20.1,12C20.1,13.71 18.71,15.1 17,15.1H13V17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7Z" />
+              </svg> juleswyv.com
+            </a>
+            <a href="#" class="links">
+              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                <path fill="currentColor"
+                  d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
+              </svg> jules.wyv
+            </a>
+          </div>
+          <p>My name is Jules Wyvern a photographer based in London.</p>
+        </div>
+      </div>
+      <div class="row g-0"
+        data-masonry='{"percentPosition": true, "horizontalOrder": "true", "transitionDuration": "0.2s" }'>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-daisa-tj-3405555.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-leah-kelley-5091121.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-maksim-goncharenok-5611966.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-rikki-matsumoto-5804257.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-woodysmedia-4394807.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-ash-valiente-3533228.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-jacob-pilatoe-4655426.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-jonaorle-4029925.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+          <div class="card">
+            <a onclick="document.getElementById('selected-image-div').style.display='block'"><img src="./images/pexels-meenakshi-vinay-rai-4654851.jpg" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <h6 class="card-subtitle mb-2">
+                <span class="text-muted">Card subtitle</span>
+              </h6>
+              <div class="card-text text-end">
+                <small class="text-muted"><i class="bi bi-clock-fill"></i> 2022-01-24, 14:31</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="sign-in-div" class="background">
+    <form class="form-pop-up">
+      <span class="close" onclick="document.getElementById('sign-in-div').style.display='none'">&times;</span>
+      <div class="input-content">  
+        <div class="input-sub-content">
+            <h6><b>Username</b></h6>
+            <input type="text" placeholder="Enter username" >
+          </div>
+          <div class="input-sub-content">
+            <h6><b>Password</b></h6>
+            <input type="password" placeholder="Enter password">
+          </div>
+          <div class="pop-up-button-container">
+            <button class="pop-up-button" onclick="document.getElementById('sign-in-div').style.display='none'">
+              Register
+            </button>
+            <button class="pop-up-button" onclick="document.getElementById('sign-in-div').style.display='none'">
+              Sign in
+            </button>
+          </div>
+      </div>
+    </form>
+  </div>
+  <div id="sign-up-div" class="background">
+    <form class="form-pop-up">
+      <span class="close" onclick="document.getElementById('sign-up-div').style.display='none'">&times;</span>
+      <div class="input-content">  
+        <div class="input-sub-content">
+          <h6><b>Username</b></h6>
+          <input type="text" placeholder="Enter username" >
+        </div>
+        <div class="input-sub-content">
+          <h6><b>Password</b></h6>
+          <input type="password" placeholder="Enter password">
+        </div>
+        <div class="input-sub-content">
+          <h6><b>E-mail</b></h6>
+          <input type="text" placeholder="Enter e-mail">
+        </div>
+        <div class="pop-up-button-container">
+          <button class="pop-up-button" onclick="document.getElementById('sign-up-div').style.display='none'">
+            Go back
+          </button>
+          <button class="pop-up-button" onclick="document.getElementById('sign-up-div').style.display='none'">
+            Register
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div id="selected-image-div" class="background">
+    <div class="post-pop-up">
+      <span class="close" onclick="document.getElementById('selected-image-div').style.display='none'">&times;</span>
+      <div class="post-content">
+        <div class="container-fluid row">
+          <div class="col-md-8">
+            <img class="post-image"src="./images/duck.jpg" alt="Duck"/>
+          </div>
+          <div class="col-md-4 post-info">
+            <h6><b>Title</b></h6>
+            <div class="post-user-info">
+              <img class ="post-user-profile" src="./images/duck.jpg" alt="profile">
+              <h6 class="username"></p><b>Profile name</b></h6>
+            </div>
+            <h6><b>Date</b></h6>
+            <h6><b>Description:</b></h6>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Imperdiet nulla malesuada pellentesque elit eget gravida cum sociis. Cursus euismod quis viverra nibh cras. Cras sed felis eget velit aliquet sagittis id. Mi sit amet mauris commodo quis imperdiet massa tincidunt nunc. Tincidunt arcu non sodales neque sodales ut etiam sit. Tellus in metus vulputate eu scelerisque felis. Sit amet risus nullam eget felis. Ante in nibh mauris cursus. Et magnis dis parturient montes. Eget arcu dictum varius duis at consectetur lorem. Malesuada fames ac turpis egestas integer eget aliquet nibh praesent. Elit ullamcorper dignissim cras tincidunt lobortis feugiat vivamus. Cursus vitae congue mauris rhoncus aenean vel.
+
+                      Justo eget magna fermentum iaculis eu non. Morbi tempus iaculis urna id volutpat. Sed id semper risus in hendrerit gravida rutrum. Id neque aliquam vestibulum morbi blandit. In ante metus dictum at tempor commodo ullamcorper a lacus. Turpis massa tincidunt dui ut ornare lectus. Ut eu sem integer vitae. Vitae sapien pellentesque habitant morbi tristique senectus et netus et. Risus at ultrices mi tempus imperdiet. Semper auctor neque vitae tempus. Feugiat pretium nibh ipsum consequat nisl vel pretium lectus quam. Etiam erat velit scelerisque in dictum non consectetur. Enim nunc faucibus a pellentesque sit amet. Ultrices sagittis orci a scelerisque purus semper eget. Quam nulla porttitor massa id neque. Interdum velit euismod in pellentesque. Eu lobortis elementum nibh tellus molestie. Magna fringilla urna porttitor rhoncus. Aliquet risus feugiat in ante metus. Cum sociis natoque penatibus et magnis dis.
+
+                        In tellus integer feugiat scelerisque varius morbi enim nunc faucibus. Egestas dui id ornare arcu odio. Dui accumsan sit amet nulla. A iaculis at erat pellentesque adipiscing. Id ornare arcu odio ut sem nulla pharetra. Egestas sed tempus urna et pharetra pharetra massa massa. Arcu cursus euismod quis viverra nibh cras pulvinar mattis nunc. Ornare quam viverra orci sagittis eu volutpat. Mattis enim ut tellus elementum sagittis vitae et leo. Id velit ut tortor pretium viverra suspendisse potenti nullam.
+
+                                  Vestibulum morbi blandit cursus risus at ultrices mi tempus. Varius duis at consectetur lorem donec massa. Enim nunc faucibus a pellentesque sit amet porttitor eget dolor. Penatibus et magnis dis parturient montes nascetur ridiculus. Diam donec adipiscing tristique risus nec feugiat in fermentum. Massa id neque aliquam vestibulum morbi blandit cursus. Ut faucibus pulvinar elementum integer. Fames ac turpis egestas sed tempus urna. Integer malesuada nunc vel risus commodo viverra maecenas accumsan lacus. At urna condimentum mattis pellentesque id nibh tortor. Felis eget velit aliquet sagittis id. Feugiat nisl pretium fusce id velit. Risus nullam eget felis eget nunc lobortis mattis aliquam. Quam lacus suspendisse faucibus interdum posuere lorem ipsum dolor. In egestas erat imperdiet sed euismod. Et tortor consequat id porta nibh venenatis cras sed felis. Diam donec adipiscing tristique risus nec feugiat in fermentum posuere. Viverra ipsum nunc aliquet bibendum enim facilisis gravida neque.
+
+                                  Cursus euismod quis viverra nibh cras. Sed libero enim sed faucibus turpis in eu. Turpis egestas integer eget aliquet. Gravida cum sociis natoque penatibus. Purus ut faucibus pulvinar elementum. Duis at consectetur lorem donec massa sapien faucibus et. Tincidunt praesent semper feugiat nibh sed pulvinar proin. Erat velit scelerisque in dictum non consectetur a erat nam. Sit amet consectetur adipiscing elit pellentesque habitant morbi tristique senectus. Diam ut venenatis tellus in metus vulputate. Mauris ultrices eros in cursus. Feugiat sed lectus vestibulum mattis ullamcorper velit. Cras semper auctor neque vitae tempus quam pellentesque.
+            </p>
+            <h6><b>Tags:</b></h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

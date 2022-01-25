@@ -1,30 +1,29 @@
 :root {
-	--text-muted: hsl(var(--body-color), calc(var(--body-color-light) - 15%));
-	--grid-gutter: 0.5rem;
-	--border-radius: 0.625rem;
+  --text-muted: hsl(var(--body-color), calc(var(--body-color-light) - 15%));
+  --grid-gutter: 0.5rem;
+  --border-radius: 0.625rem;
 }
 
 .card {
-	background-color: #2C394B !important;
-	border-radius: var(--border-radius) !important;
-	color: var(--bs-body-color);
-	text-decoration: none;
-	transition: border-color 0.2s ease;
-	margin: 0 calc(var(--grid-gutter) / 2) var(--grid-gutter);
+  background-color: #2C394B !important;
+  border-radius: var(--border-radius) !important;
+  color: var(--bs-body-color);
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+  margin: 0 calc(var(--grid-gutter) / 2) var(--grid-gutter);
+  box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .card:hover {
-	color: var(--bs-body-color);
-	border-color: var(--bs-primary) !important;
-}
-
-.card, .card .grid-item-profile-pic {
-	border: 0.125rem solid white !important;
+  transform: scale(1.03);
+  color: var(--bs-primary);
+  z-index: 9999;
 }
 
 .card img {
-	border-top-left-radius: calc(var(--border-radius) - 2.5px) !important;
-	border-top-right-radius: calc(var(--border-radius) - 2.5px) !important;
+  border-top-left-radius: calc(var(--border-radius) - 2.5px) !important;
+  border-top-right-radius: calc(var(--border-radius) - 2.5px) !important;
 }
 
 .card .card-subtitle span {
@@ -33,10 +32,11 @@
 }
 
 .card .grid-item-profile-pic {
-	border-radius: 100% !important;
-	height: 2rem;
+  border-radius: 100% !important;
+  height: 2rem;
+  border: 1px solid white;
 }
 
 span.text-muted, small.text-muted {
-	color: var(--text-muted) !important;
+  color: var(--text-muted) !important;
 }

@@ -1,30 +1,61 @@
 @import url("components/grid_item.css");
+@import url("components/pop_up.css");
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css");
 
 :root {
-	--body-color: 0, 0%;
-	--body-color-light: 100%;
+  --body-color: 0, 0%;
+  --body-color-light: 100%;
 
   --bs-primary: #FF4C29 !important;
-	--bs-body-bg: #334756 !important;
-	--bs-body-color: hsl(var(--body-color), var(--body-color-light)) !important;
+  --bs-body-bg: #334756 !important;
+  --bs-body-color: hsl(var(--body-color), var(--body-color-light)) !important;
+  --bs-dark-rgb: 8, 32, 50 !important;
 }
 
 body {
-	background: linear-gradient(120deg, #334756, #2679AD);
-	min-height: 100vh;
-	padding-top: 1rem;
+  background: linear-gradient(120deg, #334756, #2679AD);
+  min-height: 100vh;
 }
 
 .item-grid .dropdown .btn-link {
-	color: white;
-	text-decoration: none;
+  color: white;
+  text-decoration: none;
 }
 
 .item-grid .dropdown .btn-link:hover {
-	color: var(--text-muted);
+  color: var(--text-muted);
 }
 
 .item-grid .dropdown .btn-link:focus {
-	box-shadow: none;
+  box-shadow: none;
+}
+
+.profile-container{
+   padding-top: 1rem;
+   text-align: center;
+   margin: 5px;
+}
+
+.profile-container img{
+  border: 0.2rem solid white;
+  border-radius: 50%;
+}
+
+.btn{
+  margin:5px;
+}
+
+.links{
+  text-decoration: none;
+  color: rgb(156, 156, 156);
+  margin: 5px;
+  font-size: 0.8rem;
+}
+
+.links:hover{
+  color: #FF4C29;
+}
+
+a {
+  cursor: pointer;
 }
