@@ -1,4 +1,5 @@
 @import url("components/grid_item.css");
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css");
 
 :root {
 	--body-color: 0, 0%;
@@ -15,3 +16,15 @@ body {
 	padding-top: 1rem;
 }
 
+.item-grid .dropdown .btn-link {
+	color: white;
+	text-decoration: none;
+}
+
+.item-grid .dropdown .btn-link:hover {
+	color: var(--text-muted);
+}
+
+.item-grid .dropdown .btn-link:focus {
+	box-shadow: none;
+}

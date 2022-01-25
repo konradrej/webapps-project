@@ -1,6 +1,6 @@
 :root {
 	--text-muted: hsl(var(--body-color), calc(var(--body-color-light) - 15%));
-	--grid-gutter: 1rem;
+	--grid-gutter: 0.5rem;
 	--border-radius: 0.625rem;
 }
 
