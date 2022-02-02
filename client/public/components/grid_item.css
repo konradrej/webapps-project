@@ -13,12 +13,12 @@
   margin: 0 calc(var(--grid-gutter) / 2) var(--grid-gutter);
   box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
   transition: transform 0.2s ease, color 0.2s ease;
+  z-index: 99 !important;
 }
 
 .card:hover {
   transform: scale(1.03);
   color: var(--bs-primary);
-  z-index: 9999;
 }
 
 .card img {
