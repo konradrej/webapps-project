@@ -1,82 +1,114 @@
-import { User } from "../model/user.interface";
+import {User} from "../model/user.interface";
 
-export class UserService {
-  // userlist
-  private const users : { [key : number] : User } = {};
+export interface IUserService {
+    findUser(username: string): Promise<User | null>
 
-  // login
-  const login = async (username : string, password : string) : Promise<boolean> => {
-    const user : User = Object.values(users).find( (user: User) => user.username === username);
+    login(username: string, password: string): Promise<User | null>
 
-    if(! user) return false;
+    register(username: string, password: string, email: string): Promise<User>
 
-    return user.password === password;
-  }
+    update(user: User, updateObject: IUpdateObject): Promise<boolean>
+}
 
-  // TODO VALIDATION
-  // register (createUser)
-  const register = async (username: string, password: string, email: string) : Promise<User> => {
-    const user : User = new User();
+interface IUpdateObject {
+    email?: string,
+    description?: string,
+    profileImageUrl?: string
+}
 
-    user.id = users.length + 1;
-    user.username = username;
-    user.password = password;
-    user.email = email;
-    user.createdAt = Date.now();
+export class UserService implements IUserService {
+    private users: { [key: number]: User } = {};
 
-    users[user.id] = user;
+    constructor(users: { [key: number]: User }) {
+        this.users = users;
+    }
 
-    return user;
-  }
+    /**
+     * Find user with specified username
+     * @param username
+     */
+    async findUser(username: string): Promise<User | null> {
+        return Object.values(this.users).find((user: User) => user.username === username) ?? null
+    }
 
-  // TODO VALIDATION
-  // set password
-  const updatePassword = async (id : number, password : string) : Promise<boolean> => {
-    const user : User = users[id];
+    /**
+     * Login as user
+     * @param username username
+     * @param password user's password
+     * @return user logged in user or if it fails null
+     */
+    async login(username: string, password: string): Promise<User | null> {
+        const user: User | null = await this.findUser(username);
 
-    if(! user) return false;
+        // Todo: Change to use password hashing
+        if (!user || user.password !== password)
+            return null;
 
-    user.password = password;
-    users[id] = user;
+        return user;
+    }
 
-    return true;
-  }
+    // Todo: password hashing
+    /**
+     * Registers users
+     * @param username username
+     * @param password password
+     * @param email email
+     */
+    async register(username: string, password: string, email: string): Promise<User> {
 
-  // TODO VALIDATION
-  // set email
-  const updateEmail = async (id : number, email : string) : Promise<boolean> => {
-    const user : User = users[id];
+        if (!/^[a-zA-Z0-9-_]+$/.test(username))
+            throw Error("Username can only contain alphanumeric characters and '-' '_'");
 
-    if(! user) return false;
+        if (await this.findUser(username))
+            throw Error("Username must be unique")
 
-    user.email = email;
-    users[id] = user;
+        // This email validation must change to something better
+        if(!/^\S+@((\S+)\.)?(\S+\.\S+)$/.test(email))
+            throw Error("Invalid Email")
 
-    return true;
-  }
+        const user: User = {
+            id: Object.keys(this.users).length + 1,
+            username: username,
+            password: password,
+            email: email,
+            createdAt: new Date,
+            posts: [],
+            description: "",
+            profileImageUrl: ""
+        };
+        this.users[user.id] = user;
 
-  // TODO VALIDATION
-  // set description
-  const updateDescription = async (id : number, description : string) : Promise<boolean> => {
-    const user : User = users[id];
+        return user;
+    }
 
-    if(! user) return false;
+    /**
+     * More dynamic update function
+     * @param user
+     * @param obj
+     */
+    async update(user: User, obj: IUpdateObject): Promise<boolean> {
+        let userCopy = Object.assign({}, user)
+        const validator : {[prop: string] : RegExp} = {}
 
-    user.description = description;
-    users[id] = user;
+        Object.keys(obj).forEach((prop) => {
+            let val = obj[prop as keyof IUpdateObject];
 
-    return true;
-  }
+            if(val && (!validator[prop] || validator[prop].test(val)) ){
+                userCopy[prop as keyof IUpdateObject] = val;
+            }else{
+                throw Error(`${prop} failed validation`)
+            }
+        })
 
+        if (!this.users[user.id]) return false
 
-// TODO LATER
-// set profile picture
-/*
-  const updateProfilePicture = async (id : number) : Promise<boolean> => {
-    const user : User = users[id];
+        this.users[user.id] = userCopy;
+        return true;
+    }
 
-    if(! user) return false;
-
-    user.profileImageUrl =
-  }*/
+    async setPassword(user: User, password: string): Promise<boolean>
+    {
+        user.password = password;
+        return true;
+    }
 }

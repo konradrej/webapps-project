@@ -5,6 +5,6 @@ export interface User {
   email: string;
   profileImageUrl: string;
   description: string;
-  posts: Post[];
+  posts: [];
   createdAt: Date;
 }
