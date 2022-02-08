@@ -1,6 +1,7 @@
 import {User} from "../../model/user.interface";
 import {UserService} from "../user.service";
 import {randomInt} from "crypto";
+import * as bcrypt from "bcrypt"
 
 let createUser = (id?: number): User => {
     if (!id) id = randomInt(0, 10000);
@@ -28,6 +29,14 @@ let createUsers = (count: number): { [id: number]: User } => {
 }
 
 
+test("User registration and login", async () => {
+    const us = new UserService({});
+
+    let user = await us.register("test", "password123", "test1@example.com");
+    await expect(us.login("test", "password123")).resolves.toEqual(user)
+    await expect(us.login("test","123fail")).resolves.toBeNull()
+})
+
 test("Find user should return the correct user", () => {
     let users = createUsers(500);
     const us = new UserService(users);
@@ -52,7 +61,7 @@ test("Creating a user should validate and return a user object", async () => {
     // Succeeds
     user = await us.register("test1", "test1", "test@example.com")
     expect(user.username).toEqual("test1")
-    //expect(user.password).toEqual(hash("test1")) // Check that it gets hashed
+    expect(bcrypt.compareSync("test1", user.password)).toEqual(true) // Check that it gets hashed
     expect(user.email).toEqual("test@example.com")
 
     // Fails due to non-unique username
