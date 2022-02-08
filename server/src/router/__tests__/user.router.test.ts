@@ -34,13 +34,15 @@ test("A POST request to /login should send a response of unauthorized", () => {
 
   const userService : MockUserService = new MockUserService();
 
-  const router : Express.Express = makeUserRouter(userService);
+  const router : Express.Express = Express();
 
   router.use(Express.json());
 
+  router.use(makeUserRouter(userService));
+
   const request : SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  request.post("/login").send({username: "TEST", password: "TEST"}).then((res) => {
+  return request.post("/login").send({username: "TEST", password: "TEST"}).then((res) => {
     expect(res.statusCode).toBe(401);
     expect(res.body).toEqual({status: "Invalid Credentials"});
   })
@@ -75,13 +77,15 @@ test("A POST request /login should send a response of OK cause of successful log
 
   const userService : MockUserService = new MockUserService();
 
-  const router : Express.Express = makeUserRouter(userService);
+  const router : Express.Express = Express();
 
   router.use(Express.json());
 
+  router.use(makeUserRouter(userService));
+
   const request : SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  request.post("/login").send({username: "TEST", password: "TEST", email: "TEST"}).then((res) => {
+  return request.post("/login").send({username: "TEST", password: "TEST", email: "TEST"}).then((res) => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({status: "Authorized"});
   })

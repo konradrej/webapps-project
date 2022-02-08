@@ -7,9 +7,8 @@ export function makeUserRouter(userService : IUserService) : Express.Express {
 
   userRouter.post("/login", async (req: Express.Request, res: Express.Response) : Promise<void> => {
     try {
-      // Req.body is empty during testing
-      const username : string = req.body ? req.body.username : "";
-      const password : string = req.body ? req.body.password : "";
+      const username : string = req.body.username;
+      const password : string = req.body.password;
 
       userService.login(username, password).then((user : User | null) => {
         if(user)
@@ -18,6 +17,7 @@ export function makeUserRouter(userService : IUserService) : Express.Express {
           res.status(401).send({status: "Invalid Credentials"});
       })
     } catch (e : any){
+      console.log(e)
       res.status(500).send({error: e.message});
     }
   })
