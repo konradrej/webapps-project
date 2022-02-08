@@ -5,7 +5,7 @@ export interface IPostService  {
   getPosts(order : string) : Promise<Array<Post>>
   createPost(title : string, description : string, imageUrl : string, creator : User ) : Promise<boolean>
   updatePost(id : number, newTitle : string, newDescription : string, verifyCreator : User) : Promise<boolean>
-  deletePost(id : number, verifyCreator : User) : Promise<boolean>
+  /*deletePost(id : number, verifyCreator : User) : Promise<boolean>*/
 }
 
 export class PostService implements IPostService{
@@ -14,6 +14,7 @@ export class PostService implements IPostService{
 
   constructor(posts : { [key : number] : Post }){
     this.posts = posts;
+    this.postIdCounter = Object.values(this.posts).sort((a, b) => a.id < b.id ? 1 : -1)[0].id;
   }
 
   // Return all posts given order
