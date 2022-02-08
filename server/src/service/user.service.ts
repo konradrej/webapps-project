@@ -1,5 +1,7 @@
 import {User} from "../model/user.interface";
-import {PostService} from "./post.service";
+import * as bcrypt from "bcrypt";
+
+const SALTROUNDS : number = 5;
 
 export interface IUserService {
     findById(id: number): Promise<User | null>
@@ -28,7 +30,8 @@ export class UserService implements IUserService {
     constructor(users: { [key: number]: User }) {
         this.users = users;
         let keys = Object.keys(users);
-        this.userIdCounter = parseInt(keys[keys.length - 1]);
+        if(keys.length > 0)
+            this.userIdCounter = parseInt(keys[keys.length - 1]) ?? 0;
     }
 
     /**
@@ -56,14 +59,12 @@ export class UserService implements IUserService {
     async login(username: string, password: string): Promise<User | null> {
         const user: User | null = await this.findByUsername(username);
 
-        // Todo: Change to use password hashing
-        if (!user || user.password !== password)
+        if (!user || !bcrypt.compareSync(password, user.password))
             return null;
 
         return user;
     }
 
-    // Todo: password hashing
     /**
      * Registers users
      * @param username username
@@ -85,7 +86,7 @@ export class UserService implements IUserService {
         const user: User = {
             id: this.userIdCounter + 1,
             username: username,
-            password: password,
+            password: await bcrypt.hash(password, SALTROUNDS),
             email: email,
             createdAt: new Date,
             posts: [],
