@@ -19,13 +19,15 @@ export class PostService implements IPostService{
 
   }
 
+  
+
   // Return all posts given order
   getPosts : (order : string) => Promise<Post[]> =
     async (order : string) => {
       switch(order){
 
         // A-Z
-        case "Alphabeteic": {
+        case "Alphabetic": {
           return Object.values(this.posts).sort(
             (a, b) => a.title < b.title ? -1 : 1 
           )
@@ -50,7 +52,8 @@ export class PostService implements IPostService{
   // Returns true if new post is created, invalid if title, imageURL, creator is undefined/null
   createPost : (title: string, description: string, imageUrl: string, creator: User) => Promise<boolean>  = 
     async (title: string, description: string, imageUrl: string, creator: User) => {
-      if(!imageUrl && !title && !creator){
+      
+      if(imageUrl && title && creator){
         this.postIdCounter++;
         const newPost : Post = {
           id: this.postIdCounter,
@@ -63,6 +66,7 @@ export class PostService implements IPostService{
         }
 
         this.posts[this.postIdCounter] = newPost;
+        //Add Post in user?
         return true;
       }
       else{
@@ -74,13 +78,13 @@ export class PostService implements IPostService{
   updatePost : (id: number, newTitle: string, newDescription: string, verifyCreator: User) => Promise<boolean> = 
     async (id: number, newTitle: string, newDescription: string, verifyCreator: User) => {
       if(this.posts[id].id === id && this.posts[id].creator === verifyCreator ){
-        if(!newDescription){
+
+        if(newDescription){
           this.posts[id].description = newDescription;
         }
-        if(!newTitle){
+        if(newTitle){
           this.posts[id].title = newTitle;
         }
-
         this.posts[id].modifiedAt = new Date();
         return true;
       }
