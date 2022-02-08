@@ -18,9 +18,12 @@ interface IUpdateObject {
 
 export class UserService implements IUserService {
     private users: { [key: number]: User } = {};
+    private userIdCounter : number = 0;
 
     constructor(users: { [key: number]: User }) {
         this.users = users;
+        let keys = Object.keys(users);
+        this.userIdCounter = parseInt(keys[keys.length-1]);
     }
 
     /**
@@ -67,7 +70,7 @@ export class UserService implements IUserService {
             throw Error("Invalid Email")
 
         const user: User = {
-            id: Object.keys(this.users).length + 1,
+            id: this.userIdCounter+1,
             username: username,
             password: password,
             email: email,
