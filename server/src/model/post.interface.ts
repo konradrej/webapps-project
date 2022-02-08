@@ -1,3 +1,5 @@
+import {User} from "../model/user.interface";
+
 export interface Post {
   id: number;
   title: string;
