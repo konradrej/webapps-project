@@ -2,7 +2,7 @@ import Express from "express";
 import SuperTest from "supertest";
 
 import { makeUserRouter } from "../user.router";
-import { IUserService } from "../../service/user.service";
+import { IUserService, IUpdateObject } from "../../service/user.service";
 import { User } from "../../model/user.interface";
 
 test("A POST request to /login should send a response of unauthorized", () => {
@@ -11,24 +11,24 @@ test("A POST request to /login should send a response of unauthorized", () => {
       return null;
     }
     
-    register = async (username: string, password: string, email: string) : Promise<User | null> => {
-      expect(0).toBe(1);
-      return null;
+    register = async (username: string, password: string, email: string) : Promise<User> => {
+      throw("Wrong method called");
     }
 
-    updatePassword = async (id : number, password : string) : Promise<boolean> => {
-      expect(0).toBe(1);
-      return false;
+    update = async (user: User, updateObject: IUpdateObject): Promise<boolean> => {
+      throw("Wrong method called");
     }
 
-    updateEmail = async (id : number, email : string) : Promise<boolean> => {
-      expect(0).toBe(1);
-      return false;
+    findById = async (id: number): Promise<User | null> => {
+      throw("Wrong method called");
     }
 
-    updateDescription = async (id : number, description : string) : Promise<boolean> => {
-      expect(0).toBe(1);
-      return false;
+    findByUsername = async (username: string): Promise<User | null> => {
+      throw("Wrong method called");
+    }
+  
+    setPassword = async (user: User, password: string): Promise<boolean> => {
+      throw("Wrong method called");
     }
   }
 
@@ -52,24 +52,24 @@ test("A POST request /login should send a response of OK cause of successful log
       return <User>{};
     }
     
-    register = async (username: string, password: string, email: string) : Promise<User | null> => {
-      expect(0).toBe(1);
-      return null;
+    register = async (username: string, password: string, email: string) : Promise<User> => {
+      throw("Wrong method called");
     }
 
-    updatePassword = async (id : number, password : string) : Promise<boolean> => {
-      expect(0).toBe(1);
-      return false;
+    update = async (user: User, updateObject: IUpdateObject): Promise<boolean> => {
+      throw("Wrong method called");
     }
 
-    updateEmail = async (id : number, email : string) : Promise<boolean> => {
-      expect(0).toBe(1);
-      return false;
+    findById = async (id: number): Promise<User | null> => {
+      throw("Wrong method called");
     }
 
-    updateDescription = async (id : number, description : string) : Promise<boolean> => {
-      expect(0).toBe(1);
-      return false;
+    findByUsername = async (username: string): Promise<User | null> => {
+      throw("Wrong method called");
+    }
+  
+    setPassword = async (user: User, password: string): Promise<boolean> => {
+      throw("Wrong method called");
     }
   }
 

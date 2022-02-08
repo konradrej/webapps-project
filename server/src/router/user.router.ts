@@ -1,5 +1,5 @@
 import Express from "express";
-import { makeUserService, IUserService } from "../service/user.service";
+import { makeUserService, IUserService, IUpdateObject } from "../service/user.service";
 import { User } from "../model/user.interface";
 
 export function makeUserRouter(userService : IUserService) : Express.Express {
@@ -11,12 +11,12 @@ export function makeUserRouter(userService : IUserService) : Express.Express {
       const username : string = req.body ? req.body.username : "";
       const password : string = req.body ? req.body.password : "";
 
-      const success : User | null = await userService.login(username, password);
-
-      if(success)
-        res.status(200).send({status: "Authorized"});
-      else
-        res.status(401).send({status: "Invalid Credentials"});
+      userService.login(username, password).then((user : User | null) => {
+        if(user)
+          res.status(200).send({status: "Authorized"});
+        else
+          res.status(401).send({status: "Invalid Credentials"});
+      })
     } catch (e : any){
       res.status(500).send({error: e.message});
     }
@@ -28,12 +28,11 @@ export function makeUserRouter(userService : IUserService) : Express.Express {
       const password : string = req.body.password;
       const email : string = req.body.email;
 
-      const success : User | null = await userService.register(username, password, email);
-      
-      if(success)
+      userService.register(username, password, email).then((user: User) => {
         res.status(201).send({status: "User created"});
-      else
-        res.status(400).send({status: "User could not be created"});
+      }).catch((e : any) => {
+        res.status(400).send({status: "User could not be created", reason: e.message});
+      })
     } catch (e : any) {
       res.status(500).send({error: e.message});
     }
@@ -41,26 +40,59 @@ export function makeUserRouter(userService : IUserService) : Express.Express {
 
   userRouter.put("/:id", async (req: Express.Request, res: Express.Response) : Promise<void> => {
     try {
-      const updated : {[key : string] : boolean} = {};
-      const promises : Promise<boolean>[] = [];
-
       const id : number = Number(req.params.id);
-      const password : string = req.body.password;
-      const email : string = req.body.email;
-      const description : string = req.body.description;
 
-      if(password)
-        promises.push(userService.updatePassword(id, password).then((success : boolean) => updated["password"] = success));
+      userService.findById(id).then((user: User | null) => {
+        if(! user)
+          throw Error("No user with the given id");
+        
+        const updateObject : IUpdateObject = {};
+        const email : string = req.body.email;
+        const description : string = req.body.description;
+        const profileImageUrl : string = req.body.profileImageUrl;
 
-      if(email)
-        promises.push(userService.updateEmail(id, email).then((success : boolean) => updated["email"] = success));
+        if(email)
+          updateObject.email = email;
 
-      if(description)
-        promises.push(userService.updateDescription(id, description).then((success : boolean) => updated["description"] = success));
+        if(description)
+          updateObject.description = description;
 
-      await Promise.allSettled(promises);
+        if(profileImageUrl)
+          updateObject.profileImageUrl = profileImageUrl;
 
-      res.status(200).send(updated);
+        userService.update(user, updateObject).then((success : boolean) => {
+          if(!success)
+            throw Error("Unknown")
+            
+          res.status(200).send({status: "User updated"});
+        });
+      }).catch((e : any) => {
+        res.status(400).send({status: "User could not be updated", reason: e.message});
+      })
+    } catch (e : any) {
+      res.status(500).send({error: e.message});
+    }
+  })
+
+  userRouter.put("/:id/updatePassword", async (req: Express.Request, res: Express.Response) : Promise<void> => {
+    try {
+        const id : number = Number(req.params.id);
+
+        userService.findById(id).then((user : User | null) => {
+          if(! user)
+            throw Error("No user with the given id");
+          
+          const password : string = req.body.password;
+
+          userService.setPassword(user, password).then((success : boolean) => {
+            if(!success)
+              throw Error("Unknown");
+
+            res.status(200).send({status: "Password updated"});
+          })
+        }).catch((e : any) => {
+          res.status(400).send({status: "Password could not be updated", reason: e.message});
+        })
     } catch (e : any) {
       res.status(500).send({error: e.message});
     }
