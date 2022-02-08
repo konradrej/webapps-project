@@ -14,7 +14,9 @@ export class PostService implements IPostService{
 
   constructor(posts : { [key : number] : Post }){
     this.posts = posts;
-    this.postIdCounter = Object.values(this.posts).sort((a, b) => a.id < b.id ? 1 : -1)[0].id;
+    // Order posts and get the highest id first and begin with that id as a counter
+    this.postIdCounter = !posts ? Object.values(this.posts).sort((a, b) => a.id < b.id ? 1 : -1)[0].id : 0;
+
   }
 
   // Return all posts given order
@@ -88,7 +90,7 @@ export class PostService implements IPostService{
     }
 
 
-  // Returns true if post is deleted given id and user
+  /* Returns true if post is deleted given id and user
   deletePost : (id: number, verifyCreator: User) => Promise<boolean> = 
     async (id: number, verifyCreator: User) =>{
       if(this.posts[id].id === id && this.posts[id].creator === verifyCreator ){
@@ -99,6 +101,7 @@ export class PostService implements IPostService{
         return false;
       }
     }
+    */
 }
 
 // Returns empty Postservice
