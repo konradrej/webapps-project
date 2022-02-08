@@ -1,4 +1,5 @@
 import {User} from "../model/user.interface";
+import {PostService} from "./post.service";
 
 export interface IUserService {
     findById(id: number): Promise<User | null>
@@ -102,6 +103,8 @@ export class UserService implements IUserService {
      * @param obj
      */
     async update(user: User, obj: IUpdateObject): Promise<boolean> {
+        if (!this.users[user.id]) return false
+
         let userCopy = Object.assign({}, user)
         const validator: { [prop: string]: RegExp } = {}
 
@@ -115,14 +118,20 @@ export class UserService implements IUserService {
             }
         })
 
-        if (!this.users[user.id]) return false
-
         this.users[user.id] = userCopy;
         return true;
     }
 
     async setPassword(user: User, password: string): Promise<boolean> {
+        if (!this.users[user.id]) return false
+
         user.password = password;
+        this.users[user.id] = user;
         return true;
     }
+}
+
+// Returns empty UserService
+export function makeUserService(): UserService {
+    return new UserService({});
 }
