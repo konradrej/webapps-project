@@ -6,6 +6,60 @@ import { User } from "../model/user.interface";
 export function makePostRouter(postService: IPostService): Express.Express {
   const postRouter: Express.Express = Express();
 
+  postRouter.get("/order", async (req: Express.Request, res: Express.Response) => {
+    try {
+      const order: string = req.body.order;
+      if (!order) {
+        res.status(400).send("Missing order\n");
+        return;
+      }
+      const tasks: Array<Post> = await postService.getPosts(order);
+      res.status(200).send(tasks);
+    } catch (e: any) {
+      res.status(500).send(e.message);
+    }
+  });
+
+
+  postRouter.post("/createPost", async (req: Express.Request, res: Express.Response) => {
+    try {
+      const title: string = req.body.title;
+      const description: string = req.body.description;
+      const imageUrl: string = req.body.imageUrl;
+      const creator: User = req.body.creator;
+
+      if (!title) {
+        res.status(400).send("Missing title\n");
+        return;
+      }
+
+      if (!description) {
+        res.status(400).send("Missing description\n");
+        return;
+      }
+
+      if (!creator) {
+        res.status(400).send("Missing creator\n");
+        return;
+      }
+      if (!imageUrl) {
+        res.status(400).send("Missing image\n");
+        return;
+      }
+
+      const success: boolean = await postService.createPost(title, description, imageUrl, creator);
+
+      if (!success) {
+        res.status(400).send(`Post created}\n`);
+        return;
+      }
+
+      res.status(200).send("Post could not be created");
+    } catch (e: any) {
+      res.status(500).send(e.message);
+    }
+  });
+
   postRouter.put("/:id", async (req: Express.Request, res: Express.Response) => {
     try {
       const id: number = parseInt(req.params.id, 10);
@@ -46,6 +100,8 @@ export function makePostRouter(postService: IPostService): Express.Express {
       res.status(500).send(e.message);
     }
   });
+
+  return postRouter;
 }
 
 export function postRouter(): Express.Express {
