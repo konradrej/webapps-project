@@ -31,7 +31,7 @@ let createUsers = (count: number): { [id: number]: User } => {
 test("Find user should return the correct user", () => {
     let users = createUsers(500);
     const us = new UserService(users);
-    return us.findUser(`user_300`)
+    return us.findByUsername(`user_300`)
         .then((user: User | null) => {
             expect(user).toBe(users[300]);
         })
