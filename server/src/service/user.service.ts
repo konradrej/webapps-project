@@ -15,7 +15,7 @@ export interface IUserService {
     setPassword(user: User, password: string): Promise<boolean>
 }
 
-interface IUpdateObject {
+export interface IUpdateObject {
     email?: string,
     description?: string,
     profileImageUrl?: string
