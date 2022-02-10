@@ -3,8 +3,9 @@ import { User } from "../model/user.interface";
 
 export interface IPostService  {
   getPosts(order : string) : Promise<Array<Post>>
-  createPost(title : string, description : string, imageUrl : string, creator : User ) : Promise<boolean>
+  createPost(title : string, description : string, imageUrl : string, creator : User ) : Promise<Post>
   updatePost(id : number, newTitle : string, newDescription : string, verifyCreator : User) : Promise<boolean>
+  getPost : (id: number) => Promise<Post>
   /*deletePost(id : number, verifyCreator : User) : Promise<boolean>*/
 }
 
@@ -19,6 +20,10 @@ export class PostService implements IPostService{
 
   }
 
+
+  async findById(id: number): Promise<Post | null> {
+    return this.posts[id] ?? null;
+  }
   // Return all posts given order
   getPosts : (order : string) => Promise<Post[]> =
     async (order : string) => {
@@ -45,45 +50,56 @@ export class PostService implements IPostService{
     }
 
   // Returns true if new post is created, invalid if title, imageURL, creator is undefined/null
-  createPost : (title: string, description: string, imageUrl: string, creator: User) => Promise<boolean>  = 
+  createPost : (title: string, description: string, imageUrl: string, creator: User) => Promise<Post>  = 
     async (title: string, description: string, imageUrl: string, creator: User) => {
-      if(imageUrl && title && creator){
-        this.postIdCounter++;
-        const newPost : Post = {
-          id: this.postIdCounter,
-          title: title,
-          description: description,
-          imageUrl: imageUrl,
-          createdAt: new Date(),
-          modifiedAt: new Date(),
-          creator: creator
-        }
+      if(!title){
+        throw Error("Missing title");
+      }
+      if(!imageUrl){
+        throw Error("Missing image URL");
+      }
+      if(!creator){
+        throw Error("Must be signed in");
+      }
 
-        this.posts[this.postIdCounter] = newPost;
-        return true;
+      this.postIdCounter++;
+      const newPost : Post = {
+        id: this.postIdCounter,
+        title: title,
+        description: description,
+        imageUrl: imageUrl,
+        createdAt: new Date(),
+        modifiedAt: new Date(),
+        creator: creator
       }
-      else{
-        return false;
-      }
+
+      this.posts[this.postIdCounter] = newPost;
+      return this.posts[this.postIdCounter];
     }
+
   // Returns true if post is updated given id and user id
   updatePost : (id: number, newTitle: string, newDescription: string, verifyCreator: User) => Promise<boolean> = 
     async (id: number, newTitle: string, newDescription: string, verifyCreator: User) => {
-      if(this.posts[id].id === id && this.posts[id].creator.id === verifyCreator.id ){
-        if(newDescription){
-          this.posts[id].description = newDescription;
-        }
-        if(newTitle){
-          this.posts[id].title = newTitle;
-        }
-        this.posts[id].modifiedAt = new Date();
-        return true;
+      if(this.posts[id].id !== id || this.posts[id].creator.id !== verifyCreator.id){
+        return false;
       }
-      else{
-        return false
+      if(newDescription){
+        this.posts[id].description = newDescription;
       }
+      if(newTitle){
+        this.posts[id].title = newTitle;
+      }
+      this.posts[id].modifiedAt = new Date();
+      return true;
     }
 
+    getPost : (id: number) => Promise<Post> = 
+      async (id: number) => {
+        if(await this.findById(id)){
+          return this.posts[id];
+        }
+        throw Error("Post not found");
+    }
 
   // Returns true if post is deleted given id and user id
   /*deletePost : (id: number, verifyCreator: User) => Promise<boolean> = 

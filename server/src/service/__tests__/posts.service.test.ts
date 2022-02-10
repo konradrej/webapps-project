@@ -1,3 +1,5 @@
+import { devNull } from "os";
+import { getHeapCodeStatistics } from "v8";
 import { Post } from "../../model/post.interface";
 import { User } from "../../model/user.interface";
 import { PostService } from "../post.service"; 
@@ -28,7 +30,6 @@ const notCreator : User =
   createdAt: new Date(),
 };
 
-// Should succeed
 test("The should be an empty array", async () => {
   const postService = new PostService({});
   return await postService.getPosts("").then(async (posts : Post []) => {
@@ -36,58 +37,43 @@ test("The should be an empty array", async () => {
   })
 });
 
-//Should succeed
-test("Create a post in with different properties", async () => {
+test("Create a post in with different properties and then get the same from postservice, and then try to get a post with an invalid id ", async () => {
   const postService = new PostService({});
-  return await postService.createPost("postTitle", "postDescription", "postURL", creator).then( async (res : boolean) => {
+  return await postService.createPost("postTitle", "postDescription", "postURL", creator).then( async (res : Post) => {
     const posts : Post [] = await postService.getPosts("");
-
-    expect(posts.length).toBe(1);
-    expect(posts[0].id).toBe(1);
-    expect(posts[0].title).toBe("postTitle");
-    expect(posts[0].description).toBe("postDescription");
-    expect(posts[0].imageUrl).toBe("postURL");
-    expect(posts[0].creator).toBe(creator);
-    expect(res).toBe(true);
+    expect(res).toEqual(posts[0]);
+    await postService.getPost(1).then(async (res: Post) => {
+      expect(res).toEqual(posts[0]);
+    })
+    expect(postService.getPost(0)).rejects.toThrowError(new Error("Post not found"));
   })
 });
 
-// Should not succeed
-test("Create a post with a empty title", async () => {
+test("Create a post with a empty title and empty URL", async () => {
   const postService = new PostService({});
-  return await postService.createPost("", "postDescription", "postURL", creator).then( async (res : boolean) => {
-    expect(res).toBe(false);
+  return await expect(postService.createPost("", "postDescription", "postURL", creator)).rejects.toThrowError(new Error("Missing title")).then(async () =>{
+    expect(postService.createPost("postTitle", "postDescription", "", creator)).rejects.toThrowError(new Error("Missing image URL"))
   })
 });
 
-// Should succeed
 test("Create a post and update the post with new properties", async () => {
   const postService = new PostService({});
-  return postService.createPost("testpostTitle", "postDescription", "postURL", creator).then( async (_ : boolean) => {
+  return postService.createPost("testpostTitle", "postDescription", "postURL", creator).then( async (_ : Post) => {
     await postService.updatePost( 1, "newPostTitle", "postDescription" , creator).then(async (res : boolean) => {
-      const posts : Post [] = await postService.getPosts("");
-      expect(posts.length).toBe(1);
-      expect(posts[0].id).toBe(1);
-      expect(posts[0].title).toBe("newPostTitle");
-      expect(posts[0].description).toBe("postDescription");
-      expect(posts[0].imageUrl).toBe("postURL");
-      expect(posts[0].creator).toBe(creator);
       expect(res).toBe(true);
     })
   })
 });
 
-// Should not succeed
 test("Create update a post with new properties and update the post with another user", async () => {
   const postService = new PostService({});
-  return await postService.createPost("postTitle", "postDescription", "postURL", creator).then( async (_ : boolean) => {
+  return await postService.createPost("postTitle", "postDescription", "postURL", creator).then( async (_ : Post) => {
     await postService.updatePost( 1, "newPostTitle", "postDescription" , notCreator).then(async (res : boolean) => {
       expect(res).toBe(false);
     })
   })
 });
 
-// Should succeed
 test("Create three posts with different titles in different point in time and check the sorting", async () => {
   const postService = new PostService({});
 
