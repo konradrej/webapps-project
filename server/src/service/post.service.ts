@@ -60,18 +60,16 @@ export class PostService implements IPostService{
         }
 
         this.posts[this.postIdCounter] = newPost;
-        //Add Post in user?
         return true;
       }
       else{
         return false;
       }
     }
-  
-  // Returns true if post is updated given id and user
+  // Returns true if post is updated given id and user id
   updatePost : (id: number, newTitle: string, newDescription: string, verifyCreator: User) => Promise<boolean> = 
     async (id: number, newTitle: string, newDescription: string, verifyCreator: User) => {
-      if(this.posts[id].id === id && this.posts[id].creator === verifyCreator ){
+      if(this.posts[id].id === id && this.posts[id].creator.id === verifyCreator.id ){
         if(newDescription){
           this.posts[id].description = newDescription;
         }
@@ -86,10 +84,11 @@ export class PostService implements IPostService{
       }
     }
 
-  /* Returns true if post is deleted given id and user
+
+  // Returns true if post is deleted given id and user id
   deletePost : (id: number, verifyCreator: User) => Promise<boolean> = 
     async (id: number, verifyCreator: User) =>{
-      if(this.posts[id].id === id && this.posts[id].creator === verifyCreator ){
+      if(this.posts[id].id === id && this.posts[id].creator.id === verifyCreator.id ){
         delete this.posts[id];
         return true;
       }
@@ -97,7 +96,6 @@ export class PostService implements IPostService{
         return false;
       }
     }
-    */
 }
 
 // Returns empty Postservice
