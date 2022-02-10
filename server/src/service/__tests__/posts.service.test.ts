@@ -53,7 +53,7 @@ test("Create a post in with different properties", async () => {
 });
 
 // Should not succeed
-test("Try to a post in with empty title", async () => {
+test("Create a post with a empty title", async () => {
   const postService = new PostService({});
   return await postService.createPost("", "postDescription", "postURL", creator).then( async (res : boolean) => {
     expect(res).toBe(false);
@@ -61,7 +61,7 @@ test("Try to a post in with empty title", async () => {
 });
 
 // Should succeed
-test("Create a post and update the post with new properties", () => {
+test("Create a post and update the post with new properties", async () => {
   const postService = new PostService({});
   return postService.createPost("testpostTitle", "postDescription", "postURL", creator).then( async (_ : boolean) => {
     await postService.updatePost( 1, "newPostTitle", "postDescription" , creator).then(async (res : boolean) => {
@@ -78,7 +78,7 @@ test("Create a post and update the post with new properties", () => {
 });
 
 // Should not succeed
-test("Create update a post with new properties, but with another user", async () => {
+test("Create update a post with new properties and update the post with another user", async () => {
   const postService = new PostService({});
   return await postService.createPost("postTitle", "postDescription", "postURL", creator).then( async (_ : boolean) => {
     await postService.updatePost( 1, "newPostTitle", "postDescription" , notCreator).then(async (res : boolean) => {
@@ -88,7 +88,7 @@ test("Create update a post with new properties, but with another user", async ()
 });
 
 // Should succeed
-test("Create three posts with different titles in different point in time", async () => {
+test("Create three posts with different titles in different point in time and check the sorting", async () => {
   const postService = new PostService({});
 
   postService.createPost("dPostTitle", "postDescription", "postURL", creator);

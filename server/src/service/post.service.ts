@@ -86,7 +86,7 @@ export class PostService implements IPostService{
 
 
   // Returns true if post is deleted given id and user id
-  deletePost : (id: number, verifyCreator: User) => Promise<boolean> = 
+  /*deletePost : (id: number, verifyCreator: User) => Promise<boolean> = 
     async (id: number, verifyCreator: User) =>{
       if(this.posts[id].id === id && this.posts[id].creator.id === verifyCreator.id ){
         delete this.posts[id];
@@ -95,7 +95,7 @@ export class PostService implements IPostService{
       else{
         return false;
       }
-    }
+    }*/
 }
 
 // Returns empty Postservice
