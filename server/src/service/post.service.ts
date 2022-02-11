@@ -20,7 +20,6 @@ export class PostService implements IPostService{
 
   }
 
-
   async findById(id: number): Promise<Post | null> {
     return this.posts[id] ?? null;
   }
