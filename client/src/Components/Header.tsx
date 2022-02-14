@@ -11,7 +11,7 @@ export default class Header extends Component {
             <Navbar.Brand href="#">Navbar</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
-              <Form className="d-flex">
+              <Form className="d-flex pt-3 pt-md-0">
                 <FormControl
                   type="search"
                   placeholder="Search"
@@ -22,11 +22,10 @@ export default class Header extends Component {
                   variant="outline-success">Search</Button>
               </Form>
               <Nav
-                className="me-auto my-2 my-lg-0"
+                className="ms-auto my-2 my-lg-0"
               >
                 <Nav.Link href="#action1">Login</Nav.Link>
                 <Nav.Link href="#action1">Sign up</Nav.Link>
-
               </Nav>
             </Navbar.Collapse>
           </Container>
