@@ -80,19 +80,20 @@ export class PostService implements IPostService {
 
   // Returns true if post is updated given id and user id
   updatePost: (id: number, newTitle: string, newDescription: string, verifyCreator: User) => Promise<boolean> =
-    async (id: number, newTitle: string, newDescription: string, verifyCreator: User) => {
-      if (this.posts[id].id !== id || this.posts[id].creator.id !== verifyCreator.id) {
-        return false;
+      async (id: number, newTitle: string, newDescription: string, verifyCreator: User) => {
+
+        if ( !this.findById(id) || this.posts[id].creator.id !== verifyCreator.id) {
+          return false;
+        }
+        if (newDescription) {
+          this.posts[id].description = newDescription;
+        }
+        if (newTitle) {
+          this.posts[id].title = newTitle;
+        }
+        this.posts[id].modifiedAt = new Date();
+        return true;
       }
-      if (newDescription) {
-        this.posts[id].description = newDescription;
-      }
-      if (newTitle) {
-        this.posts[id].title = newTitle;
-      }
-      this.posts[id].modifiedAt = new Date();
-      return true;
-    }
 
   getPost: (id: number) => Promise<Post> =
     async (id: number) => {

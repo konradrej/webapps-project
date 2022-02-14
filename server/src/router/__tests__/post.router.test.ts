@@ -5,6 +5,7 @@ import { makePostRouter, postRouter } from "../post.router";
 import { IPostService, } from "../../service/post.service";
 import { Post } from "../../model/post.interface";
 import { User } from "../../model/user.interface";
+import { makePostController, PostController } from "../../post.controller";
 
 // Create the creator of the post
 const creator: User =
@@ -55,32 +56,32 @@ test("A PUT request to /createPost should send a response of post successfully c
     }
 
     const postService: MockPostService = new MockPostService();
+    const postController: PostController = new PostController(postService);
 
     const router: Express.Express = Express();
 
     router.use(Express.json());
 
-    router.use(makePostRouter(postService));
+    router.use(makePostRouter(postController));
 
     const request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
     return request.post("/createPost").send({ title: "titleTest", description: "desscriptionTest", imageUrl: "imageTest", creator: creator }).then((res) => {
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({ status: "post successfully created" });
+        expect(res.statusCode).toBe(201);
     })
 })
 
-test("A POST request to /updatePost should send a response of post sucessfully updated", () => {
+test("A PUT request to /createPost should send a response of missing title", () => {
     class MockPostService implements IPostService {
-        updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: User): Promise<boolean> => {
-            return true;
-        }
-
         createPost = async (title: string, description: string, imageUrl: string, creator: User): Promise<Post> => {
-            throw ("Wrong method called")
+            return <Post>{};
         }
 
         getPosts = async (order: string): Promise<Array<Post>> => {
+            throw ("Wrong method called");
+        }
+
+        updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: User): Promise<boolean> => {
             throw ("Wrong method called");
         }
 
@@ -94,19 +95,17 @@ test("A POST request to /updatePost should send a response of post sucessfully u
     }
 
     const postService: MockPostService = new MockPostService();
+    const postController: PostController = new PostController(postService);
 
     const router: Express.Express = Express();
 
     router.use(Express.json());
 
-    router.use(makePostRouter(postService));
+    router.use(makePostRouter(postController));
 
     const request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-    return request.post("/updatePost").send({ title: "updateTitleTest", description: "updateDesscriptionTest", imageUrl: "updateImageTest", creator: updatedCreator }).then((res) => {
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({ status: "post successfully updated" });
+    return request.post("/createPost").send({  description: "desscriptionTest", imageUrl: "imageTest", creator: creator }).then((res) => {
+        expect(res.statusCode).toBe(400);
     })
-
-
 })

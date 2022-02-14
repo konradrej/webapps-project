@@ -25,6 +25,4 @@ it("Check the static text", () => {
   expect(container?.textContent).toContain("Username");
   expect(container?.textContent).toContain("Password");
   expect(container?.textContent).toContain("E-mail");
-  
-  expect(container?.textContent).toContain("hejhej");
 })
