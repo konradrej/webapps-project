@@ -9,7 +9,8 @@ type Props = {
   userImage : string,
   userName : string, 
   postDate : string,
-  postDescription : string
+  postDescription : string,
+  onClose?: Function
 }
 
 export default class CardDetailsPopUp extends React.Component<Props>{
@@ -21,7 +22,7 @@ export default class CardDetailsPopUp extends React.Component<Props>{
 
   render(){
     return(
-      <PopUp>
+      <PopUp onClose={this.props.onClose}>
         <div className="post-content">
           <Container fluid="md">
             <Row>

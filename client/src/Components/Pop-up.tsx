@@ -3,7 +3,7 @@ import './tempcss.css'
 
 type Props = {
   children?: JSX.Element | JSX.Element[],
-
+  onClose?: Function
 }
 
 export default class PopUp extends React.Component<Props>{
@@ -12,6 +12,9 @@ export default class PopUp extends React.Component<Props>{
   onCloseHandler = () => {
     this.showPopUp = false;
     this.setState({})
+
+    if(this.props.onClose)
+      this.props.onClose()
   }
 
   render(){
