@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Container, Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap'
+import './tempcss.css'
 
 export default class Header extends Component {
   render() {
     return (
       <div>
-        <Navbar bg="dark" variant="dark" expand="md">
+        <Navbar className='color-nav' variant="dark" expand="sm">
           <Container fluid>
             <Navbar.Brand href="#">Navbar</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
@@ -17,7 +18,8 @@ export default class Header extends Component {
                   className="me-2"
                   aria-label="Search"
                 />
-                <Button variant="outline-success">Search</Button>
+                <Button className="me-2"
+                  variant="outline-success">Search</Button>
               </Form>
               <Nav
                 className="me-auto my-2 my-lg-0"
