@@ -53,14 +53,14 @@ background: #FF4C29;
 }
 
 .popUpContainer {
-  margin: 10% auto;
+  margin: 5% auto;
   position: relative;
   background-color: #2C394B;
   border-radius: 0.625em;
   padding: 30px;
   box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
   text-align: center;
-  max-width: fit-content;
+  max-width: max-content;
 }
 
 .closeButton{
@@ -111,28 +111,28 @@ background: #FF4C29;
 }
 
 .post-content {
-  flex-wrap: wrap;
   overflow-y: auto;
-  max-width: 800px;
   max-height: 600px;
 }
 
 img.post-image {
+
   float: left;
-  top: 0;
-  position: sticky;
-  border-radius: 0.625em;
+  margin-right: 20px;
   object-fit: contain;
+  border-radius: 0.625em;
   box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
 }
 
 .post-info {
+  float: right;
   color: white;
+  width: 300px;
   background-color:#334756;
   border-radius: 0.625em;
-  padding-top: 10px;
   box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
   text-align: left;
+  padding: 16px;
 }
 
 .post-user-info {
