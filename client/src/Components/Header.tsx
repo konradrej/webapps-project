@@ -6,8 +6,8 @@ export default class Header extends Component {
   render() {
     return (
       <div>
-        <Navbar className='color-nav' variant="dark" expand="sm">
-          <Container fluid>
+        <Navbar className='color-nav' variant="dark" expand="md">
+          <Container className='header-components'>
             <Navbar.Brand href="#">Navbar</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
