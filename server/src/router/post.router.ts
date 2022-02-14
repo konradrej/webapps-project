@@ -21,7 +21,7 @@ export function makePostRouter(postService: IPostService): Express.Express {
   });
 
 
-  postRouter.post("/createPost", async (req: Express.Request, res: Express.Response) => {
+  postRouter.put("/createPost", async (req: Express.Request, res: Express.Response) => {
     try {
       const title: string = req.body.title;
       const description: string = req.body.description;
@@ -47,14 +47,8 @@ export function makePostRouter(postService: IPostService): Express.Express {
         return;
       }
 
-      const success: boolean = await postService.createPost(title, description, imageUrl, creator);
-
-      if (!success) {
-        res.status(400).send(`Post created}\n`);
-        return;
-      }
-
-      res.status(200).send("Post could not be created");
+      const success: Post = await postService.createPost(title, description, imageUrl, creator);
+      res.status(201).send(success);
     } catch (e: any) {
       res.status(500).send(e.message);
     }
@@ -63,43 +57,61 @@ export function makePostRouter(postService: IPostService): Express.Express {
   postRouter.put("/:id", async (req: Express.Request, res: Express.Response) => {
     try {
       const id: number = parseInt(req.params.id, 10);
-      const title: string = req.body.newTitle;
-      const description: string = req.body.newDescription;
-      const creator: User = req.body.verifyCreator;
 
-      /*if (!req.body.done) {
-                  res.status(400).send("Bad call to /task/:id\n");
-                  return;
-              }
-      */
+      postService.findById(id).then((post: Post | null) => {
+        if (!post)
+          throw Error("No post with the given id");
 
-      if (!title) {
-        res.status(400).send("Missing title\n");
-        return;
-      }
 
-      if (!description) {
-        res.status(400).send("Missing description\n");
-        return;
-      }
+        const title: string = req.body.newTitle;
+        const description: string = req.body.newDescription;
+        const creator: User = req.body.verifyCreator;
 
-      if (!creator) {
-        res.status(400).send("Missing creator\n");
-        return;
-      }
+        if (!title) {
+          res.status(400).send("Missing title\n");
+          return;
+        }
 
-      const updated: boolean = await postService.updatePost(id, title, description, creator);
+        if (!description) {
+          res.status(400).send("Missing description\n");
+          return;
+        }
 
-      if (!updated) {
-        res.status(400).send(`Task was not updated}\n`);
-        return;
-      }
+        if (!creator) {
+          res.status(400).send("Missing creator\n");
+          return;
+        }
 
-      res.status(200).send("Post has been updated");
+        postService.updatePost(id, title, description, creator).then((updated: boolean) => {
+          if (!updated)
+            throw Error("Unknown")
+          res.status(200).send({ status: "Post updated" });
+        });
+      }).catch((e: any) => {
+        res.status(400).send({ status: "Post could not be updated", reason: e.message });
+      })
     } catch (e: any) {
       res.status(500).send(e.message);
     }
-  });
+  })
+
+
+
+  postRouter.get("/getPost", async (req: Express.Request, res: Express.Response) => {
+    try {
+      const id: number = parseInt(req.params.id, 10);
+
+      postService.findById(id).then((post: Post | null) => {
+        if (!post) {
+          throw Error("No post with the given id");
+        }
+        res.status(200).send({ status: "User updated" });
+
+      })
+    } catch (e: any) {
+      res.status(500).send(e.message);
+    }
+  })
 
   return postRouter;
 }
