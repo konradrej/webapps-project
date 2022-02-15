@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
-import { act, isElementOfType } from "react-dom/test-utils";
-import GridItem from "../GridItem";
+import { act } from "react-dom/test-utils";
+import GridItem from "./GridItem";
 
 let container : HTMLElement | null = null;
 
@@ -58,7 +58,7 @@ it("check if onclick on .card opens CardDetails and contains description", () =>
       }
     }
     
-    render(<GridItem {...props} />, container);
+    render(<><GridItem {...props} /><div id="popup-container"></div></>, container);
   })
   expect(container?.textContent).not.toContain("Description");
 

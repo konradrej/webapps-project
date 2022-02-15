@@ -9,6 +9,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <App />
+      <div id="popup-container"></div>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')
