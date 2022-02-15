@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import Header from "../../Components/Header";
 
-interface ErrorPageProps {
-
+export type Props = {
+  
 }
 
-export default function ErrorPage(props : ErrorPageProps) {
-  return (
-    <div>Rip error</div>
-  );
+export default class ErrorPage extends React.Component<Props>{
+  render(){
+    return (
+      <>
+        <Header></Header>
+        <h2 style={{textAlign: "center", marginTop: "20%"}}>The resource could not be found.</h2>
+      </>
+    )
+  }
 }
