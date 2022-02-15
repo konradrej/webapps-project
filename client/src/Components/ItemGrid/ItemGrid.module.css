@@ -1,0 +1,24 @@
+:root {
+  --grid-gap: 15px;
+}
+
+.selector {
+  margin-top: var(--grid-gap);
+}
+
+.grid {
+  display: flex;
+  margin-left: calc(var(--grid-gap) * -1);
+  margin-top: var(--grid-gap);
+  width: auto;
+}
+
+.grid-column {
+  padding-left: var(--grid-gap);
+  background-clip: padding-box;
+}
+
+.grid-column > * {
+  background: grey;
+  margin-bottom: var(--grid-gap);
+}
