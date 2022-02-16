@@ -13,7 +13,7 @@ export default class Header extends Component {
 
   onClickSignIn = () => {
     this.popUpState.signIn = !this.popUpState.signIn
-    this.forceUpdate()
+    this.forceUpdate();
   }
 
   onClickSignUp = () => {

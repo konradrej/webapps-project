@@ -23,7 +23,7 @@ export default class SignUpPopUp extends React.Component<Props>{
   }
 
   onChangeUserName = (e: React.FormEvent<HTMLInputElement>): void => {
-    this.setState({ inputUsername: e.currentTarget.value });
+    this.setState({ inputUserName: e.currentTarget.value });
   };
 
   onChangePassword = (e: React.FormEvent<HTMLInputElement>): void => {
