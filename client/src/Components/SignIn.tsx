@@ -1,7 +1,11 @@
 import React from 'react';
 import PopUp from './Pop-up';
 
-export default class SignInPopUp extends React.Component<{}>{
+type Props = {
+  onClose?: Function
+}
+
+export default class SignInPopUp extends React.Component<Props>{
 
   private signInText : string = "Sign In";
   private registerText : string = "Register";
@@ -34,7 +38,7 @@ export default class SignInPopUp extends React.Component<{}>{
 
   render(){
     return(
-      <PopUp>
+      <PopUp onClose={this.props.onClose}>
         <form className="form-pop-up">
           <div className="input-content">  
             <div className="input-sub-content">
