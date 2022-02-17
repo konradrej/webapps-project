@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import GridItem from "./GridItem";
+import GridItem from "../GridItem";
 
 let container : HTMLElement | null = null;
 
