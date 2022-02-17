@@ -5,7 +5,6 @@ import { makePostRouter, postRouter } from "../post.router";
 import { IPostService, } from "../../service/post.service";
 import { Post } from "../../model/post.interface";
 import { User } from "../../model/user.interface";
-import { makePostController, PostController } from "../../post.controller";
 
 // Create the creator of the post
 const creator: User =
@@ -56,13 +55,12 @@ test("A PUT request to /createPost should send a response of post successfully c
     }
 
     const postService: MockPostService = new MockPostService();
-    const postController: PostController = new PostController(postService);
 
     const router: Express.Express = Express();
 
     router.use(Express.json());
 
-    router.use(makePostRouter(postController));
+    router.use(makePostRouter(postService));
 
     const request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -71,41 +69,4 @@ test("A PUT request to /createPost should send a response of post successfully c
     })
 })
 
-test("A PUT request to /createPost should send a response of missing title", () => {
-    class MockPostService implements IPostService {
-        createPost = async (title: string, description: string, imageUrl: string, creator: User): Promise<Post> => {
-            return <Post>{};
-        }
 
-        getPosts = async (order: string): Promise<Array<Post>> => {
-            throw ("Wrong method called");
-        }
-
-        updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: User): Promise<boolean> => {
-            throw ("Wrong method called");
-        }
-
-        getPost = async (id: number): Promise<Post> => {
-            throw ("Wrong method called");
-        }
-
-        findById = async (id: number): Promise<Post | null> => {
-            throw ("Wrong method called");
-        }
-    }
-
-    const postService: MockPostService = new MockPostService();
-    const postController: PostController = new PostController(postService);
-
-    const router: Express.Express = Express();
-
-    router.use(Express.json());
-
-    router.use(makePostRouter(postController));
-
-    const request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
-
-    return request.post("/createPost").send({  description: "desscriptionTest", imageUrl: "imageTest", creator: creator }).then((res) => {
-        expect(res.statusCode).toBe(400);
-    })
-})

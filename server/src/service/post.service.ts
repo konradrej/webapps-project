@@ -53,15 +53,6 @@ export class PostService implements IPostService {
   // Returns true if new post is created, invalid if title, imageURL, creator is undefined/null
   createPost: (title: string, description: string, imageUrl: string, creator: User) => Promise<Post> =
     async (title: string, description: string, imageUrl: string, creator: User) => {
-      if (!title) {
-        throw Error("Missing title");
-      }
-      if (!imageUrl) {
-        throw Error("Missing image URL");
-      }
-      if (!creator) {
-        throw Error("Must be signed in");
-      }
 
       this.postIdCounter++;
       const newPost: Post = {
@@ -82,8 +73,11 @@ export class PostService implements IPostService {
   updatePost: (id: number, newTitle: string, newDescription: string, verifyCreator: User) => Promise<boolean> =
       async (id: number, newTitle: string, newDescription: string, verifyCreator: User) => {
 
-        if ( !this.findById(id) || this.posts[id].creator.id !== verifyCreator.id) {
-          return false;
+        if ( !this.findById(id)){
+          throw Error("Post not found");
+        }
+        if(this.posts[id].creator.id !== verifyCreator.id){
+          throw Error("Not specified user");
         }
         if (newDescription) {
           this.posts[id].description = newDescription;

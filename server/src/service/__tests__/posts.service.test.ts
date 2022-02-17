@@ -49,12 +49,7 @@ test("Create a post in with different properties and then get the same from post
   })
 });
 
-test("Create a post with a empty title and empty URL", async () => {
-  const postService = new PostService({});
-  return await expect(postService.createPost("", "postDescription", "postURL", creator)).rejects.toThrowError(new Error("Missing title")).then(async () =>{
-    expect(postService.createPost("postTitle", "postDescription", "", creator)).rejects.toThrowError(new Error("Missing image URL"))
-  })
-});
+
 
 test("Create a post and update the post with new properties", async () => {
   const postService = new PostService({});
@@ -65,12 +60,10 @@ test("Create a post and update the post with new properties", async () => {
   })
 });
 
-test("Create update a post with new properties and update the post with another user", async () => {
+test("Create a post with new properties and update the post with another user", async () => {
   const postService = new PostService({});
   return await postService.createPost("postTitle", "postDescription", "postURL", creator).then( async (_ : Post) => {
-    await postService.updatePost( 1, "newPostTitle", "postDescription" , notCreator).then(async (res : boolean) => {
-      expect(res).toBe(false);
-    })
+    expect( postService.updatePost( 1, "newPostTitle", "postDescription" , notCreator)).rejects.toThrowError(new Error("Not specified user"));
   })
 });
 
