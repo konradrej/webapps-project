@@ -1,7 +1,11 @@
 import React from 'react';
 import PopUp from './Pop-up';
 
-export default class SignUpPopUp extends React.Component<{}>{
+type Props= {
+  onClose?: Function,
+}
+
+export default class SignUpPopUp extends React.Component<Props>{
 
   private registerText : string = "Register";
   private goBackText : string = "Go back";
@@ -19,7 +23,7 @@ export default class SignUpPopUp extends React.Component<{}>{
   }
 
   onChangeUserName = (e: React.FormEvent<HTMLInputElement>): void => {
-    this.setState({ inputUsername: e.currentTarget.value });
+    this.setState({ inputUserName: e.currentTarget.value });
   };
 
   onChangePassword = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -40,7 +44,7 @@ export default class SignUpPopUp extends React.Component<{}>{
 
   render(){
     return(
-      <PopUp>
+      <PopUp onClose={this.props.onClose}>
         <form className="form-pop-up">
           <div className="input-content">  
             <div className="input-sub-content">

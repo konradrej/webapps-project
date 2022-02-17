@@ -7,6 +7,8 @@ interface HomePageProps {
 
 export default function HomePage(props: HomePageProps) {
   return (
-    <><Header></Header><div>Home page :D</div></>
-  );
+    <Header>
+
+    </Header>
+  )
 }
