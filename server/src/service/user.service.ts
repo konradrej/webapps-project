@@ -12,9 +12,9 @@ export interface IUserService {
 
     register(username: string, password: string, email: string): Promise<User>
 
-    update(user: User, updateObject: IUpdateObject): Promise<boolean>
+    update(id: number, updateObject: IUpdateObject): Promise<boolean>
 
-    setPassword(user: User, password: string): Promise<boolean>
+    setPassword(id: number, password: string): Promise<boolean>
 }
 
 export interface IUpdateObject {
@@ -25,7 +25,7 @@ export interface IUpdateObject {
 
 export class UserService implements IUserService {
     private users: { [key: number]: User } = {};
-    private userIdCounter: number = 0;
+    private userIdCounter: number = 1;
 
     constructor(users: { [key: number]: User }) {
         this.users = users;
@@ -84,9 +84,9 @@ export class UserService implements IUserService {
             throw Error("Invalid Email")
 
         const user: User = {
-            id: this.userIdCounter + 1,
+            id: this.userIdCounter++,
             username: username,
-            password: await bcrypt.hash(password, SALTROUNDS),
+            password: bcrypt.hashSync(password, SALTROUNDS),
             email: email,
             createdAt: new Date,
             posts: [],
@@ -100,11 +100,12 @@ export class UserService implements IUserService {
 
     /**
      * More dynamic update function
-     * @param user
+     * @param id
      * @param obj
      */
-    async update(user: User, obj: IUpdateObject): Promise<boolean> {
-        if (!this.users[user.id]) return false
+    async update(id: number, obj: IUpdateObject): Promise<boolean> {
+        const user = this.users[id];
+        if (!user) return false
 
         let userCopy = Object.assign({}, user)
         const validator: { [prop: string]: RegExp } = {}
@@ -123,11 +124,11 @@ export class UserService implements IUserService {
         return true;
     }
 
-    async setPassword(user: User, password: string): Promise<boolean> {
-        if (!this.users[user.id]) return false
+    async setPassword(id: number, password: string): Promise<boolean> {
+        const user = this.users[id];
+        if (!user) return false
 
-        user.password = password;
-        this.users[user.id] = user;
+        user.password = bcrypt.hashSync(password, SALTROUNDS);
         return true;
     }
 }

@@ -72,7 +72,7 @@ test("Creating a user should validate and return a user object", async () => {
 test("Update should update the correct user", () => {
     let users = createUsers(500);
     const us = new UserService(users);
-    return us.update(users[200], {
+    return us.update(users[200].id, {
         description: "Update user 200"
     }).then((bool) => {
         expect(bool).toEqual(true)
