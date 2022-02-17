@@ -1,5 +1,8 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 import PopUp from './Pop-up';
+import axios, {AxiosResponse} from 'axios';
+
 
 type Props= {
   onClose?: Function,
@@ -35,11 +38,9 @@ export default class SignUpPopUp extends React.Component<Props>{
   };
 
   onGoBackHandler = () => {
-    console.log("hej3")
   }
 
-  onRegisterHandler = () => {
-    console.log("hej")
+  onRegisterHandler = async () => {
   }
 
   render(){
@@ -60,12 +61,12 @@ export default class SignUpPopUp extends React.Component<Props>{
               <input type="text" value={ this.state.inputEmail } placeholder={ this.emailPlaceholder } onChange={ this.onChangeEmail }/>
             </div>
             <div className="pop-up-button-container">
-              <button className="pop-up-button" onClick={ this.onGoBackHandler }>
+              <Button className="pop-up-button" onClick={ this.onGoBackHandler }>
                 { this.goBackText }
-              </button>
-              <button className="pop-up-button" onClick={ this.onRegisterHandler }>
+              </Button>
+              <Button className="pop-up-button" onClick={ this.onRegisterHandler }>
                 { this.registerText }
-              </button>
+              </Button>
             </div>
           </div>
         </form>

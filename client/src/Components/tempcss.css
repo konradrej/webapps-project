@@ -98,16 +98,16 @@ background: #FF4C29;
   flex-wrap: wrap;
 }
 
-.pop-up-button{
-  background-color: #334756;
-  color: white;
-  width: 100px;
-  min-width: fit-content;
+.pop-up-button {
+  background-color: #334756 !important;
+  color: white !important;
+  width: 100px !important;
+  min-width: fit-content !important;
 }
 
 .pop-up-button:hover{
-  background-color: #FF4C29;
-  color: black;
+  background-color: #FF4C29 !important;
+  color: black !important;
 }
 
 .post-content {

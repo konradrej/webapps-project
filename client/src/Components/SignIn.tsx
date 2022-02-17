@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 import PopUp from './Pop-up';
 
 type Props = {
@@ -29,11 +30,9 @@ export default class SignInPopUp extends React.Component<Props>{
 
 
   onSignInHandler = () => {
-
   }
 
   onRegisterHandler = () => {
-    console.log("hej")
   }
 
   render() {
@@ -50,12 +49,12 @@ export default class SignInPopUp extends React.Component<Props>{
               <input type="password" value={this.state.inputPassword} placeholder={this.passwordPlaceholder} onChange={this.onChangePassword} />
             </div>
             <div className="pop-up-button-container">
-              <button className="pop-up-button" onClick={this.onRegisterHandler}>
+              <Button className="pop-up-button" onClick={this.onRegisterHandler}>
                 {this.registerText}
-              </button>
-              <button className="pop-up-button" onClick={this.onSignInHandler}>
+              </Button>
+              <Button className="pop-up-button" onClick={this.onSignInHandler}>
                 {this.signInText}
-              </button>
+              </Button>
             </div>
           </div>
         </form>
