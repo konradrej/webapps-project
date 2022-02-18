@@ -34,7 +34,7 @@ test("Create a post and update the post with new properties", async () => {
 test("Create a post with new properties and update the post with another user", async () => {
   const postService = new PostService({});
   return await postService.createPost("postTitle", "postDescription", "postURL", 0).then( async (_ : Post) => {
-    expect( postService.updatePost( 1, "newPostTitle", "postDescription" , 1)).rejects.toThrowError(new Error("Not specified user"));
+    expect( postService.updatePost( 1, "newPostTitle", "postDescription" , 1)).rejects.toThrowError(new Error("Specified user is not creator"));
   })
 });
 
