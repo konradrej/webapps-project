@@ -1,34 +1,5 @@
-import { devNull } from "os";
-import { getHeapCodeStatistics } from "v8";
 import { Post } from "../../model/post.interface";
-import { User } from "../../model/user.interface";
 import { PostService } from "../post.service"; 
-
-// Create the creator of the post
-const creator : User = 
-{
-  id: 1,
-  username: "creatorName",
-  password: "creatorPassword",
-  email: "creatorMail",
-  profileImageUrl: "creatorProfile",
-  description: "creatorDescription",
-  posts: [],
-  createdAt: new Date(),
-};
-
-// Create user
-const notCreator : User = 
-{
-  id: 2,
-  username: "notCreatorName",
-  password: "notCreatorPassword",
-  email: "notCreatorMail",
-  profileImageUrl: "notCreatorProfile",
-  description: "notCreatorDescription",
-  posts: [],
-  createdAt: new Date(),
-};
 
 test("The should be an empty array", async () => {
   const postService = new PostService({});
@@ -39,7 +10,7 @@ test("The should be an empty array", async () => {
 
 test("Create a post in with different properties and then get the same from postservice, and then try to get a post with an invalid id ", async () => {
   const postService = new PostService({});
-  return await postService.createPost("postTitle", "postDescription", "postURL", creator).then( async (res : Post) => {
+  return await postService.createPost("postTitle", "postDescription", "postURL", 0).then( async (res : Post) => {
     const posts : Post [] = await postService.getPosts("");
     expect(res).toEqual(posts[0]);
     await postService.getPost(1).then(async (res: Post) => {
@@ -53,8 +24,8 @@ test("Create a post in with different properties and then get the same from post
 
 test("Create a post and update the post with new properties", async () => {
   const postService = new PostService({});
-  return postService.createPost("testpostTitle", "postDescription", "postURL", creator).then( async (_ : Post) => {
-    await postService.updatePost( 1, "newPostTitle", "postDescription" , creator).then(async (res : boolean) => {
+  return postService.createPost("testpostTitle", "postDescription", "postURL", 0).then( async (post : Post) => {
+    await postService.updatePost( post.id, "newPostTitle", "postDescription" , 0).then(async (res : boolean) => {
       expect(res).toBe(true);
     })
   })
@@ -62,33 +33,33 @@ test("Create a post and update the post with new properties", async () => {
 
 test("Create a post with new properties and update the post with another user", async () => {
   const postService = new PostService({});
-  return await postService.createPost("postTitle", "postDescription", "postURL", creator).then( async (_ : Post) => {
-    expect( postService.updatePost( 1, "newPostTitle", "postDescription" , notCreator)).rejects.toThrowError(new Error("Not specified user"));
+  return await postService.createPost("postTitle", "postDescription", "postURL", 0).then( async (_ : Post) => {
+    expect( postService.updatePost( 1, "newPostTitle", "postDescription" , 1)).rejects.toThrowError(new Error("Not specified user"));
   })
 });
 
-test("Create three posts with different titles in different point in time and check the sorting", async () => {
+test("Create four posts with different titles in different point in time and check the sorting", async () => {
   const postService = new PostService({});
 
-  postService.createPost("dPostTitle", "postDescription", "postURL", creator);
-  postService.createPost("cPostTitle", "postDescription", "postURL", creator);
-  postService.createPost("aPostTitle", "postDescription", "postURL", creator);
-  postService.createPost("bPostTitle", "postDescription", "postURL", creator);
+  postService.createPost("dPostTitle", "postDescription", "postURL", 0);
+  postService.createPost("cPostTitle", "postDescription", "postURL", 0);
+  postService.createPost("aPostTitle", "postDescription", "postURL", 0);
+  postService.createPost("bPostTitle", "postDescription", "postURL", 0);
 
-  return await postService.getPosts("Alphabetic").then(async (alphabetic : Post []) => {
+  return await postService.getPosts("title-ascending").then(async (alphabetic : Post []) => {
     expect(alphabetic[0].title).toBe("aPostTitle");
     expect(alphabetic[1].title).toBe("bPostTitle");
     expect(alphabetic[2].title).toBe("cPostTitle");
     expect(alphabetic[3].title).toBe("dPostTitle");
 
-    await postService.getPosts("Reverse").then(async (reverse : Post []) => {
+    await postService.getPosts("title-descending").then(async (reverse : Post []) => {
       expect(reverse[0].title).toBe("dPostTitle");
       expect(reverse[1].title).toBe("cPostTitle");
       expect(reverse[2].title).toBe("bPostTitle");
       expect(reverse[3].title).toBe("aPostTitle");
       
       // getPosts("") is default
-      await postService.getPosts("").then(async (recency : Post []) => {
+      await postService.getPosts("recent-descending").then(async (recency : Post []) => {
         /*Should be the reverse order as they were created b>a>c>d*/
         expect(recency[0].title).toBe("bPostTitle");
         expect(recency[1].title).toBe("aPostTitle");

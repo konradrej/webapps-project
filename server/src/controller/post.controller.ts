@@ -1,29 +1,30 @@
 import Express from "express";
-import { User } from "../model/user.interface";
 
 
 export class PostController{
 
-  createPost = async (reqTitle: string, reqImageUrl: string, reqCreator: User) => {
-    const title: string = reqTitle;
-    const imageUrl: string = reqImageUrl;
-    const creator: User = reqCreator;
+  validateCreatePost = async (title: string, imageUrl: string, creator: number) : Promise<void> => {
+    if (!title) {
+      throw new Error ("Missing title");
+    }
+    if(!creator && creator !== 0){
+      throw new Error ("Missing creator");
+    }
+    if (!imageUrl) {
+      throw new Error ("Missing image");
+    }
 
-      if (!title) {
-        throw Error ("Missing title");
-      }
-      if (!creator) {
-        throw Error ("Missing creator");
-      }
-      if (!imageUrl) {
-        throw Error ("Missing image");
-      }
+    /*TODO Check if jpeg png 
+    var allowed = /(\.jpg|\.jpeg|\.png)$/i;
+    if(!allowed.exec(imageUrl)){
+      throw Error ("Wrong format");
+    }*/
+  }
 
-      /*TODO Check if jpeg png 
-      var allowed = /(\.jpg|\.jpeg|\.png)$/i;
-      if(!allowed.exec(imageUrl)){
-        throw Error ("Wrong format");
-      }*/
+  validateUpdatePost = async (creator: number) : Promise<void> => {
+    if(!creator && creator !== 0){
+      throw new Error("Missing creator");
+    }
   }
 }
 

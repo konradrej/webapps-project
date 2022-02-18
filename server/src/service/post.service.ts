@@ -1,10 +1,9 @@
 import { Post } from "../model/post.interface";
-import { User } from "../model/user.interface";
 
 export interface IPostService {
   getPosts(order: string): Promise<Array<Post>>
-  createPost(title: string, description: string, imageUrl: string, creator: User): Promise<Post>
-  updatePost(id: number, newTitle: string, newDescription: string, verifyCreator: User): Promise<boolean>
+  createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post>
+  updatePost(id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean>
   getPost: (id: number) => Promise<Post>
   findById(id: number): Promise<Post | null>
 
@@ -19,7 +18,6 @@ export class PostService implements IPostService {
     this.posts = posts;
     // Order posts and get the highest id first and begin with that id as a counter
     this.postIdCounter = !posts ? Object.values(this.posts).sort((a, b) => a.id < b.id ? 1 : -1)[0].id : 0;
-
   }
 
   async findById(id: number): Promise<Post | null> {
@@ -29,19 +27,20 @@ export class PostService implements IPostService {
   getPosts: (order: string) => Promise<Post[]> =
     async (order: string) => {
       switch (order) {
-        // A-Z
-        case "Alphabetic": {
+        // Title A-Z
+        case "title-ascending": {
           return Object.values(this.posts).sort(
             (a, b) => a.title < b.title ? -1 : 1
           )
         }
-        // Z-A
-        case "Reverse": {
+        // Title Z-A
+        case "title-descending": {
           return Object.values(this.posts).sort(
             (a, b) => a.title < b.title ? 1 : -1
           )
         }
-        // Recency
+        // Most recent first
+        case "recent-descending":
         default: {
           return Object.values(this.posts).sort(
             (a, b) => a.createdAt < b.createdAt ? 1 : -1
@@ -51,8 +50,8 @@ export class PostService implements IPostService {
     }
 
   // Returns true if new post is created, invalid if title, imageURL, creator is undefined/null
-  createPost: (title: string, description: string, imageUrl: string, creator: User) => Promise<Post> =
-    async (title: string, description: string, imageUrl: string, creator: User) => {
+  createPost: (title: string, description: string, imageUrl: string, creator: number) => Promise<Post> =
+    async (title: string, description: string, imageUrl: string, creator: number) => {
 
       this.postIdCounter++;
       const newPost: Post = {
@@ -70,14 +69,15 @@ export class PostService implements IPostService {
     }
 
   // Returns true if post is updated given id and user id
-  updatePost: (id: number, newTitle: string, newDescription: string, verifyCreator: User) => Promise<boolean> =
-      async (id: number, newTitle: string, newDescription: string, verifyCreator: User) => {
+  updatePost: (id: number, newTitle: string, newDescription: string, verifyCreator: number) => Promise<boolean> =
+      async (id: number, newTitle: string, newDescription: string, verifyCreator: number) => {
 
-        if ( !this.findById(id)){
+        const post: Post | null = await this.findById(id);
+        if (!post){
           throw Error("Post not found");
         }
-        if(this.posts[id].creator.id !== verifyCreator.id){
-          throw Error("Not specified user");
+        if(this.posts[id].creator !== verifyCreator){
+          throw Error("Specified user is not creator");
         }
         if (newDescription) {
           this.posts[id].description = newDescription;

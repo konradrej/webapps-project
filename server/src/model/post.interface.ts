@@ -1,5 +1,3 @@
-import {User} from "../model/user.interface";
-
 export interface Post {
   id: number;
   title: string;
@@ -7,5 +5,5 @@ export interface Post {
   imageUrl: string;
   createdAt: Date;
   modifiedAt: Date;
-  creator: User;
+  creator: number;
 }

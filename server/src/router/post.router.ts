@@ -1,88 +1,81 @@
 import Express from "express";
 import { makePostController, PostController } from "../controller/post.controller";
 import { Post } from "../model/post.interface";
-import { User } from "../model/user.interface";
 import { IPostService, makePostService } from "../service/post.service";
 
-export function makePostRouter(postService : IPostService ): Express.Express {
+export function makePostRouter(postService : IPostService, postController : PostController ): Express.Express {
   const postRouter: Express.Express = Express();
-  const postController: PostController = makePostController();
 
   postRouter.get("/order", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const order: string = req.body.order;
-      const posts: Array<Post> = await postService.getPosts(order);
-      res.status(200).send(posts);
+
+      postService.getPosts(order).then((posts: Array<Post>): void => {
+        res.status(200).send(posts);
+      })
     } catch (e: any) {
-      res.status(500).send(e.message);
+      res.status(500).send({status: "Server error", reason: e.message});
     }
   })
 
   postRouter.post("/createPost", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      try {
-        // Validate request
-        postController.createPost(req.body.title, req.body.imageUrl, req.body.creator);
-      }
-      catch(e: any){
-        res.status(400).send(e.message);
-      }
-
       const title: string = req.body.title;
       const description: string = req.body.description;
       const imageUrl: string = req.body.imageUrl;
-      const creator: User = req.body.creator
+      const creator: number = req.body.creator;
 
-      const success: Post = await postService.createPost(title, description, imageUrl, creator);
-      res.status(201).send(success);
+      postController.validateCreatePost(title, imageUrl, creator).then((): Promise<Post> => {
+        return postService.createPost(title, description, imageUrl, creator);
+      }).then((createdPost: Post): void => {
+        res.status(201).send(createdPost);
+      }).catch((e: any): void => {
+        res.status(400).send({status: "Could not create post", reason: e.message});
+      })
     } catch (e: any) {
-      res.status(500).send(e.message);
+      res.status(500).send({status: "Server error", reason: e.message});
     }
   })
 
   postRouter.put("/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      const id: number = parseInt(req.params.id, 10);
+      const id: number = parseInt(req.params.id);
+      const title: string = req.body.newTitle;
+      const description: string = req.body.newDescription;
+      const creator: number = req.body.verifyCreator;
 
-      postService.findById(id).then((post: Post | null) => {
-        
-        if (!post){
-          res.status(400).send("Post does not exist\n");
-          return;
+      postController.validateUpdatePost(creator).then((): Promise<boolean> => {
+        return postService.updatePost(id, title, description, creator);
+      }).then((success: boolean): void => {
+        if(success) {
+          res.status(200).send({status: "Post updated"});
+        } else {
+          throw new Error("Unknown error");
         }
-
-        const title: string = req.body.newTitle;
-        const description: string = req.body.newDescription;
-        const creator: User = req.body.verifyCreator;
-
-        if (!creator) {
-          res.status(400).send("Not specified user\n");
-          return;
-        }
-
-        postService.updatePost(id, title, description, creator).then((_: boolean) => {
-          res.status(200).send({ status: "Post updated" });
-        });
-      }).catch((e: any) => {
-        res.status(400).send({ status: "Post could not be updated", reason: e.message });
+      }).catch((e: any): void => {
+        res.status(400).send({status: "Could not update post", reason: e.message});
       })
     } catch (e: any) {
-      res.status(500).send(e.message);
+      res.status(500).send({status: "Server error", reason: e.message});
+      return;
     }
   })
 
-  postRouter.get("/getPost", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.get("/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      const id: number = parseInt(req.params.id, 10);
+      const id: number = parseInt(req.params.id);
 
-      postService.findById(id).then((post: Post | null) => {
-        if (!post) {
-          throw Error("Post does not exist");
+      postService.findById(id).then((post: Post | null): void => {
+        if(post) {
+          res.status(200).send(post);
+        } else {
+          throw new Error("Post does not exist");
         }
-        res.status(200).send({ status: "User updated" });
+      }).catch((e: any): void => {
+        res.status(400).send({status: "Could not get post", reason: e.message})
       })
     } catch (e: any) {
-      res.status(500).send(e.message);
+      res.status(500).send({status: "Server error", reason: e.message});
     }
   })
 
@@ -90,19 +83,5 @@ export function makePostRouter(postService : IPostService ): Express.Express {
 }
 
 export function postRouter(): Express.Express {
-  return makePostRouter(makePostService());
+  return makePostRouter(makePostService(), makePostController());
 }
-
-/*export class PostRouter {
-  private postService : PostService;
-
-  constructor(postService : PostService){
-    this.postService = postService;
-  }
-
-
-}
-
-function makeDefaultPostRouter(){
-  return new PostRouter(new PostService());
-}*/
