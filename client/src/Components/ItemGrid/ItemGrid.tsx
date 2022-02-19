@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import GridItem, { Props as GridItemProps } from "../GridItem/GridItem";
 import Masonry from "react-masonry-css";
 import styles from "./ItemGrid.module.css";
@@ -9,7 +9,7 @@ export type Props = {
 }
 
 type State = {
-  items: ReactElement[]
+  items: JSX.Element[]
 }
 
 const breakpointColumns = {
@@ -28,22 +28,26 @@ export default class ItemGrid extends React.Component<Props>{
   constructor(props: Props) {
     super(props);
 
-    this.createItems();
+    this.state = {
+      items: this.createItems()
+    };
   }
 
-  createItems = (): void => {
+  createItems = (): State["items"] => {
     const items: JSX.Element[] = [];
 
     this.props.posts.map((post: any, i: number) => {
       items.push(<GridItem key={i} {...post} />);
     })
 
-    this.setState({items: items});
+    return items;
   }
 
   componentDidUpdate(prevProps: Props) {
     if(this.props.posts != prevProps.posts){
-      this.createItems();
+      this.setState({
+        items: this.createItems()
+      });
     }
   }
 
