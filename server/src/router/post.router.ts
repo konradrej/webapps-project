@@ -6,9 +6,9 @@ import { IPostService, makePostService } from "../service/post.service";
 export function makePostRouter(postService : IPostService, postController : PostController ): Express.Express {
   const postRouter: Express.Express = Express();
 
-  postRouter.get("/order", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.get("/", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      const order: string = req.body.order;
+      let order: string = (req.query as any).order;
 
       postService.getPosts(order).then((posts: Array<Post>): void => {
         res.status(200).send(posts);
