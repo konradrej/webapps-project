@@ -1,5 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
-import { act } from "react-dom/test-utils";
+import { act, findRenderedComponentWithType, isElement, isElementOfType } from "react-dom/test-utils";
+import CardDetailsPopUp from "../../CardDetails";
 import GridItem from "../GridItem";
 
 let container : HTMLElement | null = null;
@@ -20,17 +21,14 @@ afterEach(() => {
 it("expect component to display provided information", () => {
   act(() => {
     const props = {
-      user: {
-        username: "Username",
-        profileImageUrl: ""
-      },
-      post: {
-        title: "Title",
-        description: "Description",
-        imageUrl: "",
-        imageAlt: "Image Alt",
-        created: "Created"
-      }
+      id: 0,
+      title: "Title",
+      description: "Description",
+      imageUrl: "https://via.placeholder.com/150x250",
+      createdAt: new Date(),
+      creatorUsername: "Username",
+      creatorProfileUrl: "",
+      creatorProfileImageUrl: "https://via.placeholder.com/150"
     }
 
     render(<GridItem {...props} />, container);
@@ -45,28 +43,25 @@ it("expect component to display provided information", () => {
 it("check if onclick on .card opens CardDetails and contains description", () => {
   act(() => {
     const props = {
-      user: {
-        username: "Username",
-        profileImageUrl: ""
-      },
-      post: {
-        title: "Title",
-        description: "Description",
-        imageUrl: "",
-        imageAlt: "Image Alt",
-        created: "Created"
-      }
+      id: 0,
+      title: "Title",
+      description: "Description",
+      imageUrl: "https://via.placeholder.com/150x250",
+      createdAt: new Date(),
+      creatorUsername: "Username",
+      creatorProfileUrl: "",
+      creatorProfileImageUrl: "https://via.placeholder.com/150"
     }
     
     render(<><GridItem {...props} /><div id="popup-container"></div></>, container);
   })
   expect(container?.textContent).not.toContain("Description");
 
-  const card : HTMLElement | null = document.querySelector(".card");
-  expect(container).toContainElement(card);
+  const cardImgTop : HTMLElement | null = document.querySelector(".card-img-top");
+  expect(container).toContainElement(cardImgTop);
 
   act(() => {
-    card?.dispatchEvent(new MouseEvent("click", { bubbles : true }));
+    cardImgTop?.dispatchEvent(new MouseEvent("click", { bubbles : true }));
   })
   expect(container?.textContent).toContain("Description");
 })

@@ -5,64 +5,65 @@ import CardDetails from "../CardDetails";
 import styles from "./GridItem.module.css";
 
 export type Props = {
-  user: {
-    username: string,
-    profileImageUrl: string
-  },
-  post: {
-    title: string,
-    description: string,
-    imageUrl: string,
-    imageAlt: string,
-    created: string
-  }
+  id: number,
+  title: string,
+  description: string,
+  imageUrl: string,
+  createdAt: Date,
+  creatorUsername: string,
+  creatorProfileUrl: string,
+  creatorProfileImageUrl: string
+}
+
+type State = {
+  showCardDetails: boolean
 }
 
 export default class GridItem extends React.Component<Props>{
+  state : State = {
+    showCardDetails: false,
+  }
 
   onClickHandler = () : void => {
-    ReactDOM.render((
-      <CardDetails
-        postImageURL={this.props.post.imageUrl}
-        postTitle={this.props.post.title}
-        postDate={this.props.post.created}
-        postDescription={this.props.post.description}
-        userImage={this.props.user.profileImageUrl}
-        userName={this.props.user.username}
-        onClose={ this.onClose }
-      />
-    ), document.querySelector("#popup-container"))
     this.setState({showCardDetails: true});
   }
 
   onClose = () : void => {
-    const parent = document.querySelector("#popup-container");
-
-    if(parent)
-      ReactDOM.unmountComponentAtNode(parent)
-
     this.setState({showCardDetails: false});
-  }
-
-  state = {
-    showCardDetails: false,
   }
 
   render() : JSX.Element {
     return (
-      <Card className={styles.card} onClick={ this.onClickHandler }>
-        <Card.Img variant="top" src={this.props.post.imageUrl} alt={this.props.post.imageAlt} />
-        <Card.Body>
-          <Card.Title>{this.props.post.title}</Card.Title>
-          <Card.Subtitle className={styles["card-subtitle"]}>
-            <img src={this.props.user.profileImageUrl} alt="" />
-            <span className={styles['text-muted']}>{this.props.user.username}</span>
-          </Card.Subtitle>
-          <Card.Text className="text-end">
-            <small className={styles['text-muted']}>{this.props.post.created}</small>
-          </Card.Text>
-        </Card.Body>
-      </Card>
+      <>
+        <Card className={styles.card}>
+          <Card.Img variant="top" src={this.props.imageUrl} alt="" onClick={ this.onClickHandler } />
+          <Card.Body>
+            <Card.Title>{this.props.title}</Card.Title>
+            <Card.Subtitle className={styles["card-subtitle"]}>
+              <a href={this.props.creatorProfileUrl}>
+                <img src={this.props.creatorProfileImageUrl} alt="" />
+                <span className={styles['text-muted']}>{this.props.creatorUsername}</span>
+              </a>
+            </Card.Subtitle>
+            <Card.Text className="text-end">
+              <small className={styles['text-muted']}>{this.props.createdAt.toLocaleString('en-GB')}</small>
+            </Card.Text>
+          </Card.Body>
+        </Card>
+        {
+          this.state.showCardDetails ? ReactDOM.createPortal((
+            <CardDetails
+              postImageURL={this.props.imageUrl}
+              postTitle={this.props.title}
+              postDate={this.props.createdAt.toLocaleString('en-GB')}
+              postDescription={this.props.description}
+              userImage={this.props.creatorProfileImageUrl}
+              userName={this.props.creatorUsername}
+              onClose={ this.onClose }
+            />
+          ), document.body) : null
+        }
+      </>
     )
   }
 }
