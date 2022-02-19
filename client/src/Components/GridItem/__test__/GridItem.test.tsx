@@ -19,23 +19,24 @@ afterEach(() => {
 })
 
 it("expect component to display provided information", () => {
+  const props = {
+    id: 0,
+    title: "Title",
+    description: "Description",
+    imageUrl: "https://via.placeholder.com/150x250",
+    createdAt: new Date(),
+    creatorUsername: "Username",
+    creatorProfileUrl: "",
+    creatorProfileImageUrl: "https://via.placeholder.com/150"
+  }
+
   act(() => {
-    const props = {
-      id: 0,
-      title: "Title",
-      description: "Description",
-      imageUrl: "https://via.placeholder.com/150x250",
-      createdAt: new Date(),
-      creatorUsername: "Username",
-      creatorProfileUrl: "",
-      creatorProfileImageUrl: "https://via.placeholder.com/150"
-    }
 
     render(<GridItem {...props} />, container);
   })
   expect(container?.textContent).toContain("Username");
   expect(container?.textContent).toContain("Title");
-  expect(container?.textContent).toContain("Created");
+  expect(container?.textContent).toContain(props.createdAt.toLocaleString("en-gb"));
 })
 
 // Really bad test, shouldn't test for contains description when
@@ -55,7 +56,7 @@ it("check if onclick on .card opens CardDetails and contains description", () =>
     
     render(<><GridItem {...props} /><div id="popup-container"></div></>, container);
   })
-  expect(container?.textContent).not.toContain("Description");
+  expect(document.body.textContent).not.toContain("Description");
 
   const cardImgTop : HTMLElement | null = document.querySelector(".card-img-top");
   expect(container).toContainElement(cardImgTop);
@@ -63,5 +64,5 @@ it("check if onclick on .card opens CardDetails and contains description", () =>
   act(() => {
     cardImgTop?.dispatchEvent(new MouseEvent("click", { bubbles : true }));
   })
-  expect(container?.textContent).toContain("Description");
+  expect(document.body.textContent).toContain("Description");
 })
