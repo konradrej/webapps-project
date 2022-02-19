@@ -5,7 +5,11 @@ import { BsSortDown, BsSortAlphaDown, BsSortAlphaUp } from "react-icons/bs";
 
 export type Props = {
   className? : string,
-  onSelect? : Function
+  onSelect? : Function,
+  sortOptions?: {
+    selectedOption: string,
+    options: {icon: JSX.Element, type: string, text: string}[]
+  }
 }
 
 const options = [
@@ -28,22 +32,24 @@ const options = [
 
 export default class SortSelector extends React.Component<Props>{
   state = {
-    selectedOption: "recent-descending"
+    selectedOption: (this.props.sortOptions?.selectedOption ?? options[0].type)
   }
 
-  onSelect = (eventKey: any, event: Object) : void => {
-    this.setState({selectedOption: eventKey.substring(eventKey.lastIndexOf("/") + 1)})
+  onSelect = (eventKey: any) : void => {
+    const type = eventKey.substring(eventKey.lastIndexOf("/") + 1);
+
+    this.setState({selectedOption: type})
 
     if(this.props.onSelect)
-      this.props.onSelect();
+      this.props.onSelect(type);
   }
 
   render() : JSX.Element {
     return (
       <DropdownButton id="dropdown-basic-button" title="Sort by" className={this.props.className} onSelect={this.onSelect}>
         {
-          options.map((post, i) => {
-            return <Dropdown.Item key={"#/sort/" + post.type} href={"#/sort/" + post.type} active={this.state.selectedOption === post.type}>{post.icon} {post.text}</Dropdown.Item>
+          (this.props.sortOptions?.options ?? options).map((option, i) => {
+            return <Dropdown.Item key={"#/sort/" + option.type} href={"#/sort/" + option.type} active={this.state.selectedOption === option.type}>{option.icon} {option.text}</Dropdown.Item>
           })
         }
       </DropdownButton>
