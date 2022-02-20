@@ -26,6 +26,12 @@ export class PostController{
       throw new Error("Missing creator");
     }
   }
+
+  validateGetUserPosts = async (userId: number) : Promise<void> => {
+    if(!userId && userId !== 0){
+      throw new Error("Invalid user id");
+    }
+  }
 }
 
 export function makePostController(): PostController {

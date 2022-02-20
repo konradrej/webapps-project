@@ -8,6 +8,9 @@ import { makePostController } from "../../controller/post.controller";
 
 test("A PUT request to /createPost should send a response of post successfully created", () => {
     class MockPostService implements IPostService {
+        getUsersPosts(UserId: number): Promise<Post[]> {
+            throw new Error("Method not implemented.");
+        }
         createPost = async (title: string, description: string, imageUrl: string, creator: number): Promise<Post> => {
             return <Post>{};
         }

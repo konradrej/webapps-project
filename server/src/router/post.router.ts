@@ -37,7 +37,7 @@ export function makePostRouter(postService : IPostService, postController : Post
     }
   })
 
-  postRouter.put("/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.put("/:id/updatePost", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const id: number = parseInt(req.params.id);
       const title: string = req.body.newTitle;
@@ -79,6 +79,27 @@ export function makePostRouter(postService : IPostService, postController : Post
     }
   })
 
+  /*
+  postRouter.get("/getUserPosts/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
+    try {
+      const UserId: number = parseInt(req.params.id);
+      postController.validateGetUserPosts(UserId).then(() =>{
+        postService.getUsersPosts(UserId).then((userPosts: Post[]) => {
+          if(userPosts){
+            res.status(200).send(userPosts)
+          }
+          else{
+            res.status(404).send({status: "No posts to be found"})
+          }
+        })
+      }).catch((e:any): void => {
+        res.status(400).send({status: "Could not get posts", reason: e.message})
+      })
+    } catch (e: any) {
+      res.status(500).send({status: "Server error", reason: e.message});
+    }
+  })
+  */
   return postRouter;
 }
 
