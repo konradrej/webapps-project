@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import PopUp from './Pop-up';
-import axios, {AxiosResponse} from 'axios';
+import './PopUp.css'
 
 
 type Props= {

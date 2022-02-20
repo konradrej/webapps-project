@@ -1,0 +1,153 @@
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 12px;
+    display: inline-block;
+    border-radius: 0.625em;
+    box-sizing: border-box;
+    color: white;
+    background-color: #334756;
+    width: 400px;
+}
+
+input[type=text]:focus,
+input[type=password]:focus {
+    color: #FF4C29;
+}
+
+/*Temporary Scrollbar*/
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+
+::-webkit-scrollbar-track {
+    background-color: #334756;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+background: white; 
+border-radius: 10px;
+}
+
+
+::-webkit-scrollbar-thumb:hover{
+background: #FF4C29; 
+}
+
+/*General Popup*/
+
+.closed {
+    display: none;
+}
+
+.background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: rgba(0,0,0, 50%);
+  box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
+}
+
+.popUpContainer {
+  margin: 5% auto;
+  position: relative;
+  background-color: #2C394B;
+  border-radius: 0.625em;
+  padding: 30px;
+  box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
+  text-align: center;
+  max-width: max-content;
+}
+
+.closeButton{
+  position: absolute;
+  color: white;
+  top: -10px;
+  right: 10px;
+  font-size: 35px;
+  font-weight: bold;
+}
+.closeButton:hover{
+  color: #FF4C29;
+  cursor: pointer;
+}
+/**/
+
+.input-content{
+
+  color: white;
+}
+
+.input-sub-content {
+  margin: 16px 0;
+}
+
+.input-sub-content:focus-within {
+  color: #FF4C29;
+}
+
+.pop-up-button-container{
+  margin-top: 30px;
+  text-align: center;
+  flex-direction: row;
+  flex: auto;
+  flex-wrap: wrap;
+}
+
+.pop-up-button {
+  background-color: #334756 !important;
+  color: white !important;
+  width: 100px !important;
+  min-width: fit-content !important;
+}
+
+.pop-up-button:hover{
+  background-color: #FF4C29 !important;
+  color: black !important;
+}
+
+.post-content {
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+img.post-image {
+
+  float: left;
+  margin-right: 20px;
+  object-fit: contain;
+  border-radius: 0.625em;
+  box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
+}
+
+.post-info {
+  float: right;
+  color: white;
+  width: 300px;
+  background-color:#334756;
+  border-radius: 0.625em;
+  box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
+  text-align: left;
+  padding: 16px;
+}
+
+.post-user-info {
+  padding-bottom: 10px;
+  align-items: center;
+  display: flex;
+}
+
+img.post-user-profile{
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  margin-right: 16px;
+}
+
+.color-nav{
+  background-color: #082032;
+}

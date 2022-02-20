@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import ReactDOM from "react-dom";
-import CardDetails from "../CardDetails";
+import CardDetails from "../Pop-ups/CardDetails";
 import styles from "./GridItem.module.css";
 
 export type Props = {

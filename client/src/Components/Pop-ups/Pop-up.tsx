@@ -1,5 +1,5 @@
 import React from 'react';
-import './tempcss.css'
+import './PopUp.css'
 
 type Props = {
   children?: JSX.Element | JSX.Element[],

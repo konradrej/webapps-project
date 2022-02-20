@@ -1,7 +1,7 @@
 import React from 'react';
 import PopUp from './Pop-up';
 import 'bootstrap/dist/css/bootstrap.min.css'
-
+import './PopUp.css'
 type Props = {
   postImageURL: string,
   postTitle: string,

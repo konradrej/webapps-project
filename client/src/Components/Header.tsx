@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap'
-import SignUpPopUp from './SignUp'
-import SignInPopUp from './SignIn'
+import SignUpPopUp from './Pop-ups/SignUp'
+import SignInPopUp from './Pop-ups/SignIn'
 import './tempcss.css'
 
 export default class Header extends Component {

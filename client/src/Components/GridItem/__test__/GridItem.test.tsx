@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
 import { act, findRenderedComponentWithType, isElement, isElementOfType } from "react-dom/test-utils";
-import CardDetailsPopUp from "../../CardDetails";
+import CardDetailsPopUp from "../../Pop-ups/CardDetails";
 import GridItem from "../GridItem";
 
 let container : HTMLElement | null = null;
