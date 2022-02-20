@@ -7,7 +7,7 @@ export interface IPostService {
   getPost: (id: number) => Promise<Post>
   findById(id: number): Promise<Post | null>
   getUsersPosts(UserId: number): Promise<Array<Post>>
-  /*deletePost(id : number, verifyCreator : User) : Promise<boolean>*/
+  deletePost(id : number, verifyCreator : number) : Promise<boolean>
 }
 
 export class PostService implements IPostService {
@@ -89,6 +89,7 @@ export class PostService implements IPostService {
         return true;
       }
 
+  // Get post given post id
   getPost: (id: number) => Promise<Post> =
     async (id: number) => {
       if (await this.findById(id)) {
@@ -97,6 +98,7 @@ export class PostService implements IPostService {
       throw Error("Post not found");
     }
 
+  // Get all post of the given UserId
   getUsersPosts: (userId: number) => Promise<Post[]> =
     async (userId: number) => {
       const allPosts =  Object.values(this.posts);
@@ -104,16 +106,18 @@ export class PostService implements IPostService {
     }
   
   // Returns true if post is deleted given id and user id
-  /*deletePost : (id: number, verifyCreator: User) => Promise<boolean> = 
-    async (id: number, verifyCreator: User) =>{
-      if(this.posts[id].id === id && this.posts[id].creator.id === verifyCreator.id ){
-        delete this.posts[id];
-        return true;
+  deletePost : (id: number, verifyCreator: number) => Promise<boolean> = 
+    async (id: number, verifyCreator: number) =>{
+      const post: Post | null = await this.findById(id);
+      if(!post){
+        throw Error("Post not found");
       }
-      else{
-        return false;
+      if(this.posts[id].creator !== verifyCreator){
+        throw Error("Specified user is not creator");
       }
-    }*/
+      delete this.posts[id];
+      return true;
+    }
 }
 
 // Returns empty Postservice

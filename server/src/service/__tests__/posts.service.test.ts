@@ -91,3 +91,20 @@ test("No posts of the given userId", async () => {
     expect(posts.length).toBe(0);
   })
 });
+
+test("Try to delete with not the creator, a post that does not exist and successfully delete a post with the creator", async () => {
+  const postService = new PostService({});
+  postService.createPost("dPostTitle", "postDescription", "postURL", 0);
+  postService.createPost("cPostTitle", "postDescription", "postURL", 1);
+  return await expect(postService.deletePost(1, 2)).rejects.toThrowError(new Error("Specified user is not creator")).then (() => {
+    expect(postService.deletePost(5, 2)).rejects.toThrowError(new Error("Post not found")).then(async () => {
+      await postService.deletePost(1, 0).then(async (res) => {
+        expect(res).toBe(true);
+        await postService.getPosts("").then((res) => {
+          expect(res.length).toBe(1);
+          expect(res[0].title).toBe("cPostTitle");
+        })
+      })
+    })
+  })
+});

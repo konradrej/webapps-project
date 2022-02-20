@@ -44,13 +44,11 @@ export function makePostRouter(postService : IPostService, postController : Post
       const description: string = req.body.newDescription;
       const creator: number = req.body.verifyCreator;
 
-      postController.validateUpdatePost(creator).then((): Promise<boolean> => {
+      postController.validateUpdatePost(creator, title).then((): Promise<boolean> => {
         return postService.updatePost(id, title, description, creator);
       }).then((success: boolean): void => {
         if(success) {
           res.status(200).send({status: "Post updated"});
-        } else {
-          throw new Error("Unknown error");
         }
       }).catch((e: any): void => {
         res.status(400).send({status: "Could not update post", reason: e.message});
@@ -65,14 +63,10 @@ export function makePostRouter(postService : IPostService, postController : Post
     try {
       const id: number = parseInt(req.params.id);
 
-      postService.findById(id).then((post: Post | null): void => {
-        if(post) {
-          res.status(200).send(post);
-        } else {
-          throw new Error("Post does not exist");
-        }
+      postService.getPost(id).then((post: Post): void => {
+        res.status(200).send(post)
       }).catch((e: any): void => {
-        res.status(400).send({status: "Could not get post", reason: e.message})
+        res.status(400).send({status: "Post not found", reason: e.message})
       })
     } catch (e: any) {
       res.status(500).send({status: "Server error", reason: e.message});
@@ -88,18 +82,39 @@ export function makePostRouter(postService : IPostService, postController : Post
           if(userPosts){
             res.status(200).send(userPosts)
           }
-          else{
-            res.status(404).send({status: "No posts to be found"})
-          }
-        })
+        }).catch((e: any): void => {
+          res.status(404).send({status: "Post not found", reason: e.message})
       }).catch((e:any): void => {
-        res.status(400).send({status: "Could not get posts", reason: e.message})
+        res.status(400).send({status: "Validation failed", reason: e.message})
       })
     } catch (e: any) {
       res.status(500).send({status: "Server error", reason: e.message});
     }
   })
   */
+
+  /*
+  postRouter.put('/:id/deletePost', async (req: Express.Request, res: Express.Response): Promise<void> => {
+    try {
+      const id: number = parseInt(req.params.id);
+      const creator: number = req.body.verifyCreator;
+
+      postController.validateDeletePost(id, creator).then(() => {
+        postService.deletePost(id, creator).then((valid: Boolean): void =>{
+          if(valid){
+            res.status(200).send({status: "Post deleted"})
+          }
+        }).catch((e: any): void => {
+          res.status(404).send({status: "Post not found", reason: e.message})
+        })
+      }).catch((e: any): void =>{
+        res.status(400).send({status: "Validation failed", reason: e.message})
+      })
+    } catch (e: any) {
+      res.status(500).send({status: "Server error", reason: e.message});
+    }
+  })*/
+  
   return postRouter;
 }
 
