@@ -6,7 +6,7 @@ export interface IPostService {
   updatePost(id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean>
   getPost: (id: number) => Promise<Post>
   findById(id: number): Promise<Post | null>
-
+  getUsersPosts(UserId: number): Promise<Array<Post>>
   /*deletePost(id : number, verifyCreator : User) : Promise<boolean>*/
 }
 
@@ -97,6 +97,12 @@ export class PostService implements IPostService {
       throw Error("Post not found");
     }
 
+  getUsersPosts: (userId: number) => Promise<Post[]> =
+    async (userId: number) => {
+      const allPosts =  Object.values(this.posts);
+      return allPosts.filter((post) => post.creator == userId)
+    }
+  
   // Returns true if post is deleted given id and user id
   /*deletePost : (id: number, verifyCreator: User) => Promise<boolean> = 
     async (id: number, verifyCreator: User) =>{

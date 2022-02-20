@@ -69,3 +69,25 @@ test("Create four posts with different titles in different point in time and che
     })
   })
 });
+
+
+test("Create a couple of posts with different creator and get all posts of the given user id", async () => {
+  const postService = new PostService({});
+  postService.createPost("dPostTitle", "postDescription", "postURL", 0);
+  postService.createPost("cPostTitle", "postDescription", "postURL", 1);
+  postService.createPost("aPostTitle", "postDescription", "postURL", 1);
+  postService.createPost("bPostTitle", "postDescription", "postURL", 2);
+
+  return await postService.getUsersPosts(1).then((posts) => {
+    expect(posts.length).toBe(2);
+    expect(posts[0].creator && posts[1].creator).toBe(1);
+  })
+});
+
+test("No posts of the given userId", async () => {
+  const postService = new PostService({});
+
+  return await postService.getUsersPosts(1).then((posts) => {
+    expect(posts.length).toBe(0);
+  })
+});
