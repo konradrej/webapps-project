@@ -125,7 +125,7 @@ test("A GET request to / should get all posts and sorted by the query", () => {
         expect(res.statusCode).toBe(200)
     })
 })
-
+/*
 test("A GET request to / should get all posts and sorted by the query", () => {
     class MockPostService implements IPostService {
         deletePost(id: number, verifyCreator: number): Promise<boolean> {
@@ -165,7 +165,7 @@ test("A GET request to / should get all posts and sorted by the query", () => {
         expect(res.statusCode).toBe(200)
     })
 })
-
+*/
 
 
 
