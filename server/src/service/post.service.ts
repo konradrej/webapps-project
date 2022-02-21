@@ -24,8 +24,7 @@ export class PostService implements IPostService {
     return this.posts[id] ?? null;
   }
   // Return all posts given order
-  getPosts: (order: string) => Promise<Post[]> =
-    async (order: string) => {
+  async getPosts(order: string) : Promise<Post[]> {
       switch (order) {
         // Title A-Z
         case "title-ascending": {
@@ -50,8 +49,7 @@ export class PostService implements IPostService {
     }
 
   // Returns true if new post is created, invalid if title, imageURL, creator is undefined/null
-  createPost: (title: string, description: string, imageUrl: string, creator: number) => Promise<Post> =
-    async (title: string, description: string, imageUrl: string, creator: number) => {
+  async createPost (title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
 
       this.postIdCounter++;
       const newPost: Post = {
@@ -69,8 +67,7 @@ export class PostService implements IPostService {
     }
 
   // Returns true if post is updated given id and user id
-  updatePost: (id: number, newTitle: string, newDescription: string, verifyCreator: number) => Promise<boolean> =
-      async (id: number, newTitle: string, newDescription: string, verifyCreator: number) => {
+  async updatePost (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean>{
 
         const post: Post | null = await this.findById(id);
         if (!post){
@@ -90,8 +87,7 @@ export class PostService implements IPostService {
       }
 
   // Get post given post id
-  getPost: (id: number) => Promise<Post> =
-    async (id: number) => {
+  async getPost (id: number): Promise<Post>{
       if (await this.findById(id)) {
         return this.posts[id];
       }
@@ -99,15 +95,13 @@ export class PostService implements IPostService {
     }
 
   // Get all post of the given UserId
-  getUsersPosts: (userId: number) => Promise<Post[]> =
-    async (userId: number) => {
+  async getUsersPosts (userId: number): Promise<Post[]>{
       const allPosts =  Object.values(this.posts);
       return allPosts.filter((post) => post.creator == userId)
     }
   
   // Returns true if post is deleted given id and user id
-  deletePost : (id: number, verifyCreator: number) => Promise<boolean> = 
-    async (id: number, verifyCreator: number) =>{
+  async deletePost (id: number, verifyCreator: number): Promise<boolean>{
       const post: Post | null = await this.findById(id);
       if(!post){
         throw Error("Post not found");
