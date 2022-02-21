@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Container, Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap'
 import SignUpPopUp from './Pop-ups/SignUp'
 import SignInPopUp from './Pop-ups/SignIn'
+import CreatePostPopUp from './Pop-ups/CreatePost'
 import './tempcss.css'
 
 export default class Header extends Component {
@@ -9,6 +10,7 @@ export default class Header extends Component {
   popUpState = {
     signIn: false,
     signUp: false,
+    createPost: false,
   }
 
   onClickSignIn = () => {
@@ -21,11 +23,18 @@ export default class Header extends Component {
     this.forceUpdate();
   }
 
+  onClickCreatePost = () => {
+    this.popUpState.createPost = !this.popUpState.createPost
+    this.forceUpdate();
+  }
+
   render() {
     return (
       <div>
-        {(this.popUpState.signIn) ? <SignInPopUp onClose={this.onClickSignIn.bind(this)}/> : null}
-        {(this.popUpState.signUp) ? <SignUpPopUp onClose={this.onClickSignUp.bind(this)}/> : null}
+        {(this.popUpState.signIn) ? <SignInPopUp onClose={this.onClickSignIn.bind(this)} /> : null}
+        {(this.popUpState.signUp) ? <SignUpPopUp onClose={this.onClickSignUp.bind(this)} /> : null}
+        {(this.popUpState.createPost) ? <CreatePostPopUp onClose={this.onClickCreatePost.bind(this)} /> : null}
+
         <Navbar className='color-nav' variant="dark" expand="md">
           <Container className='header-components'>
             <Navbar.Brand href="#">Navbar</Navbar.Brand>
@@ -44,10 +53,12 @@ export default class Header extends Component {
               <Nav
                 className="ms-auto my-2 my-lg-0"
               >
-                <Button onClick={this.onClickSignIn.bind(this)}className="me-2"
+                <Button onClick={this.onClickSignIn.bind(this)} className="me-2"
                   variant="outline-success">Login</Button>
-                <Button onClick={this.onClickSignUp.bind(this)}className="me-2"
+                <Button onClick={this.onClickSignUp.bind(this)} className="me-2"
                   variant="outline-success">Sign-Up</Button>
+                <Button onClick={this.onClickCreatePost.bind(this)} className="me-2"
+                  variant="outline-success">Create Post</Button>
               </Nav>
             </Navbar.Collapse>
           </Container>
