@@ -6,166 +6,159 @@ import { IPostService, } from "../../service/post.service";
 import { Post } from "../../model/post.interface";
 import { makePostController } from "../../controller/post.controller";
 
+
+class MockPostService implements IPostService {
+  constructor() {
+
+  }
+  deletePost(id: number, verifyCreator: number): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
+  getUsersPosts(UserId: number): Promise<Post[]> {
+    throw new Error("Method not implemented.");
+  }
+  createPost = async (title: string, description: string, imageUrl: string, creator: number): Promise<Post> => {
+    return <Post>{};
+  }
+
+  getPosts = async (order: string): Promise<Array<Post>> => {
+    return Array<Post>()
+  }
+
+  updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean> => {
+    return true;
+  }
+
+  getPost = async (id: number): Promise<Post> => {
+    return <Post>{};
+  }
+
+  findById = async (id: number): Promise<Post | null> => {
+    throw new Error("Wrong method called");
+  }
+}
+
+class MockPostServiceFails implements IPostService {
+  deletePost(id: number, verifyCreator: number): Promise<boolean> {
+    throw new Error("MockPostServiceFails");
+  }
+  getUsersPosts(UserId: number): Promise<Post[]> {
+    throw new Error("MockPostServiceFails");
+  }
+  createPost = async (title: string, description: string, imageUrl: string, creator: number): Promise<Post> => {
+    throw new Error("MockPostServiceFails");
+  }
+
+  getPosts = async (order: string): Promise<Array<Post>> => {
+    throw new Error("MockPostServiceFails");
+  }
+
+  updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean> => {
+    throw new Error("MockPostServiceFails");
+  }
+
+  getPost = async (id: number): Promise<Post> => {
+    throw new Error("MockPostServiceFails");
+  }
+
+  findById = async (id: number): Promise<Post | null> => {
+    throw new Error("MockPostServiceFails");
+  }
+}
+
+function makeMockPostService(): MockPostService {
+  return new MockPostService();
+}
+
+function makeMockPostServiceFails(): MockPostServiceFails {
+  return new MockPostServiceFails();
+}
+
 test("A POST request to /createPost should send a response of post successfully created", () => {
-    class MockPostService implements IPostService {
-        deletePost(id: number, verifyCreator: number): Promise<boolean> {
-            throw new Error("Method not implemented.");
-        }
-        getUsersPosts(UserId: number): Promise<Post[]> {
-            throw new Error("Method not implemented.");
-        }
-        createPost = async (title: string, description: string, imageUrl: string, creator: number): Promise<Post> => {
-            return <Post>{};
-        }
+  const postService: IPostService = makeMockPostService()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService, makePostController()));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-        getPosts = async (order: string): Promise<Array<Post>> => {
-            throw new Error("Wrong method called");
-        }
-
-        updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean> => {
-            throw new Error("Wrong method called");
-        }
-
-        getPost = async (id: number): Promise<Post> => {
-            throw new Error("Wrong method called");
-        }
-
-        findById = async (id: number): Promise<Post | null> => {
-            throw new Error("Wrong method called");
-        }
-    }
-
-    const postService: MockPostService = new MockPostService();
-    const router: Express.Express = Express();
-    router.use(Express.json());
-    router.use(makePostRouter(postService, makePostController()));
-    let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
-
-    return request.post("/createPost").send({ title: "titleTest", description: "desscriptionTest", imageUrl: "imageTest", creator: 0 }).then((res) => {
-        expect(res.statusCode).toBe(201)
-    })
+  return request.post("/createPost").send({ title: "titleTest", description: "desscriptionTest", imageUrl: "imageTest", creator: 0 }).then((res) => {
+    expect(res.statusCode).toBe(201)
+  })
 })
 
 test("A POST request to /createPost should send a response of post failed to created", () => {
-    class MockPostService implements IPostService {
-        deletePost(id: number, verifyCreator: number): Promise<boolean> {
-            throw new Error("Method not implemented.");
-        }
-        getUsersPosts(UserId: number): Promise<Post[]> {
-            throw new Error("Method not implemented.");
-        }
-        createPost = async (title: string, description: string, imageUrl: string, creator: number): Promise<Post> => {
-            return <Post>{};
-        }
+  const postService: IPostService = makeMockPostService()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService, makePostController()));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-        getPosts = async (order: string): Promise<Array<Post>> => {
-            throw new Error("Wrong method called");
-        }
-
-        updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean> => {
-            throw new Error("Wrong method called");
-        }
-
-        getPost = async (id: number): Promise<Post> => {
-            throw new Error("Wrong method called");
-        }
-
-        findById = async (id: number): Promise<Post | null> => {
-            throw new Error("Wrong method called");
-        }
-    }
-
-    const postService: MockPostService = new MockPostService();
-    const router: Express.Express = Express();
-    router.use(Express.json());
-    router.use(makePostRouter(postService, makePostController()));
-    let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
-
-    return request.post("/createPost").send({ title: "", description: "desscriptionTest", imageUrl: "imageTest", creator: 0 }).then((res) => {
-        expect(res.statusCode).toBe(400);
-    })
+  return request.post("/createPost").send({ title: "", description: "desscriptionTest", imageUrl: "imageTest", creator: 0 }).then((res) => {
+    expect(res.statusCode).toBe(400);
+  })
 })
 
 test("A GET request to / should get all posts and sorted by the query", () => {
-    class MockPostService implements IPostService {
-        deletePost(id: number, verifyCreator: number): Promise<boolean> {
-            throw new Error("Method not implemented.");
-        }
-        getUsersPosts(UserId: number): Promise<Post[]> {
-            throw new Error("Method not implemented.");
-        }
-        createPost = async (title: string, description: string, imageUrl: string, creator: number): Promise<Post> => {
-            return <Post>{};
-        }
+  const postService: IPostService = makeMockPostService()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService, makePostController()));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-        getPosts = async (order: string): Promise<Array<Post>> => {
-            return Array<Post>()
-        }
-
-        updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean> => {
-            throw new Error("Wrong method called");
-        }
-
-        getPost = async (id: number): Promise<Post> => {
-            throw new Error("Wrong method called");
-        }
-
-        findById = async (id: number): Promise<Post | null> => {
-            throw new Error("Wrong method called");
-        }
-    }
-
-    const postService: MockPostService = new MockPostService();
-    const router: Express.Express = Express();
-    router.use(Express.json());
-    router.use(makePostRouter(postService, makePostController()));
-    let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
-
-    return request.get("/").query("").then((res) => {
-        expect(res.statusCode).toBe(200)
-    })
+  return request.get("/").query("").then((res) => {
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual([])
+  })
 })
-/*
-test("A GET request to / should get all posts and sorted by the query", () => {
-    class MockPostService implements IPostService {
-        deletePost(id: number, verifyCreator: number): Promise<boolean> {
-            throw new Error("Method not implemented.");
-        }
-        getUsersPosts(UserId: number): Promise<Post[]> {
-            throw new Error("Method not implemented.");
-        }
-        createPost = async (title: string, description: string, imageUrl: string, creator: number): Promise<Post> => {
-            return <Post>{};
-        }
 
-        getPosts = async (order: string): Promise<Array<Post>> => {
-            return Array<Post>()
-        }
+test("A GET request to /1 should successfully get a (empty)post", () => {
+  const postService: IPostService = makeMockPostService()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService, makePostController()));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-        updatePost = async (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean> => {
-            return true;
-        }
-
-        getPost = async (id: number): Promise<Post> => {
-            throw new Error("Wrong method called");
-        }
-
-        findById = async (id: number): Promise<Post | null> => {
-            throw new Error("Wrong method called");
-        }
-    }
-
-    const postService: MockPostService = new MockPostService();
-    const router: Express.Express = Express();
-    router.use(Express.json());
-    router.use(makePostRouter(postService, makePostController()));
-    let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
-
-    return request.put("/:id/updatePost").send({ id: 1, title: "Test", description: "desscriptionTest", creator: 1 }).then((res) => {
-        expect(res.statusCode).toBe(200)
-    })
+  return request.get("/1").send({ id: 1 }).then((res) => {
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual({})
+  })
 })
-*/
 
+test("A GET request to /1 should give status code 400 when using makeMockPostServiceFails", () => {
+  const postService: IPostService = makeMockPostServiceFails()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService, makePostController()));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
+  return request.get("/1").send({ id: 1 }).then((res) => {
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual({status: "Post not found", reason: "MockPostServiceFails"})
+  })
+})
 
+test("A PUT request to /1/updatePost should give status code 200 ", () => {
+  const postService: IPostService = makeMockPostService()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService, makePostController()));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+  return request.put("/1/updatePost").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual({status: "Post updated"})
+  })
+})
+
+test("A PUT request to /1/updatePost should give status code 400 when using makeMockPostServiceFails", () => {
+  const postService: IPostService = makeMockPostServiceFails()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService, makePostController()));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+  return request.put("/1/updatePost").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual({status: "Could not update post", reason: "MockPostServiceFails"})
+  })
+})

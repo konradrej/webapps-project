@@ -55,7 +55,6 @@ export function makePostRouter(postService : IPostService, postController : Post
       })
     } catch (e: any) {
       res.status(500).send({status: "Server error", reason: e.message});
-      return;
     }
   })
 

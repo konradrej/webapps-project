@@ -40,7 +40,7 @@ export class PostController{
       throw new Error("Missing creator"); 
     }
     if(!postId){
-      throw new Error("Missin post id")
+      throw new Error("Missing post id")
     }
   }
 }

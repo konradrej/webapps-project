@@ -31,10 +31,11 @@ test("Create a post and update the post with new properties", async () => {
   })
 });
 
-test("Create a post with new properties and update the post with another user", async () => {
+test("Create a post with new properties, update the post with another user and update a post that does not exist", async () => {
   const postService = new PostService({});
   return await postService.createPost("postTitle", "postDescription", "postURL", 0).then( async (_ : Post) => {
-    expect( postService.updatePost( 1, "newPostTitle", "postDescription" , 1)).rejects.toThrowError(new Error("Specified user is not creator"));
+    expect(postService.updatePost( 1, "newPostTitle", "postDescription" , 1)).rejects.toThrowError(new Error("Specified user is not creator"));
+    expect(postService.updatePost(3, "newTitle", "newDescription", 0)).rejects.toThrowError(new Error("Post not found"))
   })
 });
 
