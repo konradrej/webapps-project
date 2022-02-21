@@ -86,15 +86,16 @@ test("A POST request to /createPost should send a response of post successfully 
   })
 })
 
-test("A POST request to /createPost should send a response of post failed to created", () => {
-  const postService: IPostService = makeMockPostService()
+test("A POST request to /createPost should fail when using MockPostServiceFails", () => {
+  const postService: IPostService = makeMockPostServiceFails()
   const router: Express.Express = Express();
   router.use(Express.json());
   router.use(makePostRouter(postService, makePostController()));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.post("/createPost").send({ title: "", description: "desscriptionTest", imageUrl: "imageTest", creator: 0 }).then((res) => {
+  return request.post("/createPost").send({ title: "Title", description: "Description", imageUrl: "imageTest", creator: 0 }).then((res) => {
     expect(res.statusCode).toBe(400);
+    expect(res.body).toEqual({status: "Could not create post", reason: "MockPostServiceFails"})
   })
 })
 

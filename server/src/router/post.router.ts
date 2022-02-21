@@ -44,7 +44,7 @@ export function makePostRouter(postService : IPostService, postController : Post
       const description: string = req.body.newDescription;
       const creator: number = req.body.verifyCreator;
 
-      postController.validateUpdatePost(creator, title).then((): Promise<boolean> => {
+      postController.validateUpdatePost(creator).then((): Promise<boolean> => {
         return postService.updatePost(id, title, description, creator);
       }).then((success: boolean): void => {
         if(success) {

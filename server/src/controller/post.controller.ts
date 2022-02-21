@@ -20,12 +20,9 @@ export class PostController{
     }*/
   }
 
-  validateUpdatePost = async (creator: number, title: string) : Promise<void> => {
+  validateUpdatePost = async (creator: number) : Promise<void> => {
     if(!creator && creator !== 0){
       throw new Error("Missing creator");
-    }
-    if(!title){
-      throw new Error("Missing title");
     }
   }
 
