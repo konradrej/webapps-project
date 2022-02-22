@@ -8,6 +8,7 @@ export interface IPostService {
   findById(id: number): Promise<Post | null>
   getUsersPosts(UserId: number): Promise<Array<Post>>
   deletePost(id : number, verifyCreator : number) : Promise<boolean>
+  searchPosts (search: string): Promise<Post[]>
 }
 
 export class PostService implements IPostService {
@@ -109,6 +110,26 @@ export class PostService implements IPostService {
     }
     delete this.posts[id];
     return true;
+  }
+
+  // Returns array with posts matching the search string with most recent being first
+  async searchPosts (search: string): Promise<Post[]> {
+    const searchResult: Post[] = [];
+    
+    Object.values(this.posts).forEach((post: Post) => {
+      const titleArray: string[] = post.title.toLowerCase().split(" ");
+      const searchArray: string[] = search.toLowerCase().split(" ");
+
+      if(titleArray.some((val: string) => searchArray.includes(val))){
+        searchResult.push(post);
+      }
+    });
+
+    searchResult.sort(
+      (a: Post, b: Post) => a.createdAt < b.createdAt ? 1 : -1
+    );
+
+    return searchResult;
   }
 }
 

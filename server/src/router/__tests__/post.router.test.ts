@@ -36,6 +36,10 @@ class MockPostService implements IPostService {
   findById = async (id: number): Promise<Post | null> => {
     throw new Error("Wrong method called");
   }
+
+  searchPosts = async (search: string): Promise<Post[]> => {
+    return Array<Post>();
+  }
 }
 
 class MockPostServiceFails implements IPostService {
@@ -64,6 +68,10 @@ class MockPostServiceFails implements IPostService {
   findById = async (id: number): Promise<Post | null> => {
     throw new Error("MockPostServiceFails");
   }
+  
+  searchPosts = async (search: string): Promise<Post[]> => {
+    throw new Error("MockPostServiceFails");
+}
 }
 
 function makeMockPostService(): MockPostService {
@@ -162,4 +170,43 @@ test("A PUT request to /1/updatePost should give status code 400 when using make
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual({status: "Could not update post", reason: "MockPostServiceFails"})
   })
+})
+
+test("A GET request to /search without search query parameter should return an error", () => {
+    const postService: MockPostService = makeMockPostServiceFails();
+    const router: Express.Express = Express();
+    router.use(Express.json());
+    router.use(makePostRouter(postService, makePostController()));
+    let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+    return request.get("/search").query("").then((res) => {
+        expect(res.statusCode).toBe(400);
+        expect(res.body).toEqual({status: "Error searching for posts", reason: "Missing search query"})
+    })
+})
+
+test("A GET request to /search with a falsy (empty/no value) search query parameter should return an error", () => {
+    const postService: MockPostService = makeMockPostServiceFails();
+    const router: Express.Express = Express();
+    router.use(Express.json());
+    router.use(makePostRouter(postService, makePostController()));
+    let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+    return request.get("/search").query({"search": ""}).then((res) => {
+        expect(res.statusCode).toBe(400);
+        expect(res.body).toEqual({status: "Error searching for posts", reason: "Missing search query"})
+    })
+})
+
+test("A GET request to /search with search parameter (non falsy value) should return response code 200", () => {
+    const postService: MockPostService = makeMockPostService();
+    const router: Express.Express = Express();
+    router.use(Express.json());
+    router.use(makePostRouter(postService, makePostController()));
+    let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+    return request.get("/search").query({"search": "test"}).then((res) => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual([]);
+    })
 })

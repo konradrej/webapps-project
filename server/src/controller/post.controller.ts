@@ -1,8 +1,4 @@
-import Express from "express";
-
-
 export class PostController{
-
   validateCreatePost = async (title: string, imageUrl: string, creator: number) : Promise<void> => {
     if (!title) {
       throw new Error ("Missing title");
@@ -38,6 +34,12 @@ export class PostController{
     }
     if(!postId){
       throw new Error("Missing post id")
+    }
+  }
+
+  validateSearchPosts = async (search: string): Promise<void> => {
+    if(!search){
+      throw new Error("Missing search query");
     }
   }
 }

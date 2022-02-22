@@ -20,8 +20,6 @@ test("Create a post in with different properties and then get the same from post
   })
 });
 
-
-
 test("Create a post and update the post with new properties", async () => {
   const postService = new PostService({});
   return postService.createPost("testpostTitle", "postDescription", "postURL", 0).then( async (post : Post) => {
@@ -108,4 +106,73 @@ test("Try to delete with not the creator, a post that does not exist and success
       })
     })
   })
+});
+
+test("Expect searchPosts to return only matching posts sorted by recent order", () => {
+  const posts: {[id: number] : Post} = {
+    4: {
+        "id": 4,
+        "title": "Test title 2",
+        "description": "Description",
+        "imageUrl": "URL",
+        "createdAt": new Date("2022-02-22T10:51:18.979Z"),
+        "modifiedAt": new Date("2022-02-22T10:51:18.979Z"),
+        "creator": 0
+    },
+    3: {
+        "id": 3,
+        "title": "Test title 1",
+        "description": "Description",
+        "imageUrl": "URL",
+        "createdAt": new Date("2022-02-22T10:51:13.530Z"),
+        "modifiedAt": new Date("2022-02-22T10:51:13.530Z"),
+        "creator": 0
+    },
+    2: {
+        "id": 2,
+        "title": "Title 2",
+        "description": "Description",
+        "imageUrl": "URL",
+        "createdAt": new Date("2022-02-22T10:51:08.373Z"),
+        "modifiedAt": new Date("2022-02-22T10:51:08.373Z"),
+        "creator": 0
+    },
+    1: {
+        "id": 1,
+        "title": "Title 1",
+        "description": "Description",
+        "imageUrl": "URL",
+        "createdAt": new Date("2022-02-22T10:51:03.680Z"),
+        "modifiedAt": new Date("2022-02-22T10:51:03.680Z"),
+        "creator": 0
+    }
+  };
+  const postService: PostService = new PostService(posts);
+
+  postService.searchPosts("Title").then((results) => {
+    expect(results.length).toBe(4);
+    expect(results[0]).toBe(posts[4]);
+    expect(results[1]).toBe(posts[3]);
+    expect(results[2]).toBe(posts[2]);
+    expect(results[3]).toBe(posts[1]);
+  });
+
+  postService.searchPosts("test").then((results) => {
+    expect(results.length).toBe(2);
+    expect(results[0]).toBe(posts[4]);
+    expect(results[1]).toBe(posts[3]);
+  });
+
+  postService.searchPosts("1").then((results) => {
+    expect(results.length).toBe(2);
+    expect(results[0]).toBe(posts[3]);
+    expect(results[1]).toBe(posts[1]);
+  });
+
+  postService.searchPosts("Test 2").then((results) => {
+    expect(results.length).toBe(3);
+    expect(results[0]).toBe(posts[4]);
+    expect(results[1]).toBe(posts[3]);
+    expect(results[2]).toBe(posts[2]);
+  });
 });
