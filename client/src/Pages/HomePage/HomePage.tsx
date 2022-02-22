@@ -23,18 +23,10 @@ export default class HomePage extends React.Component<Props>{
     errorPopup: undefined
   }
 
-  constructor(props: Props) {
-    super(props);
-  }
-
   getPosts = (order?: string): void => {
     let url: string = "http://localhost:8080/post/";
 
-    if(order){
-      url += "?order=" + order;
-    }
-
-    axios.get(url, {timeout: 1000}).then((res) => {
+    axios.get(url, {timeout: 1000, params: {order: order}}).then((res) => {
       res.data.map((value : any, _ : number) => {
         value.createdAt = new Date(value.createdAt);
       });
