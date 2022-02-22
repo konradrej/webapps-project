@@ -4,6 +4,7 @@ import SignUpPopUp from './Pop-ups/SignUp'
 import SignInPopUp from './Pop-ups/SignIn'
 import CreatePostPopUp from './Pop-ups/CreatePost'
 import './tempcss.css'
+import { Link } from 'react-router-dom'
 
 export default class Header extends Component {
 
@@ -37,7 +38,7 @@ export default class Header extends Component {
 
         <Navbar className='color-nav' variant="dark" expand="md">
           <Container className='header-components'>
-            <Navbar.Brand href="#">Navbar</Navbar.Brand>
+            <Link to="/" className="navbar-brand-link"><Navbar.Brand>Navbar</Navbar.Brand></Link>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
               <Form className="d-flex pt-3 pt-md-0">
