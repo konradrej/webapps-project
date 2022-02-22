@@ -4,7 +4,7 @@ import ItemGrid from "../../Components/ItemGrid/ItemGrid";
 import SortSelector from "../../Components/SortSelector/SortSelector";
 import { Props as GridItemProps } from "../../Components/GridItem/GridItem";
 import Header from "../../Components/Header";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import styles from "./HomePage.module.css";
 import PopUp from "../../Components/Pop-ups/Pop-up";
 
@@ -24,9 +24,7 @@ export default class HomePage extends React.Component<Props>{
   }
 
   getPosts = (order?: string): void => {
-    let url: string = "http://localhost:8080/post/";
-
-    axios.get(url, {timeout: 1000, params: {order: order}}).then((res) => {
+    axios.get("http://localhost:8080/post/", {timeout: 1000, params: {order: order}}).then((res: AxiosResponse) => {
       res.data.map((value : any, _ : number) => {
         value.createdAt = new Date(value.createdAt);
       });
@@ -34,7 +32,7 @@ export default class HomePage extends React.Component<Props>{
       this.setState({
         posts: res.data
       });
-    }).catch((error) => {
+    }).catch((e: any) => {
       this.setState({
         errorPopup: <PopUp onClose={this.onClose}><span>Unable to get posts.</span><br /><span>Please try again later.</span></PopUp>
       });
