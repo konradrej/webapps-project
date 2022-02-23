@@ -4,16 +4,20 @@ import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProfilePage from "./Pages/ProfilePage/ProfilePage";
 import AuthProvider from "./AuthContext";
+import Header from "./Components/Header";
 
 function App() {
   return (
+    <>
+      <Header />
       <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage/>}/>
-          <Route path="*" element={<ErrorPage/>}/>
           <Route path="/profile/:userID" element={<ProfilePage/>}/>
+          <Route path="*" element={<ErrorPage/>}/>
         </Routes>
       </AuthProvider>
+    </>
   );
 }
 

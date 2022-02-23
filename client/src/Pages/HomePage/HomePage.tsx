@@ -3,7 +3,6 @@ import Container from "react-bootstrap/Container";
 import ItemGrid from "../../Components/ItemGrid/ItemGrid";
 import SortSelector from "../../Components/SortSelector/SortSelector";
 import { Props as GridItemProps } from "../../Components/GridItem/GridItem";
-import Header from "../../Components/Header";
 import axios, { AxiosResponse } from "axios";
 import styles from "./HomePage.module.css";
 import PopUp from "../../Components/Pop-ups/Pop-up";
@@ -56,7 +55,6 @@ export default class HomePage extends React.Component<Props>{
   render() {
     return (
       <>
-        <Header />
         <Container>
           <SortSelector className={styles.selector + " text-end "} onSelect={this.onSelect}/>
           <ItemGrid posts={this.state.posts} />

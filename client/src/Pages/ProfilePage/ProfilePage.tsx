@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import Header from "../../Components/Header";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import styles from "./Profile.module.css";
@@ -29,7 +28,6 @@ export default function ProfilePage() {
 
   return (
       <div>
-        <Header/>
         {user ?
             profile(user) :
             <h2 style={{textAlign: "center", marginTop: "20%"}}>{msg}</h2>
