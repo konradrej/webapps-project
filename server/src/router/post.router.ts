@@ -37,6 +37,22 @@ export function makePostRouter(postService : IPostService, postController : Post
     }
   })
 
+  postRouter.get("/search", async (req: Express.Request, res: Express.Response): Promise<void> => {
+    try {
+      const search: string = (req.query as any).search;
+
+      postController.validateSearchPosts(search).then((): Promise<Post[]> => {
+        return postService.searchPosts(search);
+      }).then((posts: Post[]): void => {
+        res.status(200).send(posts);
+      }).catch((e: any): void => {
+        res.status(400).send({status: "Error searching for posts", reason: e.message});
+      })
+    } catch (e: any) {
+      res.status(500).send({status: "Server error", reason: e.message})
+    }
+  })
+
   postRouter.put("/:id/updatePost", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const id: number = parseInt(req.params.id);
@@ -44,7 +60,7 @@ export function makePostRouter(postService : IPostService, postController : Post
       const description: string = req.body.newDescription;
       const creator: number = req.body.verifyCreator;
 
-      postController.validateUpdatePost(creator, title).then((): Promise<boolean> => {
+      postController.validateUpdatePost(creator).then((): Promise<boolean> => {
         return postService.updatePost(id, title, description, creator);
       }).then((success: boolean): void => {
         if(success) {
@@ -55,7 +71,6 @@ export function makePostRouter(postService : IPostService, postController : Post
       })
     } catch (e: any) {
       res.status(500).send({status: "Server error", reason: e.message});
-      return;
     }
   })
 

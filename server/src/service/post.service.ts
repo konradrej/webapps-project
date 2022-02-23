@@ -8,6 +8,7 @@ export interface IPostService {
   findById(id: number): Promise<Post | null>
   getUsersPosts(UserId: number): Promise<Array<Post>>
   deletePost(id : number, verifyCreator : number) : Promise<boolean>
+  searchPosts (search: string): Promise<Post[]>
 }
 
 export class PostService implements IPostService {
@@ -24,100 +25,112 @@ export class PostService implements IPostService {
     return this.posts[id] ?? null;
   }
   // Return all posts given order
-  getPosts: (order: string) => Promise<Post[]> =
-    async (order: string) => {
-      switch (order) {
-        // Title A-Z
-        case "title-ascending": {
-          return Object.values(this.posts).sort(
-            (a, b) => a.title < b.title ? -1 : 1
-          )
-        }
-        // Title Z-A
-        case "title-descending": {
-          return Object.values(this.posts).sort(
-            (a, b) => a.title < b.title ? 1 : -1
-          )
-        }
-        // Most recent first
-        case "recent-descending":
-        default: {
-          return Object.values(this.posts).sort(
-            (a, b) => a.createdAt < b.createdAt ? 1 : -1
-          );
-        }
+  async getPosts(order: string) : Promise<Post[]> {
+    switch (order) {
+      // Title A-Z
+      case "title-ascending": {
+        return Object.values(this.posts).sort(
+          (a, b) => a.title < b.title ? -1 : 1
+        )
+      }
+      // Title Z-A
+      case "title-descending": {
+        return Object.values(this.posts).sort(
+          (a, b) => a.title < b.title ? 1 : -1
+        )
+      }
+      // Most recent first
+      case "recent-descending":
+      default: {
+        return Object.values(this.posts).sort(
+          (a, b) => a.createdAt < b.createdAt ? 1 : -1
+        );
       }
     }
+  }
 
   // Returns true if new post is created, invalid if title, imageURL, creator is undefined/null
-  createPost: (title: string, description: string, imageUrl: string, creator: number) => Promise<Post> =
-    async (title: string, description: string, imageUrl: string, creator: number) => {
-
-      this.postIdCounter++;
-      const newPost: Post = {
-        id: this.postIdCounter,
-        title: title,
-        description: description,
-        imageUrl: imageUrl,
-        createdAt: new Date(),
-        modifiedAt: new Date(),
-        creator: creator
-      }
-
-      this.posts[this.postIdCounter] = newPost;
-      return this.posts[this.postIdCounter];
+  async createPost (title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
+    this.postIdCounter++;
+    const newPost: Post = {
+      id: this.postIdCounter,
+      title: title,
+      description: description,
+      imageUrl: imageUrl,
+      createdAt: new Date(),
+      modifiedAt: new Date(),
+      creator: creator
     }
+
+    this.posts[this.postIdCounter] = newPost;
+    return this.posts[this.postIdCounter];
+  }
 
   // Returns true if post is updated given id and user id
-  updatePost: (id: number, newTitle: string, newDescription: string, verifyCreator: number) => Promise<boolean> =
-      async (id: number, newTitle: string, newDescription: string, verifyCreator: number) => {
-
-        const post: Post | null = await this.findById(id);
-        if (!post){
-          throw Error("Post not found");
-        }
-        if(this.posts[id].creator !== verifyCreator){
-          throw Error("Specified user is not creator");
-        }
-        if (newDescription) {
-          this.posts[id].description = newDescription;
-        }
-        if (newTitle) {
-          this.posts[id].title = newTitle;
-        }
-        this.posts[id].modifiedAt = new Date();
-        return true;
-      }
-
-  // Get post given post id
-  getPost: (id: number) => Promise<Post> =
-    async (id: number) => {
-      if (await this.findById(id)) {
-        return this.posts[id];
-      }
+  async updatePost (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean>{
+    const post: Post | null = await this.findById(id);
+    if (!post){
       throw Error("Post not found");
     }
+    if(this.posts[id].creator !== verifyCreator){
+      throw Error("Specified user is not creator");
+    }
+    if (newDescription) {
+      this.posts[id].description = newDescription;
+    }
+    if (newTitle) {
+      this.posts[id].title = newTitle;
+    }
+    this.posts[id].modifiedAt = new Date();
+    return true;
+  }
+
+  // Get post given post id
+  async getPost (id: number): Promise<Post>{
+    if (await this.findById(id)) {
+      return this.posts[id];
+    }
+    throw Error("Post not found");
+  }
 
   // Get all post of the given UserId
-  getUsersPosts: (userId: number) => Promise<Post[]> =
-    async (userId: number) => {
-      const allPosts =  Object.values(this.posts);
-      return allPosts.filter((post) => post.creator == userId)
-    }
+  async getUsersPosts (userId: number): Promise<Post[]>{
+    const allPosts =  Object.values(this.posts);
+    return allPosts.filter((post) => post.creator == userId)
+  }
   
   // Returns true if post is deleted given id and user id
-  deletePost : (id: number, verifyCreator: number) => Promise<boolean> = 
-    async (id: number, verifyCreator: number) =>{
-      const post: Post | null = await this.findById(id);
-      if(!post){
-        throw Error("Post not found");
-      }
-      if(this.posts[id].creator !== verifyCreator){
-        throw Error("Specified user is not creator");
-      }
-      delete this.posts[id];
-      return true;
+  async deletePost (id: number, verifyCreator: number): Promise<boolean>{
+    const post: Post | null = await this.findById(id);
+    if(!post){
+      throw Error("Post not found");
     }
+    if(this.posts[id].creator !== verifyCreator){
+      throw Error("Specified user is not creator");
+    }
+    delete this.posts[id];
+    return true;
+  }
+
+  // Returns array with posts matching the search string with most recent being first
+  async searchPosts (search: string): Promise<Post[]> {
+    const searchResult: Post[] = [];
+    
+    Object.values(this.posts).forEach((post: Post) => {
+      const titleArray: string[] = post.title.toLowerCase().split(" ");
+      const searchArray: string[] = search.toLowerCase().split(" ");
+
+      if(titleArray.some((val: string) => searchArray.includes(val))){
+        searchResult.push(post);
+      }
+    });
+
+    searchResult.sort(
+      (a: Post, b: Post) => a.createdAt < b.createdAt ? 1 : -1
+    );
+
+    return searchResult;
+  }
 }
 
 // Returns empty Postservice

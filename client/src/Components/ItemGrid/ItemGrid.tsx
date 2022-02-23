@@ -13,9 +13,8 @@ type State = {
 }
 
 const breakpointColumns = {
-  default: 6,
-  1400: 4,
-  992: 3,
+  default: 4,
+  1400: 3,
   768: 2,
   576: 1
 }
@@ -53,17 +52,20 @@ export default class ItemGrid extends React.Component<Props>{
 
   render() : JSX.Element {
     return (
-      <Masonry
-        breakpointCols={this.props.breakpointColumns ?? breakpointColumns}
-        className={styles["grid"]}
-        columnClassName={styles["grid-column"]}
-      >
-        {
-          this.state.items.map((item: any, _: number) => {
-            return item;
-          })
-        }   
-      </Masonry>
+      <>
+        <Masonry
+          breakpointCols={this.props.breakpointColumns ?? breakpointColumns}
+          className={styles["grid"]}
+          columnClassName={styles["grid-column"]}
+        >
+          {
+            this.state.items.map((item: any, _: number) => {
+              return item;
+            })
+          }   
+        </Masonry>
+        {this.state.items.length == 0 ? <div style={{textAlign: "center"}}>No items to display.</div> : null}
+      </>
     )
   }
 }

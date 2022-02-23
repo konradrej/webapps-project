@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { Container, Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap'
 import SignUpPopUp from './Pop-ups/SignUp'
 import SignInPopUp from './Pop-ups/SignIn'
+import CreatePostPopUp from './Pop-ups/CreatePost'
 import './tempcss.css'
+import { Link } from 'react-router-dom'
 import {AuthContext} from "../AuthContext";
 import { Link } from 'react-router-dom'
 
@@ -11,6 +13,7 @@ export default class Header extends Component {
   popUpState = {
     signIn: false,
     signUp: false,
+    createPost: false,
   }
 
   onClickSignIn = () => {
@@ -23,14 +26,21 @@ export default class Header extends Component {
     this.forceUpdate();
   }
 
+  onClickCreatePost = () => {
+    this.popUpState.createPost = !this.popUpState.createPost
+    this.forceUpdate();
+  }
+
   render() {
     return (
       <div>
-        {(this.popUpState.signIn) ? <SignInPopUp onClose={this.onClickSignIn.bind(this)}/> : null}
-        {(this.popUpState.signUp) ? <SignUpPopUp onClose={this.onClickSignUp.bind(this)}/> : null}
+        {(this.popUpState.signIn) ? <SignInPopUp onClose={this.onClickSignIn.bind(this)} /> : null}
+        {(this.popUpState.signUp) ? <SignUpPopUp onClose={this.onClickSignUp.bind(this)} /> : null}
+        {(this.popUpState.createPost) ? <CreatePostPopUp onClose={this.onClickCreatePost.bind(this)} /> : null}
+
         <Navbar className='color-nav' variant="dark" expand="md">
           <Container className='header-components'>
-            <Navbar.Brand href="#">Navbar</Navbar.Brand>
+            <Link to="/" className="navbar-brand-link"><Navbar.Brand>Navbar</Navbar.Brand></Link>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
               <Form className="d-flex pt-3 pt-md-0">
@@ -59,6 +69,8 @@ export default class Header extends Component {
                             :
                             <React.Fragment>
                               <Link className="me-2 btn btn-outline-success" to={"/profile/"+context.currentUser.id}>Profile</Link>
+                              <Button onClick={this.onClickCreatePost.bind(this)} className="me-2"
+                                      variant="outline-primary">Create Post</Button>
                               <Button onClick={context.logout} className="me-2"
                                       variant="outline-danger">Logout</Button>
                             </React.Fragment>

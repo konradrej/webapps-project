@@ -1,6 +1,5 @@
 import { render, unmountComponentAtNode } from "react-dom";
-import { act, findRenderedComponentWithType, isElement, isElementOfType } from "react-dom/test-utils";
-import CardDetailsPopUp from "../../Pop-ups/CardDetails";
+import { act } from "react-dom/test-utils";
 import GridItem from "../GridItem";
 
 let container : HTMLElement | null = null;
@@ -31,7 +30,6 @@ it("expect component to display provided information", () => {
   }
 
   act(() => {
-
     render(<GridItem {...props} />, container);
   })
   expect(container?.textContent).toContain("Username");
@@ -39,8 +37,6 @@ it("expect component to display provided information", () => {
   expect(container?.textContent).toContain(props.createdAt.toLocaleString("en-gb"));
 })
 
-// Really bad test, shouldn't test for contains description when
-// expecting an entire component to open.
 it("check if onclick on .card opens CardDetails and contains description", () => {
   act(() => {
     const props = {
@@ -56,7 +52,7 @@ it("check if onclick on .card opens CardDetails and contains description", () =>
     
     render(<><GridItem {...props} /><div id="popup-container"></div></>, container);
   })
-  expect(document.body.textContent).not.toContain("Description");
+  expect(document.body.children.length).toBe(1);
 
   const cardImgTop : HTMLElement | null = document.querySelector(".card-img-top");
   expect(container).toContainElement(cardImgTop);
@@ -64,5 +60,6 @@ it("check if onclick on .card opens CardDetails and contains description", () =>
   act(() => {
     cardImgTop?.dispatchEvent(new MouseEvent("click", { bubbles : true }));
   })
-  expect(document.body.textContent).toContain("Description");
+  expect(document.body.children.length).toBe(2);
 })
+

@@ -1,14 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import Container from "react-bootstrap/Container";
+import ItemGrid from "../../Components/ItemGrid/ItemGrid";
+import SortSelector from "../../Components/SortSelector/SortSelector";
+import { Props as GridItemProps } from "../../Components/GridItem/GridItem";
 import Header from "../../Components/Header";
+import axios, { AxiosResponse } from "axios";
+import styles from "./HomePage.module.css";
+import PopUp from "../../Components/Pop-ups/Pop-up";
 
-interface HomePageProps {
-
+export type Props = {
+  
 }
 
-export default function HomePage(props: HomePageProps) {
-  return (
-    <Header>
+type State = {
+  posts: GridItemProps[],
+  errorPopup?: JSX.Element
+}
 
-    </Header>
-  )
+export default class HomePage extends React.Component<Props>{
+  state: State = {
+    posts: [],
+    errorPopup: undefined
+  }
+
+  getPosts = (order?: string): void => {
+    axios.get("http://localhost:8080/post/", {timeout: 1000, params: {order: order}}).then((res: AxiosResponse) => {
+      res.data.map((value : any, _ : number) => {
+        value.createdAt = new Date(value.createdAt);
+      });
+
+      this.setState({
+        posts: res.data
+      });
+    }).catch((e: any) => {
+      this.setState({
+        errorPopup: <PopUp onClose={this.onClose}><span>Unable to get posts.</span><br /><span>Please try again later.</span></PopUp>
+      });
+    })
+  }
+
+  onClose = (): void => {
+    this.setState({
+      errorPopup: undefined
+    });
+  }
+
+  onSelect = (eventKey: string): void => {
+    this.getPosts(eventKey);
+  }
+
+  componentDidMount() {
+    this.getPosts();
+  }
+ 
+  render() {
+    return (
+      <>
+        <Header />
+        <Container>
+          <SortSelector className={styles.selector + " text-end "} onSelect={this.onSelect}/>
+          <ItemGrid posts={this.state.posts} />
+        </Container>
+        {this.state.errorPopup ?? null}
+      </>
+    )
+  }
 }

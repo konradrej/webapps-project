@@ -2,3 +2,7 @@
 .color-nav{
   background-color: #082032;
 }
+
+.navbar-brand-link {
+  text-decoration: none;
+}
