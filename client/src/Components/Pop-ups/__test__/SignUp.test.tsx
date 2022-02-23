@@ -20,7 +20,7 @@ afterEach(() => {
 
 it("Check the static text", () => {
   act(() =>{
-    render(<SignUpPopUp/>, container);
+    render(<SignUpPopUp onClose={() => {}} />, container);
   });
   expect(container?.textContent).toContain("Username");
   expect(container?.textContent).toContain("Password");

@@ -1,106 +1,130 @@
 import Express from "express";
-import { makeUserService, IUserService, IUpdateObject } from "../service/user.service";
-import { User } from "../model/user.interface";
+import {makeUserService, IUserService, IUpdateObject} from "../service/user.service";
+import {NotLoggedIn, isLoggedIn} from "../middleware/auth.middleware";
+import assert from "assert";
+import {User} from "../model/user.interface";
+import {UserController} from "../controller/user.controller";
 
-export function makeUserRouter(userService : IUserService) : Express.Express {
-  const userRouter : Express.Express = Express();
+export function makeUserRouter(userService: IUserService): Express.Express {
+  const userRouter: Express.Express = Express();
 
-  userRouter.post("/login", async (req: Express.Request, res: Express.Response) : Promise<void> => {
-    try {
-      const username : string = req.body.username;
-      const password : string = req.body.password;
+  userRouter.post("/login", NotLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    const username: string = req.body.username;
+    const password: string = req.body.password;
 
-      userService.login(username, password).then((user : User | null) => {
-        if(user)
-          res.status(200).send({status: "Authorized"});
-        else
-          res.status(401).send({status: "Invalid Credentials"});
-      })
-    } catch (e : any){
-      console.log(e)
-      res.status(500).send({error: e.message});
-    }
-  })
-
-  userRouter.post("/sign-up", async (req: Express.Request, res: Express.Response) : Promise<void> => {
-    try {
-      const username : string = req.body.username;
-      const password : string = req.body.password;
-      const email : string = req.body.email;
-
-      userService.register(username, password, email).then((user: User) => {
-        res.status(201).send({status: "User created"});
-      }).catch((e : any) => {
-        res.status(400).send({status: "User could not be created", reason: e.message});
-      })
-    } catch (e : any) {
-      res.status(500).send({error: e.message});
-    }
-  })
-
-  userRouter.put("/:id", async (req: Express.Request, res: Express.Response) : Promise<void> => {
-    try {
-      const id : number = Number(req.params.id);
-
-      userService.findById(id).then((user: User | null) => {
-        if(! user)
-          throw Error("No user with the given id");
-        
-        const updateObject : IUpdateObject = {};
-        const email : string = req.body.email;
-        const description : string = req.body.description;
-        const profileImageUrl : string = req.body.profileImageUrl;
-
-        if(email)
-          updateObject.email = email;
-
-        if(description)
-          updateObject.description = description;
-
-        if(profileImageUrl)
-          updateObject.profileImageUrl = profileImageUrl;
-
-        userService.update(user, updateObject).then((success : boolean) => {
-          if(!success)
-            throw Error("Unknown")
-            
-          res.status(200).send({status: "User updated"});
-        });
-      }).catch((e : any) => {
-        res.status(400).send({status: "User could not be updated", reason: e.message});
-      })
-    } catch (e : any) {
-      res.status(500).send({error: e.message});
-    }
-  })
-
-  userRouter.put("/:id/updatePassword", async (req: Express.Request, res: Express.Response) : Promise<void> => {
-    try {
-        const id : number = Number(req.params.id);
-
-        userService.findById(id).then((user : User | null) => {
-          if(! user)
-            throw Error("No user with the given id");
-          
-          const password : string = req.body.password;
-
-          userService.setPassword(user, password).then((success : boolean) => {
-            if(!success)
-              throw Error("Unknown");
-
-            res.status(200).send({status: "Password updated"});
-          })
-        }).catch((e : any) => {
-          res.status(400).send({status: "Password could not be updated", reason: e.message});
+    userService.login(username, password)
+        .then((user: User | null) => {
+          if (user) {
+            req.session.currentUser = user;
+            res.status(200).send({status: "Authorized"});
+          } else {
+            res.status(401).send({reason: "Invalid Credentials"});
+          }
         })
-    } catch (e : any) {
+  })
+
+  userRouter.post("/sign-up", NotLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    const username: string = req.body.username;
+    const password: string = req.body.password;
+    const email: string = req.body.email;
+
+    UserController.validateSignup(username, password, email)
+        .then(async () => {
+          let user = await userService.register(username, password, email)
+          if (user) {
+            req.session.currentUser = user;
+            res.status(201).send({
+              status: "User created",
+            });
+          }
+        })
+        .catch((e) => {
+          res.status(400).send({status: "User could not be created", reason: e.message});
+        })
+  })
+
+  userRouter.post("/logout", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    req.session.destroy(() => {
+      res.status(200).send("User logged out")
+    });
+  })
+
+  userRouter.get("/show/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
+    const id: number = Number(req.params.id);
+    const user = await userService.findById(id);
+
+    if (user) {
+      res.status(200).send({
+        id: user.id,
+        username: user.username,
+        profileImageUrl: user.profileImageUrl,
+        description: user.description,
+        posts: [],
+        createdAt: user.createdAt,
+      });
+    } else {
+      res.status(404).send("Invalid user");
+    }
+  })
+
+  userRouter.put("/update", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    try {
+      assert(req.session.currentUser, "No user");
+      const id: number = req.session.currentUser.id;
+
+      const updateObject: IUpdateObject = {};
+      const email: string = req.body.email;
+      const description: string = req.body.description;
+      const profileImageUrl: string = req.body.profileImageUrl;
+
+      if (email)
+        updateObject.email = email;
+
+      if (description)
+        updateObject.description = description;
+
+      if (profileImageUrl)
+        updateObject.profileImageUrl = profileImageUrl;
+
+      let updated = await userService.update(id, updateObject)
+      if (!updated) {
+        res.status(400).send({status: "User could not be updated"});
+      } else {
+        res.status(200).send({status: "User updated"});
+      }
+    } catch (e: any) {
       res.status(500).send({error: e.message});
     }
   })
 
+  userRouter.put("/update/password", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    assert(req.session.currentUser, "No user");
+    const id: number = req.session.currentUser.id;
+    const password: string = req.body.password;
+
+    let updated = await userService.setPassword(id, password)
+    if (!updated) {
+      res.status(400).send({status: "Password could not be updated"});
+    } else {
+      res.status(200).send({status: "Password updated"});
+    }
+  })
+
+  userRouter.get("/session", isLoggedIn, (req: Express.Request, res: Express.Response) => {
+    assert(req.session.currentUser, "No user");
+    let user = req.session.currentUser
+    res.status(200).send({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      profileImageUrl: user.profileImageUrl,
+      description: user.description,
+      createdAt: user.createdAt,
+    })
+  })
   return userRouter;
 }
 
-export function userRouter() : Express.Express {
+export function userRouter(): Express.Express {
   return makeUserRouter(makeUserService());
 }

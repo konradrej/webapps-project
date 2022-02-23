@@ -5,6 +5,7 @@ import SignInPopUp from './Pop-ups/SignIn'
 import CreatePostPopUp from './Pop-ups/CreatePost'
 import './tempcss.css'
 import { Link } from 'react-router-dom'
+import {AuthContext} from "../AuthContext";
 
 export default class Header extends Component {
 
@@ -54,12 +55,28 @@ export default class Header extends Component {
               <Nav
                 className="ms-auto my-2 my-lg-0"
               >
-                <Button onClick={this.onClickSignIn.bind(this)} className="me-2"
-                  variant="outline-success">Login</Button>
-                <Button onClick={this.onClickSignUp.bind(this)} className="me-2"
-                  variant="outline-success">Sign-Up</Button>
-                <Button onClick={this.onClickCreatePost.bind(this)} className="me-2"
-                  variant="outline-success">Create Post</Button>
+                <AuthContext.Consumer>
+                  {context => (
+                      <React.Fragment>
+                        {!context.currentUser ?
+                            <React.Fragment>
+                              <Button onClick={this.onClickSignIn.bind(this)} className="me-2"
+                                      variant="outline-success">Login</Button>
+                              <Button onClick={this.onClickSignUp.bind(this)} className="me-2"
+                                      variant="outline-success">Sign-Up</Button>
+                            </React.Fragment>
+                            :
+                            <React.Fragment>
+                              <Link className="me-2 btn btn-outline-success" to={"/profile/"+context.currentUser.id}>Profile</Link>
+                              <Button onClick={this.onClickCreatePost.bind(this)} className="me-2"
+                                      variant="outline-primary">Create Post</Button>
+                              <Button onClick={context.logout} className="me-2"
+                                      variant="outline-danger">Logout</Button>
+                            </React.Fragment>
+                        }
+                      </React.Fragment>
+                  )}
+                </AuthContext.Consumer>
               </Nav>
             </Navbar.Collapse>
           </Container>

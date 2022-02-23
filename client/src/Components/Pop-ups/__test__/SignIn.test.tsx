@@ -21,7 +21,7 @@ afterEach(() => {
 
 it("CardDetails with text inputs matching ", () => {
   act(() =>{
-    render(<SignInPopUp/>, container);
+    render(<SignInPopUp onClose={() =>{}} />, container);
   });
   expect(container?.textContent).toContain("Username");
   expect(container?.textContent).toContain("Password");

@@ -9,7 +9,6 @@ let createUser = (id?: number): User => {
         id: id,
         username: `user_${id}`,
         password: `user_p_${id}`,
-        posts: [],
         profileImageUrl: "",
         description: "",
         email: `test${id}@example.com`,
@@ -51,28 +50,18 @@ test("Creating a user should validate and return a user object", async () => {
     const us = new UserService({});
     let user;
 
-    // "Bad username"
-    await expect(us.register("!#!", "test1", "test@example.com")).rejects.toBeInstanceOf(Error);
-
-    // "Bad email"
-    await expect(us.register("test1", "test1", "test@1#!#!")).rejects.toBeInstanceOf(Error)
-
-
     // Succeeds
     user = await us.register("test1", "test1", "test@example.com")
     expect(user.username).toEqual("test1")
     expect(bcrypt.compareSync("test1", user.password)).toEqual(true) // Check that it gets hashed
     expect(user.email).toEqual("test@example.com")
-
-    // Fails due to non-unique username
-    await expect(us.register("test1", "test1", "test@example.com")).rejects.toBeInstanceOf(Error)
 });
 
 
 test("Update should update the correct user", () => {
     let users = createUsers(500);
     const us = new UserService(users);
-    return us.update(users[200], {
+    return us.update(users[200].id, {
         description: "Update user 200"
     }).then((bool) => {
         expect(bool).toEqual(true)

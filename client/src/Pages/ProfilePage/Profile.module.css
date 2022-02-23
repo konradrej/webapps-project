@@ -1,0 +1,14 @@
+.content {
+    padding: 0 25px;
+}
+
+.header-container {
+    padding-top: 1rem;
+    text-align: center;
+    margin: 5px;
+}
+
+.header-container img {
+    border: 0.2rem solid white;
+    border-radius: 50%;
+}

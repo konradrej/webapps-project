@@ -4,6 +4,7 @@ import SuperTest from "supertest";
 import { makeUserRouter } from "../user.router";
 import { IUserService, IUpdateObject } from "../../service/user.service";
 import { User } from "../../model/user.interface";
+import session from "express-session";
 
 test("A POST request to /login should send a response of unauthorized", () => {
   class MockUserService implements IUserService {
@@ -15,7 +16,7 @@ test("A POST request to /login should send a response of unauthorized", () => {
       throw("Wrong method called");
     }
 
-    update = async (user: User, updateObject: IUpdateObject): Promise<boolean> => {
+    update = async (id: number, updateObject: IUpdateObject): Promise<boolean> => {
       throw("Wrong method called");
     }
 
@@ -27,7 +28,7 @@ test("A POST request to /login should send a response of unauthorized", () => {
       throw("Wrong method called");
     }
   
-    setPassword = async (user: User, password: string): Promise<boolean> => {
+    setPassword = async (id: number, password: string): Promise<boolean> => {
       throw("Wrong method called");
     }
   }
@@ -37,14 +38,16 @@ test("A POST request to /login should send a response of unauthorized", () => {
   const router : Express.Express = Express();
 
   router.use(Express.json());
-
+  router.use(session({
+    secret: "test"
+  }));
   router.use(makeUserRouter(userService));
 
   const request : SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
   return request.post("/login").send({username: "TEST", password: "TEST"}).then((res) => {
     expect(res.statusCode).toBe(401);
-    expect(res.body).toEqual({status: "Invalid Credentials"});
+    expect(res.body).toEqual({reason: "Invalid Credentials"});
   })
 })
 
@@ -58,7 +61,7 @@ test("A POST request /login should send a response of OK cause of successful log
       throw("Wrong method called");
     }
 
-    update = async (user: User, updateObject: IUpdateObject): Promise<boolean> => {
+    update = async (id: number, updateObject: IUpdateObject): Promise<boolean> => {
       throw("Wrong method called");
     }
 
@@ -70,7 +73,7 @@ test("A POST request /login should send a response of OK cause of successful log
       throw("Wrong method called");
     }
   
-    setPassword = async (user: User, password: string): Promise<boolean> => {
+    setPassword = async (id: number, password: string): Promise<boolean> => {
       throw("Wrong method called");
     }
   }
@@ -80,7 +83,9 @@ test("A POST request /login should send a response of OK cause of successful log
   const router : Express.Express = Express();
 
   router.use(Express.json());
-
+  router.use(session({
+    secret: "test"
+  }));
   router.use(makeUserRouter(userService));
 
   const request : SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
