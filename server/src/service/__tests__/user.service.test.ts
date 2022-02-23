@@ -9,7 +9,6 @@ let createUser = (id?: number): User => {
         id: id,
         username: `user_${id}`,
         password: `user_p_${id}`,
-        posts: [],
         profileImageUrl: "",
         description: "",
         email: `test${id}@example.com`,

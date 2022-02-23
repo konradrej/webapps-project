@@ -6,7 +6,6 @@ import CreatePostPopUp from './Pop-ups/CreatePost'
 import './tempcss.css'
 import { Link } from 'react-router-dom'
 import {AuthContext} from "../AuthContext";
-import { Link } from 'react-router-dom'
 
 export default class Header extends Component {
 

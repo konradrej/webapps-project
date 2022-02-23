@@ -86,7 +86,6 @@ export class UserService implements IUserService {
       password: bcrypt.hashSync(password, SALTROUNDS),
       email: email,
       createdAt: new Date,
-      posts: [],
       description: "",
       profileImageUrl: ""
     };

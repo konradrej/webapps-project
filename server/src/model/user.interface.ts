@@ -1,5 +1,3 @@
-import {Post} from "./post.interface";
-
 export interface User {
   id: number;
   username: string;
@@ -7,6 +5,5 @@ export interface User {
   email: string;
   profileImageUrl: string;
   description: string;
-  posts: Post[];
   createdAt: Date;
 }
