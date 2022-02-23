@@ -1,13 +1,14 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 import PopUp from './Pop-up';
 import './PopUp.css'
+import {AuthContext} from "../../AuthContext";
 
 type Props = {
-  onClose?: Function
+  onClose: Function
 }
 
-export default class SignInPopUp extends React.Component<Props>{
+export default class SignInPopUp extends React.Component<Props> {
 
   private signInText: string = "Sign In";
   private registerText: string = "Register";
@@ -18,19 +19,35 @@ export default class SignInPopUp extends React.Component<Props>{
 
   state = {
     inputUsername: "",
-    inputPassword: ""
+    inputPassword: "",
+    errorMsg: ""
   }
 
   onChangeUserName = (e: React.FormEvent<HTMLInputElement>): void => {
-    this.setState({ inputUsername: e.currentTarget.value });
+    this.setState({inputUsername: e.currentTarget.value});
   };
 
   onChangePassword = (e: React.FormEvent<HTMLInputElement>): void => {
-    this.setState({ inputPassword: e.currentTarget.value });
+    this.setState({inputPassword: e.currentTarget.value});
   };
 
 
-  onSignInHandler = () => {
+  onSignInHandler = (login : (username: string, password: string) => Promise<boolean>) => {
+    if(this.state.inputUsername.length > 0 && this.state.inputPassword.length > 0){
+      this.setState({errorMsg: ""})
+        login(this.state.inputUsername, this.state.inputPassword)
+            .then((bool) => {
+              if(bool)
+                this.props.onClose();
+            })
+            .catch((err) => {
+              if(err.response?.data.reason){
+                this.setState({errorMsg: err.response.data.reason})
+              }
+            })
+    }else{
+      this.setState({errorMsg: "Input cannot be empty"})
+    }
   }
 
   onRegisterHandler = () => {
@@ -38,28 +55,39 @@ export default class SignInPopUp extends React.Component<Props>{
 
   render() {
     return (
-      <PopUp onClose={this.props.onClose}>
-        <form className="form-pop-up">
-          <div className="input-content">
-            <div className="input-sub-content">
-              <h2><b>{this.userNameText}</b></h2>
-              <input type="text" value={this.state.inputUsername} placeholder={this.userNamePlaceholder} onChange={this.onChangeUserName} />
+        <PopUp onClose={this.props.onClose}>
+          <form className="form-pop-up">
+            <div className="input-content">
+              <div className="input-sub-content">
+                <h2><b>{this.userNameText}</b></h2>
+                <input type="text" value={this.state.inputUsername} placeholder={this.userNamePlaceholder}
+                       onChange={this.onChangeUserName}/>
+              </div>
+              <div className="input-sub-content">
+                <h2><b>{this.userPasswordText}</b></h2>
+                <input type="password" value={this.state.inputPassword} placeholder={this.passwordPlaceholder}
+                       onChange={this.onChangePassword}/>
+              </div>
+              {this.state.errorMsg.length > 0 ?
+                  <div className="alert alert-danger">
+                    {this.state.errorMsg}
+                  </div>
+                  : this.state.errorMsg
+              }
+              <div className="pop-up-button-container">
+                <AuthContext.Consumer>
+                  {context => (
+                      <React.Fragment>
+                        <Button className="pop-up-button" onClick={() => this.onSignInHandler.bind(this)(context.login)}>
+                          {this.signInText}
+                        </Button>
+                      </React.Fragment>
+                  )}
+                </AuthContext.Consumer>
+              </div>
             </div>
-            <div className="input-sub-content">
-              <h2><b>{this.userPasswordText}</b></h2>
-              <input type="password" value={this.state.inputPassword} placeholder={this.passwordPlaceholder} onChange={this.onChangePassword} />
-            </div>
-            <div className="pop-up-button-container">
-              <Button className="pop-up-button" onClick={this.onRegisterHandler}>
-                {this.registerText}
-              </Button>
-              <Button className="pop-up-button" onClick={this.onSignInHandler}>
-                {this.signInText}
-              </Button>
-            </div>
-          </div>
-        </form>
-      </PopUp>
+          </form>
+        </PopUp>
     )
   }
 }

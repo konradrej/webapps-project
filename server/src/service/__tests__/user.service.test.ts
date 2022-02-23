@@ -51,21 +51,11 @@ test("Creating a user should validate and return a user object", async () => {
     const us = new UserService({});
     let user;
 
-    // "Bad username"
-    await expect(us.register("!#!", "test1", "test@example.com")).rejects.toBeInstanceOf(Error);
-
-    // "Bad email"
-    await expect(us.register("test1", "test1", "test@1#!#!")).rejects.toBeInstanceOf(Error)
-
-
     // Succeeds
     user = await us.register("test1", "test1", "test@example.com")
     expect(user.username).toEqual("test1")
     expect(bcrypt.compareSync("test1", user.password)).toEqual(true) // Check that it gets hashed
     expect(user.email).toEqual("test@example.com")
-
-    // Fails due to non-unique username
-    await expect(us.register("test1", "test1", "test@example.com")).rejects.toBeInstanceOf(Error)
 });
 
 

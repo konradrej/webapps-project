@@ -1,29 +1,130 @@
 import Express from "express";
-import { makeUserService, IUserService } from "../service/user.service";
-import {UserController} from "../controller/user.controller";
+import {makeUserService, IUserService, IUpdateObject} from "../service/user.service";
 import {NotLoggedIn, isLoggedIn} from "../middleware/auth.middleware";
-import {AuthController} from "../controller/auth.controller";
+import assert from "assert";
+import {User} from "../model/user.interface";
+import {UserController} from "../controller/user.controller";
 
-export function makeUserRouter(userService : IUserService) : Express.Express {
-  const userRouter : Express.Express = Express();
-  const userController : UserController = new UserController(userService)
-  const authController : AuthController = new AuthController(userService)
+export function makeUserRouter(userService: IUserService): Express.Express {
+  const userRouter: Express.Express = Express();
 
-  userRouter.post("/login", NotLoggedIn, authController.login)
+  userRouter.post("/login", NotLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    const username: string = req.body.username;
+    const password: string = req.body.password;
 
-  userRouter.post("/sign-up", NotLoggedIn, authController.signup)
+    userService.login(username, password)
+        .then((user: User | null) => {
+          if (user) {
+            req.session.currentUser = user;
+            res.status(200).send({status: "Authorized"});
+          } else {
+            res.status(401).send({reason: "Invalid Credentials"});
+          }
+        })
+  })
 
-  userRouter.post("/logout", isLoggedIn, authController.logout)
+  userRouter.post("/sign-up", NotLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    const username: string = req.body.username;
+    const password: string = req.body.password;
+    const email: string = req.body.email;
 
-  userRouter.get("/show/:id", userController.showUser)
+    UserController.validateSignup(username, password, email)
+        .then(async () => {
+          let user = await userService.register(username, password, email)
+          if (user) {
+            req.session.currentUser = user;
+            res.status(201).send({
+              status: "User created",
+            });
+          }
+        })
+        .catch((e) => {
+          res.status(400).send({status: "User could not be created", reason: e.message});
+        })
+  })
 
-  userRouter.put("/update", isLoggedIn, userController.updateUser)
+  userRouter.post("/logout", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    req.session.destroy(() => {
+      res.status(200).send("User logged out")
+    });
+  })
 
-  userRouter.put("/update/password", isLoggedIn, userController.updatePassword)
+  userRouter.get("/show/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
+    const id: number = Number(req.params.id);
+    const user = await userService.findById(id);
 
+    if (user) {
+      res.status(200).send({
+        id: user.id,
+        username: user.username,
+        profileImageUrl: user.profileImageUrl,
+        description: user.description,
+        posts: [],
+        createdAt: user.createdAt,
+      });
+    } else {
+      res.status(404).send("Invalid user");
+    }
+  })
+
+  userRouter.put("/update", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    try {
+      assert(req.session.currentUser, "No user");
+      const id: number = req.session.currentUser.id;
+
+      const updateObject: IUpdateObject = {};
+      const email: string = req.body.email;
+      const description: string = req.body.description;
+      const profileImageUrl: string = req.body.profileImageUrl;
+
+      if (email)
+        updateObject.email = email;
+
+      if (description)
+        updateObject.description = description;
+
+      if (profileImageUrl)
+        updateObject.profileImageUrl = profileImageUrl;
+
+      let updated = await userService.update(id, updateObject)
+      if (!updated) {
+        res.status(400).send({status: "User could not be updated"});
+      } else {
+        res.status(200).send({status: "User updated"});
+      }
+    } catch (e: any) {
+      res.status(500).send({error: e.message});
+    }
+  })
+
+  userRouter.put("/update/password", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    assert(req.session.currentUser, "No user");
+    const id: number = req.session.currentUser.id;
+    const password: string = req.body.password;
+
+    let updated = await userService.setPassword(id, password)
+    if (!updated) {
+      res.status(400).send({status: "Password could not be updated"});
+    } else {
+      res.status(200).send({status: "Password updated"});
+    }
+  })
+
+  userRouter.get("/session", isLoggedIn, (req: Express.Request, res: Express.Response) => {
+    assert(req.session.currentUser, "No user");
+    let user = req.session.currentUser
+    res.status(200).send({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      profileImageUrl: user.profileImageUrl,
+      description: user.description,
+      createdAt: user.createdAt,
+    })
+  })
   return userRouter;
 }
 
-export function userRouter() : Express.Express {
+export function userRouter(): Express.Express {
   return makeUserRouter(makeUserService());
 }

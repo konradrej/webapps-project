@@ -2,19 +2,20 @@ import React, {useEffect, useState} from "react";
 import Header from "../../Components/Header";
 import {useParams} from "react-router-dom";
 import axios from "axios";
-import styles from "./profile.module.css";
+import styles from "./Profile.module.css";
 import ItemGrid from "../../Components/ItemGrid/ItemGrid";
 
 export default function ProfilePage() {
   let {userID} = useParams()
   const [user, setUser] = useState<any>(null);
   const [msg, setMsg] = useState<any>("");
+
   // On user-id update, query new
   useEffect(() => {
     setUser(null);
     setMsg("Loading...");
 
-    axios.get("http://localhost:8080/user/show/" + userID)
+    axios.get(process.env.REACT_APP_BASE_API_URL+"/user/show/" + userID)
         .then(
             (ret) => {
               const user = ret.data;
@@ -29,8 +30,9 @@ export default function ProfilePage() {
   return (
       <div>
         <Header/>
-        {user ? profile(user) :
-            msg
+        {user ?
+            profile(user) :
+            <h2 style={{textAlign: "center", marginTop: "20%"}}>{msg}</h2>
         }
       </div>
   );
@@ -38,7 +40,7 @@ export default function ProfilePage() {
 
 function profile(user: any) {
   return (
-      <div className="container-fluid">
+      <div className="container">
         <div className={"row " + styles["content"]}>
           <div className="col-xl-12">
             <div className={styles["header-container"]}>

@@ -47,7 +47,7 @@ test("A POST request to /login should send a response of unauthorized", () => {
 
   return request.post("/login").send({username: "TEST", password: "TEST"}).then((res) => {
     expect(res.statusCode).toBe(401);
-    expect(res.body).toEqual({status: "Invalid Credentials"});
+    expect(res.body).toEqual({reason: "Invalid Credentials"});
   })
 })
 
