@@ -10,12 +10,12 @@ import "./tempcss.css";
 const Header = () => {
   const navigate = useNavigate();
 
-  const [signIn, setSignIn] = useState(false);
-  const [signUp, setSignUp] = useState(false);
-  const [createPost, setCreatePost] = useState(false);
+  const [signIn, setSignIn] = useState<boolean>(false);
+  const [signUp, setSignUp] = useState<boolean>(false);
+  const [createPost, setCreatePost] = useState<boolean>(false);
 
-  const [submit, setSubmit] = useState(false);
-  const [inputSearch, setInputSearch] = useState("");
+  const [submit, setSubmit] = useState<boolean>(false);
+  const [inputSearch, setInputSearch] = useState<string>("");
 
   useEffect(() => {
     if(submit){
