@@ -3,9 +3,9 @@ import Container from "react-bootstrap/Container";
 import ItemGrid from "../../Components/ItemGrid/ItemGrid";
 import SortSelector from "../../Components/SortSelector/SortSelector";
 import { Props as GridItemProps } from "../../Components/GridItem/GridItem";
-import axios, { AxiosResponse } from "axios";
 import styles from "./HomePage.module.css";
 import PopUp from "../../Components/Pop-ups/Pop-up";
+import { getPosts } from "../../Api/Posts";
 
 export type Props = {
   
@@ -22,14 +22,10 @@ export default class HomePage extends React.Component<Props>{
     errorPopup: undefined
   }
 
-  getPosts = (order?: string): void => {
-    axios.get("http://localhost:8080/post/", {timeout: 1000, params: {order: order}}).then((res: AxiosResponse) => {
-      res.data.map((value : any, _ : number) => {
-        value.createdAt = new Date(value.createdAt);
-      });
-
+  getPosts = async (order?: string): Promise<void> => {
+    getPosts(order ?? "").then((posts: GridItemProps[]) => {
       this.setState({
-        posts: res.data
+        posts: posts
       });
     }).catch((e: any) => {
       this.setState({
