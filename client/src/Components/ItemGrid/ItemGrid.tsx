@@ -1,4 +1,3 @@
-import React from "react";
 import Masonry from "react-masonry-css";
 import styles from "./ItemGrid.module.css";
 
@@ -28,7 +27,7 @@ const ItemGrid = (props: Props) => {
           })
         }   
       </Masonry>
-      {props.items.length == 0 ? <div style={{textAlign: "center"}}>No items to display.</div> : null}
+      {props.items.length === 0 ? <div style={{textAlign: "center"}}>No items to display.</div> : null}
     </>
   )
 }
