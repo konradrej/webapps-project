@@ -2,7 +2,6 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import ItemGrid from "../../Components/ItemGrid/ItemGrid";
 import SortSelector from "../../Components/SortSelector/SortSelector";
-import { Props as GridItemProps } from "../../Components/GridItem/GridItem";
 import styles from "./HomePage.module.css";
 import PopUp from "../../Components/Pop-ups/Pop-up";
 import { getPosts } from "../../Api/Posts";
@@ -12,20 +11,20 @@ export type Props = {
 }
 
 type State = {
-  posts: GridItemProps[],
+  items: JSX.Element[],
   errorPopup?: JSX.Element
 }
 
 export default class HomePage extends React.Component<Props>{
   state: State = {
-    posts: [],
+    items: [],
     errorPopup: undefined
   }
 
   getPosts = async (order?: string): Promise<void> => {
-    getPosts(order ?? "").then((posts: GridItemProps[]) => {
+    getPosts(order ?? "").then((items: JSX.Element[]) => {
       this.setState({
-        posts: posts
+        items: items
       });
     }).catch((e: any) => {
       this.setState({
@@ -53,7 +52,7 @@ export default class HomePage extends React.Component<Props>{
       <>
         <Container>
           <SortSelector className={styles.selector + " text-end "} onSelect={this.onSelect}/>
-          <ItemGrid posts={this.state.posts} />
+          <ItemGrid items={this.state.items} />
         </Container>
         {this.state.errorPopup ?? null}
       </>

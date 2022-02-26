@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import { Props as GridItemProps } from "../../GridItem/GridItem";
+import GridItem, { Props as GridItemProps } from "../../GridItem/GridItem";
 import ItemGrid from "../ItemGrid";
 
 let container : HTMLElement | null = null;
@@ -42,10 +42,15 @@ it("check if posts prop gets rendered", () => {
     }
   ];
 
+  const items: JSX.Element[] = [
+    <GridItem key={0} {...posts[0]} />,
+    <GridItem key={1} {...posts[1]} />,
+  ];
+
   expect(container?.children.length).toBe(0);
 
   act(() => {
-    render(<ItemGrid posts={posts} />, container);
+    render(<ItemGrid items={items} />, container);
   })
 
   const itemGrid : Element | undefined = container?.children[0];
@@ -96,6 +101,12 @@ it("check if breakpoints prop gets applied", () => {
     }
   ];
 
+  const items: JSX.Element[] = [
+    <GridItem key={0} {...posts[0]} />,
+    <GridItem key={1} {...posts[1]} />,
+    <GridItem key={2} {...posts[2]} />,
+  ];
+
   const breakpointColumns: { default : number, [key : number] : number } = {
     default: 3,
     200: 2,
@@ -105,7 +116,7 @@ it("check if breakpoints prop gets applied", () => {
   window.innerWidth = 50;
 
   act(() => {
-    render(<ItemGrid breakpointColumns={breakpointColumns} posts={posts} />, container);
+    render(<ItemGrid breakpointColumns={breakpointColumns} items={items} />, container);
   })
 
   let itemGrid: Element | undefined = container?.children[0];
@@ -115,14 +126,14 @@ it("check if breakpoints prop gets applied", () => {
   window.innerWidth = 150;
 
   act(() => {
-    render(<ItemGrid breakpointColumns={breakpointColumns} posts={posts} />, container);
+    render(<ItemGrid breakpointColumns={breakpointColumns} items={items} />, container);
   })
   expect(itemGrid?.children.length).toBe(2);
 
   window.innerWidth = 250;
 
   act(() => {
-    render(<ItemGrid breakpointColumns={breakpointColumns} posts={posts} />, container);
+    render(<ItemGrid breakpointColumns={breakpointColumns} items={items} />, container);
   })
   expect(itemGrid?.children.length).toBe(3);
 })
