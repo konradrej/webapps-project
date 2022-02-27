@@ -3,7 +3,7 @@ import { Post } from "../model/post.interface";
 export interface IPostService {
   getPosts(order: string): Promise<Array<Post>>
   createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post>
-  updatePost(id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean>
+  updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>
   getPost: (id: number) => Promise<Post>
   findById(id: number): Promise<Post | null>
   getUsersPosts(UserId: number): Promise<Array<Post>>
@@ -67,7 +67,7 @@ export class PostService implements IPostService {
   }
 
   // Returns true if post is updated given id and user id
-  async updatePost (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean>{
+  async updatePost (id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>{
     const post: Post | null = await this.findById(id);
     if (!post){
       throw Error("Post not found");

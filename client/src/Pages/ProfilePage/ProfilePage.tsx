@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import styles from "./Profile.module.css";
-import ItemGrid from "../../Components/ItemGrid/ItemGrid";
+//import ItemGrid from "../../Components/ItemGrid/ItemGrid";
 
 export default function ProfilePage() {
   let {userID} = useParams()
@@ -49,9 +49,12 @@ function profile(user: any) {
             </div>
           </div>
           <div className="row g-0">
-            <ItemGrid posts={user.posts}/>
+
           </div>
         </div>
       </div>
   )
 }
+
+
+//<ItemGrid posts={user.posts}/>

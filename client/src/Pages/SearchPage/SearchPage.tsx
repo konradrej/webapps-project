@@ -5,7 +5,7 @@ import styles from "./SearchPage.module.css";
 import PopUp from "../../Components/Pop-ups/Pop-up";
 import { useLocation } from "react-router-dom";
 import { searchPosts } from "../../Api/Posts";
-import { Props as GridItemProps } from "../../Components/GridItem/GridItem";
+import GridItem, { Props as GridItemProps } from "../../Components/GridItem/GridItem";
 
 export type Props = {
   
@@ -15,14 +15,15 @@ const SearchPage = (_: Props) => {
   const { search } = useLocation();
   const searchQuery = useMemo(() => new URLSearchParams(search), [search])
 
-  const [searchResult, setSearchResult] = useState<GridItemProps[]>([]);
+  const [searchResult, setSearchResult] = useState<JSX.Element[] | null>(null);
+  const [unsplashResult, setUnsplashResult] = useState<GridItemProps[] | null>(null);
   const [errorPopup, setErrorPopup] = useState<boolean>(false);
 
   useEffect(() => {
     setErrorPopup(false);
 
-    searchPosts(searchQuery.get("search") ?? "").then((posts: GridItemProps[]) => {
-      setSearchResult(posts);
+    searchPosts(searchQuery.get("search") ?? "").then((items: JSX.Element[]) => {
+      setSearchResult(items);
     }).catch((e: any) => {
       setErrorPopup(true);
     })
@@ -36,7 +37,7 @@ const SearchPage = (_: Props) => {
           <span className="visually-hidden">Loading...</span>
         </Spinner>
         :
-        <ItemGrid posts={searchResult} />
+        <ItemGrid items={searchResult} />
         }
       </Container>
       {errorPopup ?

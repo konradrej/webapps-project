@@ -146,27 +146,27 @@ test("A GET request to /1 should give status code 400 when using makeMockPostSer
   })
 })
 
-test("A PUT request to /1/updatePost should give status code 200 ", () => {
+test("A PUT request to /updatePost/1 should give status code 200 ", () => {
   const postService: IPostService = makeMockPostService()
   const router: Express.Express = Express();
   router.use(Express.json());
   router.use(makePostRouter(postService, makePostController()));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.put("/1/updatePost").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
+  return request.put("/updatePost/1").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
     expect(res.statusCode).toBe(200)
     expect(res.body).toEqual({status: "Post updated"})
   })
 })
 
-test("A PUT request to /1/updatePost should give status code 400 when using makeMockPostServiceFails", () => {
+test("A PUT request to /updatePost/1 should give status code 400 when using makeMockPostServiceFails", () => {
   const postService: IPostService = makeMockPostServiceFails()
   const router: Express.Express = Express();
   router.use(Express.json());
   router.use(makePostRouter(postService, makePostController()));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.put("/1/updatePost").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
+  return request.put("/updatePost/1").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual({status: "Could not update post", reason: "MockPostServiceFails"})
   })

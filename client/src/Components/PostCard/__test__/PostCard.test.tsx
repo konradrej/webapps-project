@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import GridItem from "../GridItem";
+import PostCard from "../PostCard";
 
 let container : HTMLElement | null = null;
 
@@ -30,7 +30,7 @@ it("expect component to display provided information", () => {
   }
 
   act(() => {
-    render(<GridItem {...props} />, container);
+    render(<PostCard {...props} />, container);
   })
   expect(container?.textContent).toContain("Username");
   expect(container?.textContent).toContain("Title");
@@ -50,7 +50,7 @@ it("check if onclick on .card opens CardDetails and contains description", () =>
       creatorProfileImageUrl: "https://via.placeholder.com/150"
     }
     
-    render(<><GridItem {...props} /><div id="popup-container"></div></>, container);
+    render(<><PostCard {...props} /><div id="popup-container"></div></>, container);
   })
   expect(document.body.children.length).toBe(1);
 

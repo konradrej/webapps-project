@@ -53,7 +53,7 @@ export function makePostRouter(postService : IPostService, postController : Post
     }
   })
 
-  postRouter.put("/:id/updatePost", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.put("/updatePost/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const id: number = parseInt(req.params.id);
       const title: string = req.body.newTitle;
@@ -108,27 +108,25 @@ export function makePostRouter(postService : IPostService, postController : Post
   })
   */
 
-  /*
-  postRouter.put('/:id/deletePost', async (req: Express.Request, res: Express.Response): Promise<void> => {
+  
+  postRouter.delete('/deletePost/:id', async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const id: number = parseInt(req.params.id);
       const creator: number = req.body.verifyCreator;
 
-      postController.validateDeletePost(id, creator).then(() => {
-        postService.deletePost(id, creator).then((valid: Boolean): void =>{
-          if(valid){
-            res.status(200).send({status: "Post deleted"})
-          }
-        }).catch((e: any): void => {
-          res.status(404).send({status: "Post not found", reason: e.message})
-        })
-      }).catch((e: any): void =>{
-        res.status(400).send({status: "Validation failed", reason: e.message})
+      postController.validateDeletePost(id, creator).then((): Promise<boolean> => {
+        return postService.deletePost(id, creator);
+      }).then((success: boolean): void => {
+        if(success) {
+          res.status(200).send({status: "Post deleted"});
+        }
+      }).catch((e: any): void => {
+        res.status(400).send({status: "Could not delete post", reason: e.message});
       })
     } catch (e: any) {
       res.status(500).send({status: "Server error", reason: e.message});
     }
-  })*/
+  })
   
   return postRouter;
 }
