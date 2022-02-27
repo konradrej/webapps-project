@@ -26,13 +26,13 @@ const SearchPage = (_: Props) => {
       setSearchResult(items);
     }).catch((_: any) => {
       setErrorPopup(true);
-    }).then(() => {
-      searchUnsplash(searchQuery).then((results: JSX.Element[]) => {
-        setUnsplashResult(results);
-      }).catch((e: any) => {
-        setUnsplashResult([]);
-        console.log(e);
-      });
+    });
+
+    searchUnsplash(searchQuery).then((results: JSX.Element[]) => {
+      setUnsplashResult(results);
+    }).catch((e: any) => {
+      setUnsplashResult([]);
+      console.log(e);
     });
   }, [searchQuery])
 
