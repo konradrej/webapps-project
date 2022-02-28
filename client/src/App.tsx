@@ -9,17 +9,17 @@ import Header from "./Components/Header";
 
 function App() {
   return (
-    <>
-      <AuthProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage/>}/>
-          <Route path="/search" element={<SearchPage/>}/>
-          <Route path="/profile/:userID" element={<ProfilePage/>}/>
-          <Route path="*" element={<ErrorPage/>}/>
-        </Routes>
-      </AuthProvider>
-    </>
+      <>
+        <AuthProvider>
+          <Header/>
+          <Routes>
+            <Route path="/" element={<HomePage/>}/>
+            <Route path="/search" element={<SearchPage/>}/>
+            <Route path="/profile/:userID" element={<ProfilePage/>}/>
+            <Route path="*" element={<ErrorPage/>}/>
+          </Routes>
+        </AuthProvider>
+      </>
   );
 }
 

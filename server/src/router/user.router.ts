@@ -1,11 +1,15 @@
 import Express from "express";
-import {makeUserService, IUserService, IUpdateObject} from "../service/user.service";
+import {IUserService, IUpdateObject, UserService} from "../service/user.service";
 import {NotLoggedIn, isLoggedIn} from "../middleware/auth.middleware";
 import assert from "assert";
 import {User} from "../model/user.interface";
 import {UserController} from "../controller/user.controller";
+import {container} from "tsyringe";
+import {IPostService, PostService} from "../service/post.service";
 
-export function makeUserRouter(userService: IUserService): Express.Express {
+export function makeUserRouter(userService: IUserService = container.resolve(UserService),
+                               postService: IPostService = container.resolve(PostService)
+): Express.Express {
   const userRouter: Express.Express = Express();
 
   userRouter.post("/login", NotLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
@@ -55,12 +59,14 @@ export function makeUserRouter(userService: IUserService): Express.Express {
 
     if (user) {
       res.status(200).send({
-        id: user.id,
-        username: user.username,
-        profileImageUrl: user.profileImageUrl,
-        description: user.description,
-        posts: [],
-        createdAt: user.createdAt,
+        user: {
+          id: user.id,
+          username: user.username,
+          profileImageUrl: user.profileImageUrl,
+          description: user.description,
+          createdAt: user.createdAt,
+        },
+        posts: await postService.getUsersPosts(user.id)
       });
     } else {
       res.status(404).send("Invalid user");
@@ -86,11 +92,10 @@ export function makeUserRouter(userService: IUserService): Express.Express {
       if (profileImageUrl)
         updateObject.profileImageUrl = profileImageUrl;
 
-      let updated = await userService.update(id, updateObject)
-      if (!updated) {
-        res.status(400).send({status: "User could not be updated"});
-      } else {
+      if (Object.keys(updateObject).length > 0 && (await userService.update(id, updateObject))) {
         res.status(200).send({status: "User updated"});
+      }else {
+        res.status(400).send({status: "User could not be updated"});
       }
     } catch (e: any) {
       res.status(500).send({error: e.message});
@@ -113,6 +118,7 @@ export function makeUserRouter(userService: IUserService): Express.Express {
   userRouter.get("/session", isLoggedIn, (req: Express.Request, res: Express.Response) => {
     assert(req.session.currentUser, "No user");
     let user = req.session.currentUser
+
     res.status(200).send({
       id: user.id,
       username: user.username,
@@ -122,9 +128,6 @@ export function makeUserRouter(userService: IUserService): Express.Express {
       createdAt: user.createdAt,
     })
   })
-  return userRouter;
-}
 
-export function userRouter(): Express.Express {
-  return makeUserRouter(makeUserService());
+  return userRouter;
 }

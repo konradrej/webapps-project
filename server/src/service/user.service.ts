@@ -1,10 +1,14 @@
 import {User} from "../model/user.interface";
 import * as bcrypt from "bcrypt";
+import {Lifecycle, registry} from "tsyringe";
 
-const SALTROUNDS : number = 5;
+const SALTROUNDS: number = 5;
 
-export interface UserSelf extends Omit<User, "password">{}
-export interface SafeUser extends Omit<UserSelf, "email">{}
+export interface UserSelf extends Omit<User, "password"> {
+}
+
+export interface SafeUser extends Omit<UserSelf, "email"> {
+}
 
 
 export interface IUserService {
@@ -27,14 +31,19 @@ export interface IUpdateObject {
   profileImageUrl?: string
 }
 
+@registry([{
+  token: "UserService",
+  useClass: UserService,
+  options: {lifecycle: Lifecycle.Singleton} // Tsyringe has problem with default parameter, registering singleton without injectable
+}])
 export class UserService implements IUserService {
   private users: { [key: number]: User } = {};
   private userIdCounter: number = 0;
 
-  constructor(users: { [key: number]: User }) {
+  constructor(users: { [key: number]: User } = {}) {
     this.users = users;
     let keys = Object.keys(users);
-    if(keys.length > 0)
+    if (keys.length > 0)
       this.userIdCounter = parseInt(keys[keys.length - 1]) ?? 0;
   }
 
@@ -104,15 +113,11 @@ export class UserService implements IUserService {
     if (!user) return false
 
     let userCopy = Object.assign({}, user)
-    const validator: { [prop: string]: RegExp } = {}
-
     Object.keys(obj).forEach((prop) => {
       let val = obj[prop as keyof IUpdateObject];
 
-      if (val && (!validator[prop] || validator[prop].test(val))) {
+      if (val) {
         userCopy[prop as keyof IUpdateObject] = val;
-      } else {
-        throw Error(`${prop} failed validation`)
       }
     })
 
@@ -127,9 +132,4 @@ export class UserService implements IUserService {
     user.password = bcrypt.hashSync(password, SALTROUNDS);
     return true;
   }
-}
-
-// Returns empty UserService
-export function makeUserService(): UserService {
-  return new UserService({});
 }
