@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import axios from "axios";
 import styles from "./Profile.module.css";
 import ItemGrid from "../../Components/ItemGrid/ItemGrid";
+import {showUser} from "../../Api/User";
 
 export default function ProfilePage() {
   let {userID} = useParams()
@@ -16,16 +17,17 @@ export default function ProfilePage() {
     setMsg("Loading...");
     setPosts([])
 
-    axios.get(process.env.REACT_APP_BASE_API_URL + "/user/show/" + userID)
-        .then(
-            (ret) => {
-              const data = ret.data;
-              setUser(data.user)
-              setPosts(data.posts)
-            }, (err) => {
-              console.error(err)
-              setMsg(err.toString())
-            });
+    if(userID) {
+      showUser(parseInt(userID))
+          .then(
+              (data) => {
+                  setUser(data.user)
+                  setPosts(data.posts)
+              }, (err) => {
+                console.error(err)
+                setMsg(err.toString())
+              });
+    }
 
   }, [userID]);
 
