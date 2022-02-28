@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import axios from "axios";
 import styles from "./Profile.module.css";
 import ItemGrid from "../../Components/ItemGrid/ItemGrid";
 import {showUser} from "../../Api/User";
@@ -54,7 +53,7 @@ function profile(user: any, posts: []) {
             </div>
           </div>
           <div className="row g-0">
-            <ItemGrid posts={posts}/>
+            <ItemGrid items={posts}/>
           </div>
         </div>
       </div>
