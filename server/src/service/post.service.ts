@@ -1,9 +1,10 @@
 import { Post } from "../model/post.interface";
+import {Lifecycle, registry} from "tsyringe";
 
 export interface IPostService {
   getPosts(order: string): Promise<Array<Post>>
   createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post>
-  updatePost(id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean>
+  updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>
   getPost: (id: number) => Promise<Post>
   findById(id: number): Promise<Post | null>
   getUsersPosts(UserId: number): Promise<Array<Post>>
@@ -11,11 +12,16 @@ export interface IPostService {
   searchPosts (search: string): Promise<Post[]>
 }
 
+@registry([{
+  token: "PostService",
+  useClass: PostService,
+  options: {lifecycle: Lifecycle.Singleton} // Tsyringe has problem with default parameter, registering singleton without injectable
+}])
 export class PostService implements IPostService {
   private posts: { [key: number]: Post };
   private postIdCounter: number = 0;
 
-  constructor(posts: { [key: number]: Post }) {
+  constructor(posts: { [key: number]: Post } = {}) {
     this.posts = posts;
     // Order posts and get the highest id first and begin with that id as a counter
     this.postIdCounter = !posts ? Object.values(this.posts).sort((a, b) => a.id < b.id ? 1 : -1)[0].id : 0;
@@ -67,7 +73,7 @@ export class PostService implements IPostService {
   }
 
   // Returns true if post is updated given id and user id
-  async updatePost (id: number, newTitle: string, newDescription: string, verifyCreator: number): Promise<boolean>{
+  async updatePost (id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>{
     const post: Post | null = await this.findById(id);
     if (!post){
       throw Error("Post not found");
@@ -95,7 +101,7 @@ export class PostService implements IPostService {
 
   // Get all post of the given UserId
   async getUsersPosts (userId: number): Promise<Post[]>{
-    const allPosts =  Object.values(this.posts);
+    const allPosts = Object.values(this.posts);
     return allPosts.filter((post) => post.creator == userId)
   }
   
@@ -131,9 +137,4 @@ export class PostService implements IPostService {
 
     return searchResult;
   }
-}
-
-// Returns empty Postservice
-export function makePostService(): PostService {
-  return new PostService({});
 }

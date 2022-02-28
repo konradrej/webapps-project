@@ -20,7 +20,7 @@ afterEach(() => {
 
 it("CardDetails with text inputs matching ", () => {
   act(() =>{
-    render(<CardDetailsPopUp postDate="12-12-2022" postDescription="Lorem Ipsum" postImageURL="img.jpeg" postTitle="A Title" userImage="profile.jpeg" userName="user"/>, container);
+    render(<CardDetailsPopUp postId={1} postDate="12-12-2022" postDescription="Lorem Ipsum" postImageURL="img.jpeg" postTitle="A Title" userImage="profile.jpeg" userName="user"/>, container);
   });
   expect(container?.textContent).toContain("12-12-2022");
   expect(container?.textContent).toContain("Lorem Ipsum");

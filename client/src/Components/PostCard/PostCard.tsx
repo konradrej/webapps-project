@@ -38,6 +38,7 @@ const ItemGrid = (props: Props) => {
       {
         showCardDetails ? ReactDOM.createPortal((
           <CardDetails
+            postId={props.id}
             postImageURL={props.imageUrl}
             postTitle={props.title}
             postDate={props.createdAt.toLocaleString('en-GB')}

@@ -1,42 +1,46 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import axios from "axios";
 import styles from "./Profile.module.css";
-//import ItemGrid from "../../Components/ItemGrid/ItemGrid";
+import ItemGrid from "../../Components/ItemGrid/ItemGrid";
+import {showUser} from "../../Api/User";
 
 export default function ProfilePage() {
   let {userID} = useParams()
   const [user, setUser] = useState<any>(null);
+  const [posts, setPosts] = useState<any>(null);
   const [msg, setMsg] = useState<any>("");
 
   // On user-id update, query new
   useEffect(() => {
     setUser(null);
     setMsg("Loading...");
+    setPosts([])
 
-    axios.get(process.env.REACT_APP_BASE_API_URL+"/user/show/" + userID)
-        .then(
-            (ret) => {
-              const user = ret.data;
-              setUser(user)
-            }, (err) => {
-              console.error(err)
-              setMsg(err.toString())
-            });
+    if(userID) {
+      showUser(parseInt(userID))
+          .then(
+              (data) => {
+                  setUser(data.user)
+                  setPosts(data.posts)
+              }, (err) => {
+                console.error(err)
+                setMsg(err.toString())
+              });
+    }
 
   }, [userID]);
 
   return (
       <div>
         {user ?
-            profile(user) :
+            profile(user, posts) :
             <h2 style={{textAlign: "center", marginTop: "20%"}}>{msg}</h2>
         }
       </div>
   );
 }
 
-function profile(user: any) {
+function profile(user: any, posts: []) {
   return (
       <div className="container">
         <div className={"row " + styles["content"]}>
@@ -49,12 +53,9 @@ function profile(user: any) {
             </div>
           </div>
           <div className="row g-0">
-
+            <ItemGrid items={posts}/>
           </div>
         </div>
       </div>
   )
 }
-
-
-//<ItemGrid posts={user.posts}/>

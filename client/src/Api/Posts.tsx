@@ -54,3 +54,31 @@ const formatPosts = (posts: any): PostCardProps[] => {
     return value;
   }));
 }
+
+export const updatePost = async function (postId: number, verifyCreator: number, newTitle: string, newDescription: string): Promise<string | null> {
+
+  let rv = await axios.put(process.env.REACT_APP_BASE_API_URL + `/post/updatePost/${postId}`, {
+    newTitle: newTitle,
+    newDescription: newDescription,
+    verifyCreator: verifyCreator
+  }).then((res: AxiosResponse) => {
+    return `${res.data.status}`
+  }).catch(function (error) {
+    return `${error.response.data.status}, ${error.response.data.reason}`
+  })
+  return rv;
+}
+
+export const deletePost = async function (postId: number, verifyCreator: number): Promise<string | null> {
+
+  let rv = await axios.delete(process.env.REACT_APP_BASE_API_URL + `/post/deletePost/${postId}`, {
+    data: { verifyCreator: verifyCreator }
+  }).then((res: AxiosResponse) => {
+    console.log(res);
+    return `${res.data.status}`
+  }).catch(function (error) {
+    console.log(error.res)
+    return `${error.response.data.status}, ${error.response.data.reason}`
+  })
+  return rv;
+}

@@ -1,11 +1,9 @@
 import Express from "express";
 import SuperTest from "supertest";
 
-import { makePostRouter, postRouter } from "../post.router";
+import { makePostRouter } from "../post.router";
 import { IPostService, } from "../../service/post.service";
 import { Post } from "../../model/post.interface";
-import { makePostController } from "../../controller/post.controller";
-
 
 class MockPostService implements IPostService {
   constructor() {
@@ -86,7 +84,7 @@ test("A POST request to /createPost should send a response of post successfully 
   const postService: IPostService = makeMockPostService()
   const router: Express.Express = Express();
   router.use(Express.json());
-  router.use(makePostRouter(postService, makePostController()));
+  router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
   return request.post("/createPost").send({ title: "titleTest", description: "desscriptionTest", imageUrl: "imageTest", creator: 0 }).then((res) => {
@@ -98,7 +96,7 @@ test("A POST request to /createPost should fail when using MockPostServiceFails"
   const postService: IPostService = makeMockPostServiceFails()
   const router: Express.Express = Express();
   router.use(Express.json());
-  router.use(makePostRouter(postService, makePostController()));
+  router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
   return request.post("/createPost").send({ title: "Title", description: "Description", imageUrl: "imageTest", creator: 0 }).then((res) => {
@@ -111,7 +109,7 @@ test("A GET request to / should get all posts and sorted by the query", () => {
   const postService: IPostService = makeMockPostService()
   const router: Express.Express = Express();
   router.use(Express.json());
-  router.use(makePostRouter(postService, makePostController()));
+  router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
   return request.get("/").query("").then((res) => {
@@ -124,7 +122,7 @@ test("A GET request to /1 should successfully get a (empty)post", () => {
   const postService: IPostService = makeMockPostService()
   const router: Express.Express = Express();
   router.use(Express.json());
-  router.use(makePostRouter(postService, makePostController()));
+  router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
   return request.get("/1").send({ id: 1 }).then((res) => {
@@ -137,7 +135,7 @@ test("A GET request to /1 should give status code 400 when using makeMockPostSer
   const postService: IPostService = makeMockPostServiceFails()
   const router: Express.Express = Express();
   router.use(Express.json());
-  router.use(makePostRouter(postService, makePostController()));
+  router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
   return request.get("/1").send({ id: 1 }).then((res) => {
@@ -146,27 +144,27 @@ test("A GET request to /1 should give status code 400 when using makeMockPostSer
   })
 })
 
-test("A PUT request to /1/updatePost should give status code 200 ", () => {
+test("A PUT request to /updatePost/1 should give status code 200 ", () => {
   const postService: IPostService = makeMockPostService()
   const router: Express.Express = Express();
   router.use(Express.json());
-  router.use(makePostRouter(postService, makePostController()));
+  router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.put("/1/updatePost").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
+  return request.put("/updatePost/1").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
     expect(res.statusCode).toBe(200)
     expect(res.body).toEqual({status: "Post updated"})
   })
 })
 
-test("A PUT request to /1/updatePost should give status code 400 when using makeMockPostServiceFails", () => {
+test("A PUT request to /updatePost/1 should give status code 400 when using makeMockPostServiceFails", () => {
   const postService: IPostService = makeMockPostServiceFails()
   const router: Express.Express = Express();
   router.use(Express.json());
-  router.use(makePostRouter(postService, makePostController()));
+  router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.put("/1/updatePost").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
+  return request.put("/updatePost/1").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
     expect(res.statusCode).toBe(400)
     expect(res.body).toEqual({status: "Could not update post", reason: "MockPostServiceFails"})
   })
@@ -176,7 +174,7 @@ test("A GET request to /search without search query parameter should return an e
     const postService: MockPostService = makeMockPostServiceFails();
     const router: Express.Express = Express();
     router.use(Express.json());
-    router.use(makePostRouter(postService, makePostController()));
+    router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
     return request.get("/search").query("").then((res) => {
@@ -189,7 +187,7 @@ test("A GET request to /search with a falsy (empty/no value) search query parame
     const postService: MockPostService = makeMockPostServiceFails();
     const router: Express.Express = Express();
     router.use(Express.json());
-    router.use(makePostRouter(postService, makePostController()));
+    router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
     return request.get("/search").query({"search": ""}).then((res) => {
@@ -202,7 +200,7 @@ test("A GET request to /search with search parameter (non falsy value) should re
     const postService: MockPostService = makeMockPostService();
     const router: Express.Express = Express();
     router.use(Express.json());
-    router.use(makePostRouter(postService, makePostController()));
+    router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
     return request.get("/search").query({"search": "test"}).then((res) => {

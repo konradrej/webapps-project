@@ -19,7 +19,7 @@ export default class PopUp extends React.Component<Props>{
 
   render(){
     return(
-      <div className={(this.showPopUp) ? 'background' : 'closed'}>
+      <div className={'background'}>
         <div className='popUpContainer'>
           <span className='closeButton' onClick={ this.onCloseHandler }>&times;</span>
           {this.props.children}

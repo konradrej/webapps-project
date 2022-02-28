@@ -1,9 +1,10 @@
 import Express from "express";
-import { makePostController, PostController } from "../controller/post.controller";
+import { PostController } from "../controller/post.controller";
 import { Post } from "../model/post.interface";
-import { IPostService, makePostService } from "../service/post.service";
+import {IPostService, PostService} from "../service/post.service";
+import {container} from "tsyringe";
 
-export function makePostRouter(postService : IPostService, postController : PostController ): Express.Express {
+export function makePostRouter(postService : IPostService = container.resolve(PostService)) : Express.Express {
   const postRouter: Express.Express = Express();
 
   postRouter.get("/", async (req: Express.Request, res: Express.Response): Promise<void> => {
@@ -25,7 +26,7 @@ export function makePostRouter(postService : IPostService, postController : Post
       const imageUrl: string = req.body.imageUrl;
       const creator: number = req.body.creator;
 
-      postController.validateCreatePost(title, imageUrl, creator).then((): Promise<Post> => {
+      PostController.validateCreatePost(title, imageUrl, creator).then((): Promise<Post> => {
         return postService.createPost(title, description, imageUrl, creator);
       }).then((createdPost: Post): void => {
         res.status(201).send(createdPost);
@@ -41,7 +42,7 @@ export function makePostRouter(postService : IPostService, postController : Post
     try {
       const search: string = (req.query as any).search;
 
-      postController.validateSearchPosts(search).then((): Promise<Post[]> => {
+      PostController.validateSearchPosts(search).then((): Promise<Post[]> => {
         return postService.searchPosts(search);
       }).then((posts: Post[]): void => {
         res.status(200).send(posts);
@@ -53,14 +54,14 @@ export function makePostRouter(postService : IPostService, postController : Post
     }
   })
 
-  postRouter.put("/:id/updatePost", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.put("/updatePost/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const id: number = parseInt(req.params.id);
       const title: string = req.body.newTitle;
       const description: string = req.body.newDescription;
       const creator: number = req.body.verifyCreator;
 
-      postController.validateUpdatePost(creator).then((): Promise<boolean> => {
+      PostController.validateUpdatePost(creator).then((): Promise<boolean> => {
         return postService.updatePost(id, title, description, creator);
       }).then((success: boolean): void => {
         if(success) {
@@ -108,31 +109,25 @@ export function makePostRouter(postService : IPostService, postController : Post
   })
   */
 
-  /*
-  postRouter.put('/:id/deletePost', async (req: Express.Request, res: Express.Response): Promise<void> => {
+  
+  postRouter.delete('/deletePost/:id', async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const id: number = parseInt(req.params.id);
       const creator: number = req.body.verifyCreator;
 
-      postController.validateDeletePost(id, creator).then(() => {
-        postService.deletePost(id, creator).then((valid: Boolean): void =>{
-          if(valid){
-            res.status(200).send({status: "Post deleted"})
-          }
-        }).catch((e: any): void => {
-          res.status(404).send({status: "Post not found", reason: e.message})
-        })
-      }).catch((e: any): void =>{
-        res.status(400).send({status: "Validation failed", reason: e.message})
+      postController.validateDeletePost(id, creator).then((): Promise<boolean> => {
+        return postService.deletePost(id, creator);
+      }).then((success: boolean): void => {
+        if(success) {
+          res.status(200).send({status: "Post deleted"});
+        }
+      }).catch((e: any): void => {
+        res.status(400).send({status: "Could not delete post", reason: e.message});
       })
     } catch (e: any) {
       res.status(500).send({status: "Server error", reason: e.message});
     }
-  })*/
+  })
   
   return postRouter;
-}
-
-export function postRouter(): Express.Express {
-  return makePostRouter(makePostService(), makePostController());
 }

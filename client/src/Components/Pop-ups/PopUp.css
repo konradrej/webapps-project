@@ -35,12 +35,6 @@ border-radius: 10px;
 background: #FF4C29; 
 }
 
-/*General Popup*/
-
-.closed {
-    display: none;
-}
-
 .background {
   position: fixed;
   width: 100%;
@@ -75,7 +69,6 @@ background: #FF4C29;
   color: #FF4C29;
   cursor: pointer;
 }
-/**/
 
 .input-content{
 
@@ -146,8 +139,4 @@ img.post-user-profile{
   width: 36px;
   height: 36px;
   margin-right: 16px;
-}
-
-.color-nav{
-  background-color: #082032;
 }
