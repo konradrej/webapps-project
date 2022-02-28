@@ -8,16 +8,16 @@ import Header from "./Components/Header";
 
 function App() {
   return (
-    <>
-      <Header />
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<HomePage/>}/>
-          <Route path="/profile/:userID" element={<ProfilePage/>}/>
-          <Route path="*" element={<ErrorPage/>}/>
-        </Routes>
-      </AuthProvider>
-    </>
+      <>
+        <AuthProvider>
+          <Header/>
+          <Routes>
+            <Route path="/" element={<HomePage/>}/>
+            <Route path="/profile/:userID" element={<ProfilePage/>}/>
+            <Route path="*" element={<ErrorPage/>}/>
+          </Routes>
+        </AuthProvider>
+      </>
   );
 }
 

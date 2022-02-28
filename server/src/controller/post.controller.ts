@@ -1,5 +1,5 @@
 export class PostController{
-  validateCreatePost = async (title: string, imageUrl: string, creator: number) : Promise<void> => {
+  static validateCreatePost = async (title: string, imageUrl: string, creator: number) : Promise<void> => {
     if (!title) {
       throw new Error ("Missing title");
     }
@@ -16,19 +16,19 @@ export class PostController{
     }*/
   }
 
-  validateUpdatePost = async (creator: number) : Promise<void> => {
+  static validateUpdatePost = async (creator: number) : Promise<void> => {
     if(!creator && creator !== 0){
       throw new Error("Missing creator");
     }
   }
 
-  validateGetUserPosts = async (userId: number) : Promise<void> => {
+  static validateGetUserPosts = async (userId: number) : Promise<void> => {
     if(!userId && userId !== 0){
       throw new Error("Missing creator");
     }
   }
 
-  validateDeletePost = async (postId: number, creator: number): Promise<void> => {
+  static validateDeletePost = async (postId: number, creator: number): Promise<void> => {
     if(!creator && creator !== 0){
       throw new Error("Missing creator"); 
     }
@@ -37,13 +37,9 @@ export class PostController{
     }
   }
 
-  validateSearchPosts = async (search: string): Promise<void> => {
+  static validateSearchPosts = async (search: string): Promise<void> => {
     if(!search){
       throw new Error("Missing search query");
     }
   }
-}
-
-export function makePostController(): PostController {
-  return new PostController();
 }

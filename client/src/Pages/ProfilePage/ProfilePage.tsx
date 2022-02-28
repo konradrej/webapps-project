@@ -7,18 +7,21 @@ import ItemGrid from "../../Components/ItemGrid/ItemGrid";
 export default function ProfilePage() {
   let {userID} = useParams()
   const [user, setUser] = useState<any>(null);
+  const [posts, setPosts] = useState<any>(null);
   const [msg, setMsg] = useState<any>("");
 
   // On user-id update, query new
   useEffect(() => {
     setUser(null);
     setMsg("Loading...");
+    setPosts([])
 
-    axios.get(process.env.REACT_APP_BASE_API_URL+"/user/show/" + userID)
+    axios.get(process.env.REACT_APP_BASE_API_URL + "/user/show/" + userID)
         .then(
             (ret) => {
-              const user = ret.data;
-              setUser(user)
+              const data = ret.data;
+              setUser(data.user)
+              setPosts(data.posts)
             }, (err) => {
               console.error(err)
               setMsg(err.toString())
@@ -29,14 +32,14 @@ export default function ProfilePage() {
   return (
       <div>
         {user ?
-            profile(user) :
+            profile(user, posts) :
             <h2 style={{textAlign: "center", marginTop: "20%"}}>{msg}</h2>
         }
       </div>
   );
 }
 
-function profile(user: any) {
+function profile(user: any, posts: []) {
   return (
       <div className="container">
         <div className={"row " + styles["content"]}>
@@ -49,7 +52,7 @@ function profile(user: any) {
             </div>
           </div>
           <div className="row g-0">
-            <ItemGrid posts={user.posts}/>
+            <ItemGrid posts={posts}/>
           </div>
         </div>
       </div>
