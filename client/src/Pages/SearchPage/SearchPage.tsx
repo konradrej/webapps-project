@@ -5,7 +5,7 @@ import styles from "./SearchPage.module.css";
 import PopUp from "../../Components/Pop-ups/Pop-up";
 import { useLocation } from "react-router-dom";
 import { searchPosts } from "../../Api/Posts";
-import GridItem, { Props as GridItemProps } from "../../Components/GridItem/GridItem";
+import { searchUnsplash } from "../../Api/Unsplash";
 
 export type Props = {
   
@@ -13,31 +13,50 @@ export type Props = {
 
 const SearchPage = (_: Props) => {
   const { search } = useLocation();
-  const searchQuery = useMemo(() => new URLSearchParams(search), [search])
+  const searchQuery = useMemo(() => new URLSearchParams(search).get("search") ?? "", [search]);
 
   const [searchResult, setSearchResult] = useState<JSX.Element[] | null>(null);
-  const [unsplashResult, setUnsplashResult] = useState<GridItemProps[] | null>(null);
+  const [unsplashResult, setUnsplashResult] = useState<JSX.Element[] | null>(null);
   const [errorPopup, setErrorPopup] = useState<boolean>(false);
 
   useEffect(() => {
     setErrorPopup(false);
 
-    searchPosts(searchQuery.get("search") ?? "").then((items: JSX.Element[]) => {
+    searchPosts(searchQuery).then((items: JSX.Element[]) => {
       setSearchResult(items);
-    }).catch((e: any) => {
+    }).catch((_: any) => {
       setErrorPopup(true);
-    })
+    });
+
+    searchUnsplash(searchQuery).then((results: JSX.Element[]) => {
+      setUnsplashResult(results);
+    }).catch((e: any) => {
+      setUnsplashResult([]);
+      console.log(e);
+    });
   }, [searchQuery])
 
   return (
     <>
       <Container>
-        {searchResult == null ?
-        <Spinner className={styles.spinner} animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-        :
-        <ItemGrid items={searchResult} />
+        {searchResult ?
+          <ItemGrid items={searchResult} />
+          :
+          <Spinner className={styles.spinner} animation="border" role="status">
+            <span className="visually-hidden">Loading posts...</span>
+          </Spinner>
+        }
+        {unsplashResult ?
+          <>
+            <h3 className={styles.unsplash_title}>Unsplash results for: {searchQuery}</h3>
+            <ItemGrid items={unsplashResult} />
+          </>
+          :
+          ((searchResult && searchResult.length === 0) &&
+            <Spinner className={styles.spinner} animation="border" role="status">
+              <span className="visually-hidden">Loading Unsplash suggestions...</span>
+            </Spinner>
+          )
         }
       </Container>
       {errorPopup ?

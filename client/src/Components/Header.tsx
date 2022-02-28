@@ -24,7 +24,7 @@ const Header = () => {
       if(inputSearch)
         navigate("/search?search=" + inputSearch);
     }
-  }, [submit])
+  }, [submit, inputSearch, navigate])
 
   return (
     <>
@@ -50,7 +50,7 @@ const Header = () => {
               <Button className="me-2"
                 variant="outline-success" type="submit">Search</Button>
             </Form>
-            <Nav className="ms-auto my-2 my-lg-0">
+            <Nav className="ms-auto my-2 my-md-0">
               <AuthContext.Consumer>
                 {context => (
                   <>
