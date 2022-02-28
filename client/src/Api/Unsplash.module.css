@@ -1,0 +1,10 @@
+.unsplash_item {
+  display: block;
+  box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
+  border-radius: 0.625rem;
+  overflow: hidden;
+}
+
+.unsplash_item img {
+  width: 100%;
+}
