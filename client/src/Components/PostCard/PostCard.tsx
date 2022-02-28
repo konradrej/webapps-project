@@ -11,6 +11,7 @@ export type Props = {
   imageUrl: string,
   createdAt: Date,
   creatorUsername: string,
+  creatorId: number,
   creatorProfileUrl: string,
   creatorProfileImageUrl: string
 }
@@ -45,6 +46,7 @@ const ItemGrid = (props: Props) => {
             postDescription={props.description}
             userImage={props.creatorProfileImageUrl}
             userName={props.creatorUsername}
+            userId={props.creatorId}
             onClose={() => setShowCardDetails(false)}
           />
         ), document.body) : null

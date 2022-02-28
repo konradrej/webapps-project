@@ -27,7 +27,7 @@ export const searchPosts = async function (search: string): Promise<JSX.Element[
   })
 }
 
-export const createPost = async function (title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
+export const createPost = async function (title: string, description: string, imageUrl: string, creator: number | undefined): Promise<Post> {
   let ret = await axios.post(process.env.REACT_APP_BASE_API_URL + "/post/createPost", {
     title: title,
     description: description,
@@ -50,6 +50,7 @@ const createItems = (posts: PostCardProps[]): JSX.Element[] => {
 const formatPosts = (posts: any): PostCardProps[] => {
   return posts.map(((value: any, _: number): void => {
     value.createdAt = new Date(value.createdAt);
+    value.creatorId = value.creator;
 
     return value;
   }));

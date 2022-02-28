@@ -25,6 +25,7 @@ it("expect component to display provided information", () => {
     imageUrl: "https://via.placeholder.com/150x250",
     createdAt: new Date(),
     creatorUsername: "Username",
+    creatorId: 1,
     creatorProfileUrl: "",
     creatorProfileImageUrl: "https://via.placeholder.com/150"
   }
@@ -46,6 +47,7 @@ it("check if onclick on .card opens CardDetails and contains description", () =>
       imageUrl: "https://via.placeholder.com/150x250",
       createdAt: new Date(),
       creatorUsername: "Username",
+      creatorId: 1,
       creatorProfileUrl: "",
       creatorProfileImageUrl: "https://via.placeholder.com/150"
     }

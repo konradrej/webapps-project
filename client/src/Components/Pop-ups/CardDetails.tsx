@@ -5,6 +5,7 @@ import './PopUp.css'
 import { Button } from 'react-bootstrap';
 import UpdatePostPopUp from './UpdatePost';
 import DeletePostPopup from './DeletePost';
+import { AuthContext } from '../../AuthContext';
 
 type Props = {
   postId: number,
@@ -12,6 +13,7 @@ type Props = {
   postTitle: string,
   userImage: string,
   userName: string,
+  userId: number,
   postDate: string,
   postDescription: string,
   onClose?: Function
@@ -56,8 +58,16 @@ export default class CardDetailsPopUp extends React.Component<Props>{
             <div className='pop-up-button-container'>
               {(this.state.updateState) ? <UpdatePostPopUp onClose={this.onCloseUpdate} postId={this.props.postId}/> : null}
               {(this.state.deleteState) ? <DeletePostPopup onClose={this.onCloseDelete} postId={this.props.postId}/> : null}
-              <Button variant="outline-primary" onClick={() => this.setState({updateState: true})}>Edit</Button>
-              <Button variant="outline-danger" onClick={() => this.setState({deleteState: true})}>Delete</Button>
+              <AuthContext.Consumer>
+                {(context) =>(
+                  (context.currentUser?.id === this.props.userId )?
+                    <>              
+                      <Button variant="outline-primary" onClick={() => this.setState({updateState: true})}>Edit</Button>
+                      <Button variant="outline-danger" onClick={() => this.setState({deleteState: true})}>Delete</Button>
+                    </> :
+                    null
+                )}
+              </AuthContext.Consumer>
             </div>
           </div>
         </div>

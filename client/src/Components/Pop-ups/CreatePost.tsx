@@ -55,7 +55,7 @@ export default class CreatePostPopUp extends React.Component<Props>{
 
     }*/
 
-    onUploadHandler = (creatorId: number) => {
+    onUploadHandler = (creatorId?: number) => {
         this.setState({ errorMsg: "" })
         createPost(
             this.state.inputTitle,
@@ -100,7 +100,7 @@ export default class CreatePostPopUp extends React.Component<Props>{
                             <AuthContext.Consumer>
                                 {context => (
                                     <>
-                                        <Button className="pop-up-button" onClick={() => this.onUploadHandler.bind(this)(context.currentUser)}>
+                                        <Button className="pop-up-button" onClick={() => this.onUploadHandler.bind(this)(context.currentUser?.id)}>
                                             {this.createText}
                                         </Button>
                                     </>
