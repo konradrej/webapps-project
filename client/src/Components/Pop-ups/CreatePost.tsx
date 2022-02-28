@@ -4,9 +4,13 @@ import { Button } from 'react-bootstrap';
 import PopUp from './Pop-up';
 import './PopUp.css'
 import axios from 'axios'
+import { Post } from "../../../../server/src/model/post.interface"
+import { CreateProgramOptions } from 'typescript';
+import { AuthContext } from "../../AuthContext";
+import { createPost } from '../../Api/Posts';
 
 type Props = {
-    onClose?: Function,
+    onClose: Function,
 }
 
 
@@ -14,21 +18,20 @@ export default class CreatePostPopUp extends React.Component<Props>{
 
     private createText: string = "Create";
     private goBackText: string = "Go back";
-    private userPostTitle: string = "Title";
+    private userTitle: string = "Title";
     private userDescription: string = "Description";
     private userImage: string = "Add your image";
     private titlePlaceholder: string = "Add your title";
     private descriptionPlaceholder: string = "Tell everyone what your picture is about";
-    private imagePlaceholder: string = "Add your image";
 
     state = {
-        inputPostTitle: "",
+        inputTitle: "",
         inputDescription: "",
-        inputImage: null,
+        inputImage: "",
     }
 
-    onChangePostTitle = (e: React.FormEvent<HTMLInputElement>): void => {
-        this.setState({ inputPostTitle: e.currentTarget.value });
+    onChangeTitle = (e: React.FormEvent<HTMLInputElement>): void => {
+        this.setState({ inputTitle: e.currentTarget.value });
     };
 
     onChangeDescription = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -40,14 +43,35 @@ export default class CreatePostPopUp extends React.Component<Props>{
 
     };
 
-    onFileUploadHandler = async () => {
-        /*const fd = new FormData();
-        fd.append('image', this.setState.inputImage, this.setState.inputImage.name)
-        axios.post('', fd);
-        */
-    }
 
     onGoBackHandler = () => {
+    }
+
+
+    /*onFileUploadHandler = async () => {
+        const fd = new FormData();
+        fd.append('image', this.state.inputImage, this.state.inputImage)
+        axios.post('', fd);
+
+    }*/
+
+    onUploadHandler = (creatorId: number) => {
+        this.setState({ errorMsg: "" })
+        createPost(
+            this.state.inputTitle,
+            this.state.inputDescription,
+            this.state.inputImage,
+            creatorId
+        )
+            .then((bool) => {
+                if (bool)
+                    this.props.onClose()
+            })
+            .catch((err) => {
+                if (err.response?.data.reason) {
+                    this.setState({ errorMsg: err.response.data.reason })
+                }
+            })
     }
 
 
@@ -58,8 +82,8 @@ export default class CreatePostPopUp extends React.Component<Props>{
                 <form className="form-pop-up">
                     <div className="input-content">
                         <div className="input-sub-content">
-                            <h2><b>{this.userPostTitle}</b></h2>
-                            <input type="text" value={this.state.inputPostTitle} placeholder={this.titlePlaceholder} onChange={this.onChangePostTitle} />
+                            <h2><b>{this.userTitle}</b></h2>
+                            <input type="text" value={this.state.inputTitle} placeholder={this.titlePlaceholder} onChange={this.onChangeTitle} />
                         </div>
                         <div className="input-sub-content">
                             <h2><b>{this.userDescription}</b></h2>
@@ -67,15 +91,21 @@ export default class CreatePostPopUp extends React.Component<Props>{
                         </div>
                         <div className="input-sub-content">
                             <h2><b>{this.userImage}</b></h2>
-                            <input type="file" onChange={this.onSelectedImageHandler} />
+                            <input type="file" value={this.state.inputImage} onChange={this.onSelectedImageHandler} />
                         </div>
                         <div className="pop-up-button-container">
                             <Button className="pop-up-button" onClick={this.onGoBackHandler}>
                                 {this.goBackText}
                             </Button>
-                            <Button className="pop-up-button" onClick={this.onFileUploadHandler}>
-                                {this.createText}
-                            </Button>
+                            <AuthContext.Consumer>
+                                {context => (
+                                    <>
+                                        <Button className="pop-up-button" onClick={() => this.onUploadHandler.bind(this)(context.currentUser)}>
+                                            {this.createText}
+                                        </Button>
+                                    </>
+                                )}
+                            </AuthContext.Consumer>
                         </div>
                     </div>
                 </form>

@@ -1,5 +1,5 @@
-import React, {createContext, useState, FC, useEffect} from "react";
-import {getCurrentUser, loginUser, logoutUser, signupUser, User} from "./Api/Auth";
+import React, { createContext, useState, FC, useEffect } from "react";
+import { getCurrentUser, loginUser, logoutUser, signupUser, User } from "./Api/Auth";
 
 export interface AuthContextState {
   currentUser?: User;
@@ -22,10 +22,10 @@ const contextDefaultValues: AuthContextState = {
 };
 
 export const AuthContext = createContext<AuthContextState>(
-    contextDefaultValues
+  contextDefaultValues
 );
 
-const AuthProvider: FC = ({children}) => {
+const AuthProvider: FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(contextDefaultValues.currentUser);
 
   const register = async function (username: string, password: string, email: string) {
@@ -55,26 +55,26 @@ const AuthProvider: FC = ({children}) => {
   useEffect(() => {
     // This will be used once to check if the user is logged in.
     getCurrentUser().then((user) => {
-      if(user) {
+      if (user) {
         console.log("User is logged in")
         setCurrentUser(user)
-      }else {
+      } else {
         console.log("User not logged in")
       }
-    }).catch(() => {});
+    }).catch(() => { });
   }, [])
 
   return (
-      <AuthContext.Provider
-          value={{
-            currentUser,
-            login,
-            register,
-            logout,
-          }}
-      >
-        {children}
-      </AuthContext.Provider>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        login,
+        register,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };
 

@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { Post } from "../../../server/src/model/post.interface";
 import PostCard, { Props as PostCardProps } from "../Components/PostCard/PostCard";
 
 export const getPosts = async function (order: string): Promise<JSX.Element[]> {
@@ -9,7 +10,7 @@ export const getPosts = async function (order: string): Promise<JSX.Element[]> {
     }
   }).then((res: AxiosResponse): JSX.Element[] => {
     const posts: PostCardProps[] = formatPosts(res.data);
-    
+
     return createItems(posts);
   })
 }
@@ -21,9 +22,23 @@ export const searchPosts = async function (search: string): Promise<JSX.Element[
     }
   }).then((res: AxiosResponse): JSX.Element[] => {
     const posts: PostCardProps[] = formatPosts(res.data);
-    
+
     return createItems(posts);
   })
+}
+
+export const createPost = async function (title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
+  let ret = await axios.post(process.env.REACT_APP_BASE_API_URL + "/post/createPost", {
+    title: title,
+    description: description,
+    imageUrl: imageUrl,
+    creator: creator
+  }).then((res) => {
+    return res.data.status
+  }).catch((err: any) => {
+    throw err
+  });
+  return ret;
 }
 
 const createItems = (posts: PostCardProps[]): JSX.Element[] => {
