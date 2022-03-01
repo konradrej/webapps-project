@@ -5,7 +5,7 @@ export interface IPostService {
   getPosts(order: string): Promise<Array<Post>>
   createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post>
   updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>
-  getPost: (id: number) => Promise<Post>
+  getPost (id: number) : Promise<Post | null>
   findById(id: number): Promise<Post | null>
   getUsersPosts(UserId: number): Promise<Array<Post>>
   deletePost(id : number, verifyCreator : number) : Promise<boolean>
