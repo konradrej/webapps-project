@@ -9,10 +9,10 @@ class MockPostService implements IPostService {
   constructor() {
 
   }
-  deletePost(id: number, verifyCreator: number): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  deletePost = async (id: number, verifyCreator: number): Promise<boolean>  => {
+    return true;
   }
-  getUsersPosts(UserId: number): Promise<Post[]> {
+  getUsersPosts = (UserId: number): Promise<Post[]> => {
     throw new Error("Method not implemented.");
   }
   createPost = async (title: string, description: string, imageUrl: string, creator: number): Promise<Post> => {
@@ -170,6 +170,31 @@ test("A PUT request to /updatePost/1 should give status code 400 when using make
   })
 })
 
+test("A DELETE request to /deletePost/1 should give status code 400 when using makeMockPostServiceFails", () => {
+  const postService: IPostService = makeMockPostServiceFails()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+  return request.delete("/deletePost/1").send({ id: 1, verifyCreator: 1 }).then((res) => {
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toEqual({status: "Could not delete post", reason: "MockPostServiceFails"})
+  })
+})
+
+test("A DELETE request to /deletePost/1 should give status code 200", () => {
+  const postService: IPostService = makeMockPostService()
+  const router: Express.Express = Express();
+  router.use(Express.json());
+  router.use(makePostRouter(postService));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+  return request.delete("/deletePost/1").send({ id: 1, verifyCreator: 1 }).then((res) => {
+    expect(res.statusCode).toBe(200)
+  })
+})
+
 test("A GET request to /search without search query parameter should return an error", () => {
     const postService: MockPostService = makeMockPostServiceFails();
     const router: Express.Express = Express();
@@ -208,3 +233,4 @@ test("A GET request to /search with search parameter (non falsy value) should re
         expect(res.body).toEqual([]);
     })
 })
+
