@@ -115,7 +115,7 @@ export function makePostRouter(postService : IPostService = container.resolve(Po
       const id: number = parseInt(req.params.id);
       const creator: number = req.body.verifyCreator;
 
-      postController.validateDeletePost(id, creator).then((): Promise<boolean> => {
+      PostController.validateDeletePost(id, creator).then((): Promise<boolean> => {
         return postService.deletePost(id, creator);
       }).then((success: boolean): void => {
         if(success) {

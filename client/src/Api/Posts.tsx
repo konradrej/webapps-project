@@ -50,6 +50,7 @@ const createItems = (posts: PostCardProps[]): JSX.Element[] => {
 const formatPosts = (posts: any): PostCardProps[] => {
   return posts.map(((value: any, _: number): void => {
     value.createdAt = new Date(value.createdAt);
+    value.creatorId = value.creator;
 
     return value;
   }));
