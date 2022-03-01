@@ -39,7 +39,7 @@ export default class CreatePostPopUp extends React.Component<Props>{
     };
 
     onSelectedImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ inputImage: e.target.files![0] })
+        this.setState({ inputImage: e.target.files![0] });
 
     };
 
@@ -47,31 +47,16 @@ export default class CreatePostPopUp extends React.Component<Props>{
     onGoBackHandler = () => {
     }
 
-
-    /*onFileUploadHandler = async () => {
-        const fd = new FormData();
-        fd.append('image', this.state.inputImage, this.state.inputImage)
-        axios.post('', fd);
-
-    }*/
-
-    onUploadHandler = (creatorId: number) => {
+    onUploadHandler = (currentUser?: number) => {
         this.setState({ errorMsg: "" })
-        createPost(
-            this.state.inputTitle,
-            this.state.inputDescription,
-            this.state.inputImage,
-            creatorId
-        )
-            .then((bool) => {
-                if (bool)
-                    this.props.onClose()
-            })
-            .catch((err) => {
-                if (err.response?.data.reason) {
-                    this.setState({ errorMsg: err.response.data.reason })
-                }
-            })
+        if (currentUser) {
+            createPost(this.state.inputTitle, this.state.inputDescription, this.state.inputImage, currentUser)
+                .then((res) => {
+                    this.setState({ message: res })
+                })
+        } else {
+            this.setState({ message: "upload failed" })
+        }
     }
 
 
@@ -100,9 +85,7 @@ export default class CreatePostPopUp extends React.Component<Props>{
                             <AuthContext.Consumer>
                                 {context => (
                                     <>
-                                        <Button className="pop-up-button" onClick={() => this.onUploadHandler.bind(this)(context.currentUser)}>
-                                            {this.createText}
-                                        </Button>
+                                        <Button className="pop-up-button" onClick={() => this.onUploadHandler.bind(this)(context.currentUser?.id)}>{this.createText}</Button>
                                     </>
                                 )}
                             </AuthContext.Consumer>
