@@ -2,7 +2,7 @@ import { IPostService } from "./post.service";
 import { postModel } from "../db/post.model";
 import { Post } from "../model/post.interface";
 
-class PostDBService implements IPostService{
+export class PostDBService implements IPostService{
   async getPosts(order: string): Promise<Post[]> {
     switch (order) {
       // Title A-Z
@@ -97,4 +97,8 @@ class PostDBService implements IPostService{
 
     return searchResult;
   }
+}
+
+export function makePostDBService (){
+  return new PostDBService();
 }
