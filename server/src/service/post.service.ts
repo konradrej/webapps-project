@@ -7,7 +7,7 @@ export interface IPostService {
   updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>
   getPost (id: number) : Promise<Post | null>
   findById(id: number): Promise<Post | null>
-  getUsersPosts(UserId: number): Promise<Array<Post>>
+  getUsersPosts(userId: number): Promise<Array<Post>>
   deletePost(id : number, verifyCreator : number) : Promise<boolean>
   searchPosts (search: string): Promise<Post[]>
 }
@@ -55,7 +55,7 @@ export class PostService implements IPostService {
     }
   }
 
-  // Returns true if new post is created, invalid if title, imageURL, creator is undefined/null
+  // Returns the new post if successfully created
   async createPost (title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
     this.postIdCounter++;
     const newPost: Post = {

@@ -79,7 +79,7 @@ export function makePostRouter(postService : IPostService = container.resolve(Po
     try {
       const id: number = parseInt(req.params.id);
 
-      postService.getPost(id).then((post: Post): void => {
+      postService.getPost(id).then((post: Post | null): void => {
         res.status(200).send(post)
       }).catch((e: any): void => {
         res.status(400).send({status: "Post not found", reason: e.message})

@@ -21,10 +21,13 @@ const PostSchema : Schema = new Schema({
   },
   createdAt : {
     type : Date,
+    immutable : true,
+    default : () => Date.now(),
     required : true,
   },
   modifiedAt : {
     type : Date,
+    default : () => Date.now(),
   },
   creator : {
     type : Number,
