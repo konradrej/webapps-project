@@ -27,17 +27,17 @@ export const searchPosts = async function (search: string): Promise<JSX.Element[
   })
 }
 
-export const createPost = async function (title: string, description: string, imageUrl: string, creator: number | undefined): Promise<Post> {
-  let ret = await axios.post(process.env.REACT_APP_BASE_API_URL + "/post/createPost", {
+export const createPost = async function (title: string, description: string, imageUrl: string, creator: number): Promise<string | null> {
+  let ret = await axios.post(process.env.REACT_APP_BASE_API_URL + `/post/createPost/`, {
     title: title,
     description: description,
     imageUrl: imageUrl,
     creator: creator
-  }).then((res) => {
-    return res.data.status
-  }).catch((err: any) => {
-    throw err
-  });
+  }).then((res: AxiosResponse) => {
+    return `${res.data.status}`
+  }).catch(function (error) {
+    return `${error.response.data.status}, ${error.response.data.reason}`
+  })
   return ret;
 }
 
