@@ -3,7 +3,7 @@ import cors from "cors";
 import "reflect-metadata";
 
 import {makeUserRouter} from "./router/user.router";
-import {makePostRouter} from "./router/post.router";
+import {makePostRouter, postRouter} from "./router/post.router";
 
 import path from "path";
 import session from "express-session";
@@ -34,5 +34,5 @@ app.use(cors(process.env?.TS_NODE_DEV ? {
 } : {}));
 
 app.use("/user", makeUserRouter());
-app.use("/post", makePostRouter());
+app.use("/post", postRouter());
 

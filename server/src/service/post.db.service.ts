@@ -26,6 +26,7 @@ export class PostDBService implements IPostService{
       }
     }
   }
+
   async createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
     return await postModel.create({
       id : new Date().valueOf(), //Change this?
@@ -35,6 +36,7 @@ export class PostDBService implements IPostService{
       creator : creator
     })
   }
+
   async updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean> {
     if(!(await postModel.exists({id : id}))){
       throw Error("Post not found");
@@ -68,6 +70,7 @@ export class PostDBService implements IPostService{
   async getUsersPosts(userId: number): Promise<Post[]> {
     return await postModel.find({creator : userId});
   }
+
   async deletePost(id: number, verifyCreator: number): Promise<boolean> {
     if(!(await postModel.exists({id : id}))){
       throw Error("Post not found");
@@ -78,6 +81,7 @@ export class PostDBService implements IPostService{
     await postModel.deleteOne({id : id})
     return true;
   }
+
   async searchPosts(search: string): Promise<Post[]> {
     const searchResult: Post[] = [];
     const dbPosts: Post[] = await postModel.find();

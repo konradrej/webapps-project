@@ -3,8 +3,11 @@ import { PostController } from "../controller/post.controller";
 import { Post } from "../model/post.interface";
 import {IPostService, PostService} from "../service/post.service";
 import {container} from "tsyringe";
+import { makePostDBService } from "../service/post.db.service";
 
-export function makePostRouter(postService : IPostService = container.resolve(PostService)) : Express.Express {
+//= container.resolve(PostService)
+
+export function makePostRouter(postService : IPostService ) : Express.Express {
   const postRouter: Express.Express = Express();
 
   postRouter.get("/", async (req: Express.Request, res: Express.Response): Promise<void> => {
@@ -130,4 +133,8 @@ export function makePostRouter(postService : IPostService = container.resolve(Po
   })
   
   return postRouter;
+}
+
+export function postRouter(): Express.Express {
+  return makePostRouter(makePostDBService());
 }
