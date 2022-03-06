@@ -4,7 +4,7 @@ export function isLoggedIn(req: Express.Request, res: Express.Response, next : N
   if(req.session.currentUser){
     next()
   }else{
-    res.status(403).send();
+    res.status(403).send({status: "Forbidden", reason: "Not logged in"});
   }
 }
 
@@ -12,6 +12,6 @@ export function NotLoggedIn(req: Express.Request, res: Express.Response, next : 
   if(!req.session.currentUser){
     next()
   }else{
-    res.status(403).send();
+    res.status(403).send({status: "Forbidden", reason: "Already logged in"});
   }
 }
