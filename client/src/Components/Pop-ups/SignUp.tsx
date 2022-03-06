@@ -66,18 +66,30 @@ export default class SignUpPopUp extends React.Component<Props> {
             <div className="input-content">
               <div className="input-sub-content">
                 <h2><b>{this.userNameText}</b></h2>
-                <input type="text" value={this.state.inputUserName} placeholder={this.userNamePlaceholder}
-                       onChange={this.onChangeUserName}/>
+                <input 
+                  type="text" 
+                  value={this.state.inputUserName} 
+                  placeholder={this.userNamePlaceholder}
+                  onChange={this.onChangeUserName}
+                  data-testid="username-input"/>
               </div>
               <div className="input-sub-content">
                 <h2><b>{this.userPasswordText}</b></h2>
-                <input type="password" value={this.state.inputPassword} placeholder={this.passwordPlaceholder}
-                       onChange={this.onChangePassword}/>
+                <input 
+                  type="password" 
+                  value={this.state.inputPassword} 
+                  placeholder={this.passwordPlaceholder}
+                  onChange={this.onChangePassword}
+                  data-testid="password-input"/>
               </div>
               <div className="input-sub-content">
                 <h2><b>{this.userEmailText}</b></h2>
-                <input type="text" value={this.state.inputEmail} placeholder={this.emailPlaceholder}
-                       onChange={this.onChangeEmail}/>
+                <input 
+                  type="email" 
+                  value={this.state.inputEmail} 
+                  placeholder={this.emailPlaceholder}
+                  onChange={this.onChangeEmail}
+                  data-testid="email-input"/>
               </div>
               {this.state.errorMsg.length > 0 ?
                   <div className="alert alert-danger">

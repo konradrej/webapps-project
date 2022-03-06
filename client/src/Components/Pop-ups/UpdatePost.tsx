@@ -56,11 +56,21 @@ export default class UpdatePostPopUp extends React.Component<Props>{
           <div className="input-content">
             <div className="input-sub-content">
               <h4><b>{this.userPostTitle}</b></h4>
-              <input type="text" value={this.state.inputPostTitle} placeholder={this.titlePlaceholder} onChange={this.onChangePostTitle} />
+              <input 
+                type="text" 
+                value={this.state.inputPostTitle} 
+                placeholder={this.titlePlaceholder} 
+                onChange={this.onChangePostTitle} 
+                data-testid="title-input"/>
             </div>
             <div className="input-sub-content">
               <h4 ><b>{this.userDescription}</b></h4>
-              <input type="text" value={this.state.inputPostDescription} placeholder={this.descriptionPlaceholder} onChange={this.onChangeDescription} />
+              <input 
+                type="text" 
+                value={this.state.inputPostDescription} 
+                placeholder={this.descriptionPlaceholder} 
+                onChange={this.onChangeDescription}
+                data-testid="description-input" />
             </div>
             <div className="pop-up-button-container">
             <Button className="pop-up-button" onClick={() => this.props.onClose()}>{this.cancelText}</Button>

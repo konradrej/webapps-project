@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-import { Post } from "../../../server/src/model/post.interface";
 import PostCard, { Props as PostCardProps } from "../Components/PostCard/PostCard";
 
 export const getPosts = async function (order: string): Promise<JSX.Element[]> {
