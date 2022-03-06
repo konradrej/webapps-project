@@ -79,7 +79,7 @@ test("A POST request to /login should send a response of unauthorized", () => {
   userService.fail();
   return request.post("/login").send({username: "TEST", password: "TEST"}).then((res) => {
     expect(res.statusCode).toBe(401);
-    expect(res.body).toEqual({reason: "Invalid Credentials"});
+    expect(res.body).toEqual({status: "Unauthorized", reason: "Invalid Credentials"});
   })
 })
 
@@ -115,12 +115,12 @@ test("Sign-up should return 201 if registration succeeds", async () => {
 
 test("Show user should return 200 and the user object if user exists", async () => {
   userService.succeed()
-  await expect(request.get("/show/1")).resolves.toMatchObject({statusCode: 200});
+  await expect(request.get("/1")).resolves.toMatchObject({statusCode: 200});
 })
 
 test("Show user should return 404 if user does not exists", async () => {
   userService.fail()
-  await expect(request.get("/show/1")).resolves.toMatchObject({statusCode: 404});
+  await expect(request.get("/1")).resolves.toMatchObject({statusCode: 404});
 })
 
 test("All guest-only routes should return 404", async () => {

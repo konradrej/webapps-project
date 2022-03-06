@@ -22,7 +22,7 @@ export function makeUserRouter(userService: IUserService = container.resolve(Use
             req.session.currentUser = user;
             res.status(200).send({status: "Authorized"});
           } else {
-            res.status(401).send({reason: "Invalid Credentials"});
+            res.status(401).send({status: "Unauthorized", reason: "Invalid Credentials"});
           }
         })
   })
@@ -49,28 +49,8 @@ export function makeUserRouter(userService: IUserService = container.resolve(Use
 
   userRouter.post("/logout", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     req.session.destroy(() => {
-      res.status(200).send("User logged out")
+      res.status(200).send({status: "User logged out"})
     });
-  })
-
-  userRouter.get("/show/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
-    const id: number = Number(req.params.id);
-    const user = await userService.findById(id);
-
-    if (user) {
-      res.status(200).send({
-        user: {
-          id: user.id,
-          username: user.username,
-          profileImageUrl: user.profileImageUrl,
-          description: user.description,
-          createdAt: user.createdAt,
-        },
-        posts: await postService.getUsersPosts(user.id)
-      });
-    } else {
-      res.status(404).send("Invalid user");
-    }
   })
 
   userRouter.put("/update", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
@@ -103,15 +83,19 @@ export function makeUserRouter(userService: IUserService = container.resolve(Use
   })
 
   userRouter.put("/update/password", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
-    assert(req.session.currentUser, "No user");
-    const id: number = req.session.currentUser.id;
-    const password: string = req.body.password;
+    try {
+      assert(req.session.currentUser, "No user");
+      const id: number = req.session.currentUser.id;
+      const password: string = req.body.password;
 
-    let updated = await userService.setPassword(id, password)
-    if (!updated) {
-      res.status(400).send({status: "Password could not be updated"});
-    } else {
-      res.status(200).send({status: "Password updated"});
+      let updated = await userService.setPassword(id, password)
+      if (!updated) {
+        res.status(400).send({status: "Password could not be updated"});
+      } else {
+        res.status(200).send({status: "Password updated"});
+      }
+    } catch (e: any) {
+      res.status(500).send({error: e.message});
     }
   })
 
@@ -127,6 +111,26 @@ export function makeUserRouter(userService: IUserService = container.resolve(Use
       description: user.description,
       createdAt: user.createdAt,
     })
+  })
+
+  userRouter.get("/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
+    const id: number = Number(req.params.id);
+    const user = await userService.findById(id);
+
+    if (user) {
+      res.status(200).send({
+        user: {
+          id: user.id,
+          username: user.username,
+          profileImageUrl: user.profileImageUrl,
+          description: user.description,
+          createdAt: user.createdAt,
+        },
+        posts: await postService.getUsersPosts(user.id)
+      });
+    } else {
+      res.status(404).send({status: "Invalid user"});
+    }
   })
 
   return userRouter;
