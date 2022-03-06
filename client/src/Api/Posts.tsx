@@ -74,10 +74,8 @@ export const deletePost = async function (postId: number, verifyCreator: number)
   let rv = await axios.delete(process.env.REACT_APP_BASE_API_URL + `/post/${postId}`, {
     data: { verifyCreator: verifyCreator }
   }).then((res: AxiosResponse) => {
-    console.log(res);
     return `${res.data.status}`
   }).catch(function (error) {
-    console.log(error.res)
     return `${error.response.data.status}, ${error.response.data.reason}`
   })
   return rv;
