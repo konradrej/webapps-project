@@ -22,7 +22,7 @@ export function makeUserRouter(userService: IUserService = container.resolve(Use
             req.session.currentUser = user;
             res.status(200).send({status: "Authorized"});
           } else {
-            res.status(401).send({reason: "Invalid Credentials"});
+            res.status(401).send({status: "Unauthorized", reason: "Invalid Credentials"});
           }
         })
   })
