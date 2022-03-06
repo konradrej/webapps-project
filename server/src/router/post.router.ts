@@ -2,7 +2,6 @@ import Express from "express";
 import { PostController } from "../controller/post.controller";
 import { Post } from "../model/post.interface";
 import {IPostService, PostService} from "../service/post.service";
-import {container} from "tsyringe";
 import { makePostDBService } from "../service/post.db.service";
 
 //= container.resolve(PostService)
@@ -22,7 +21,7 @@ export function makePostRouter(postService : IPostService ) : Express.Express {
     }
   })
 
-  postRouter.post("/createPost", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.post("/", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const title: string = req.body.title;
       const description: string = req.body.description;
@@ -57,7 +56,7 @@ export function makePostRouter(postService : IPostService ) : Express.Express {
     }
   })
 
-  postRouter.put("/updatePost/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.put("/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const id: number = parseInt(req.params.id);
       const title: string = req.body.newTitle;
@@ -113,7 +112,7 @@ export function makePostRouter(postService : IPostService ) : Express.Express {
   */
 
   
-  postRouter.delete('/deletePost/:id', async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.delete('/:id', async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
       const id: number = parseInt(req.params.id);
       const creator: number = req.body.verifyCreator;

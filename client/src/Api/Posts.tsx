@@ -28,7 +28,7 @@ export const searchPosts = async function (search: string): Promise<JSX.Element[
 }
 
 export const createPost = async function (title: string, description: string, imageUrl: string, creator: number): Promise<string | null> {
-  let ret = await axios.post(process.env.REACT_APP_BASE_API_URL + `/post/createPost/`, {
+  let ret = await axios.post(process.env.REACT_APP_BASE_API_URL + `/post/`, {
     title: title,
     description: description,
     imageUrl: imageUrl,
@@ -58,7 +58,7 @@ const formatPosts = (posts: any): PostCardProps[] => {
 
 export const updatePost = async function (postId: number, verifyCreator: number, newTitle: string, newDescription: string): Promise<string | null> {
 
-  let rv = await axios.put(process.env.REACT_APP_BASE_API_URL + `/post/updatePost/${postId}`, {
+  let rv = await axios.put(process.env.REACT_APP_BASE_API_URL + `/post/${postId}`, {
     newTitle: newTitle,
     newDescription: newDescription,
     verifyCreator: verifyCreator
@@ -72,7 +72,7 @@ export const updatePost = async function (postId: number, verifyCreator: number,
 
 export const deletePost = async function (postId: number, verifyCreator: number): Promise<string | null> {
 
-  let rv = await axios.delete(process.env.REACT_APP_BASE_API_URL + `/post/deletePost/${postId}`, {
+  let rv = await axios.delete(process.env.REACT_APP_BASE_API_URL + `/post/${postId}`, {
     data: { verifyCreator: verifyCreator }
   }).then((res: AxiosResponse) => {
     console.log(res);
