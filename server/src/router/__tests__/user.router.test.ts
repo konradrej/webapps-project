@@ -79,7 +79,7 @@ test("A POST request to /login should send a response of unauthorized", () => {
   userService.fail();
   return request.post("/login").send({username: "TEST", password: "TEST"}).then((res) => {
     expect(res.statusCode).toBe(401);
-    expect(res.body).toEqual({reason: "Invalid Credentials"});
+    expect(res.body).toEqual({status: "Unauthorized", reason: "Invalid Credentials"});
   })
 })
 
