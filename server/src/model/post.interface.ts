@@ -4,6 +4,6 @@ export interface Post {
   description: string;
   imageUrl: string;
   createdAt: Date;
-  modifiedAt: Date;
+  updatedAt: Date;
   creator: number;
 }

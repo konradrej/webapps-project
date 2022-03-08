@@ -1,45 +1,24 @@
 import {User} from "../model/user.interface";
 import * as bcrypt from "bcrypt";
+import {IUserService,IUpdateObject} from "./user.service";
+import {userModel} from "../db/user.model";
+import mongoose from "mongoose";
 
 const SALTROUNDS: number = 5;
 
-export interface IUserService {
-  findById(id: number): Promise<User | null>
-
-  findByUsername(username: string): Promise<User | null>
-
-  login(username: string, password: string): Promise<User | null>
-
-  register(username: string, password: string, email: string): Promise<User>
-
-  update(id: number, updateObject: IUpdateObject): Promise<boolean>
-
-  setPassword(id: number, password: string): Promise<boolean>
-}
-
-export interface IUpdateObject {
-  email?: string,
-  description?: string,
-  profileImageUrl?: string
-}
-
 export class UserService implements IUserService {
-  private users: { [key: number]: User } = {};
-  private userIdCounter: number = 0;
+  private readonly userModel : mongoose.Model<User>;
 
-  constructor(users: { [key: number]: User } = {}) {
-    this.users = users;
-    let keys = Object.keys(users);
-    if (keys.length > 0)
-      this.userIdCounter = parseInt(keys[keys.length - 1]) ?? 0;
+
+  constructor(userModel :  mongoose.Model<User>) {
+    this.userModel = userModel;
   }
-
   /**
    * Find user with specified id
    * @param id
    */
   async findById(id: number): Promise<User | null> {
-    return this.users[id] ?? null;
+    return this.userModel.findOne({id: id}).exec();
   }
 
   /**
@@ -47,7 +26,7 @@ export class UserService implements IUserService {
    * @param username
    */
   async findByUsername(username: string): Promise<User | null> {
-    return Object.values(this.users).find((user: User) => user.username === username) ?? null
+    return this.userModel.findOne({username: username}).exec();
   }
 
   /**
@@ -72,23 +51,18 @@ export class UserService implements IUserService {
    * @param email email
    */
   async register(username: string, password: string, email: string): Promise<User> {
-    /* Todo: Remove this check */
     if (await this.findByUsername(username))
       throw Error("Username must be unique")
 
-    const user: User = {
-      id: ++this.userIdCounter,
+    return this.userModel.create({
+      id: Date.now(),
       username: username,
       password: bcrypt.hashSync(password, SALTROUNDS),
       email: email,
       createdAt: new Date,
-      updatedAt: new Date,
       description: "",
       profileImageUrl: ""
-    };
-    this.users[user.id] = user;
-
-    return user;
+    });
   }
 
   /**
@@ -97,27 +71,26 @@ export class UserService implements IUserService {
    * @param obj
    */
   async update(id: number, obj: IUpdateObject): Promise<boolean> {
-    const user = this.users[id];
+    const user = await this.findById(id);
     if (!user) return false
 
-    let userCopy = Object.assign({}, user)
-    Object.keys(obj).forEach((prop) => {
-      let val = obj[prop as keyof IUpdateObject];
-
-      if (val) {
-        userCopy[prop as keyof IUpdateObject] = val;
-      }
-    })
-
-    this.users[user.id] = userCopy;
-    return true;
+    return await this.updateUser(user.id, obj);
   }
 
   async setPassword(id: number, password: string): Promise<boolean> {
-    const user = this.users[id];
+    const user = await this.findById(id);
     if (!user) return false
 
     user.password = bcrypt.hashSync(password, SALTROUNDS);
-    return true;
+    return await this.updateUser(user.id, user);
   }
+
+  private async updateUser(id: number, user: Partial<User>){
+    let result = await this.userModel.updateOne({id: id}, user).exec();
+    return result.acknowledged;
+  }
+}
+
+export function makeUserDBService(){
+  return new UserService(userModel);
 }

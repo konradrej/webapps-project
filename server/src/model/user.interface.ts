@@ -6,4 +6,5 @@ export interface User {
   profileImageUrl: string;
   description: string;
   createdAt: Date;
+  updatedAt: Date;
 }

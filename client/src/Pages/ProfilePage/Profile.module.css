@@ -11,4 +11,6 @@
 .header-container img {
     border: 0.2rem solid white;
     border-radius: 50%;
+    width: 125px;
+    height: 125px;
 }

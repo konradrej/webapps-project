@@ -5,6 +5,8 @@ import {makeUserRouter} from "../user.router";
 import {IUserService} from "../../service/user.service";
 import {User} from "../../model/user.interface";
 import session from "express-session";
+import {IPostService} from "../../service/post.service";
+import {Post} from "../../model/post.interface";
 
 class MockUserService implements IUserService {
   serviceSucceed = false;
@@ -47,7 +49,42 @@ class MockUserService implements IUserService {
   }
 }
 
+class MockPostService implements IPostService {
+  createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
+    return Promise.resolve(<Post>{});
+  }
+
+  deletePost(id: number, verifyCreator: number) {
+    return Promise.resolve(false);
+  }
+
+  findById(id: number) {
+    return Promise.resolve(null);
+  }
+
+  getPost(id: number){
+    return Promise.resolve(null);
+  }
+
+  getPosts(order: string){
+    return Promise.resolve([]);
+  }
+
+  getUsersPosts(userId: number){
+    return Promise.resolve([]);
+  }
+
+  searchPosts(search: string){
+    return Promise.resolve([]);
+  }
+
+  updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean> {
+    return Promise.resolve(false);
+  }
+}
+
 let userService: MockUserService,
+    postService: MockPostService = new MockPostService(),
     router: Express.Express,
     request: SuperTest.SuperTest<SuperTest.Test>,
     hasSession: boolean,
@@ -63,7 +100,9 @@ beforeEach(() => {
 
   router.use(Express.json());
   router.use(session({
-    secret: "test"
+    secret: "test",
+    resave: false,
+    saveUninitialized: false,
   }));
 
   router.use((req, res, next) => {
@@ -71,7 +110,7 @@ beforeEach(() => {
     next();
   })
 
-  router.use(makeUserRouter(userService));
+  router.use(makeUserRouter(userService, postService));
   request = SuperTest(router);
 });
 

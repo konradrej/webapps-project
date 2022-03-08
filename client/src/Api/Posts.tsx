@@ -7,11 +7,7 @@ export const getPosts = async function (order: string): Promise<JSX.Element[]> {
     params: {
       order: order
     }
-  }).then((res: AxiosResponse): JSX.Element[] => {
-    const posts: PostCardProps[] = formatPosts(res.data);
-
-    return createItems(posts);
-  })
+  }).then((res: AxiosResponse): JSX.Element[] => createItems(res.data))
 }
 
 export const searchPosts = async function (search: string): Promise<JSX.Element[]> {
@@ -19,11 +15,7 @@ export const searchPosts = async function (search: string): Promise<JSX.Element[
     params: {
       search: search
     }
-  }).then((res: AxiosResponse): JSX.Element[] => {
-    const posts: PostCardProps[] = formatPosts(res.data);
-
-    return createItems(posts);
-  })
+  }).then((res: AxiosResponse): JSX.Element[] => createItems(res.data))
 }
 
 export const createPost = async function (title: string, description: string, imageUrl: string, creator: number): Promise<string | null> {
@@ -40,19 +32,17 @@ export const createPost = async function (title: string, description: string, im
   return ret;
 }
 
-const createItems = (posts: PostCardProps[]): JSX.Element[] => {
-  return posts.map((post: any, i: number) => {
-    return <PostCard key={i} {...post} />;
-  })
-}
+export const createItems = (posts: PostCardProps[]): JSX.Element[] => {
+  return posts
+      .map(((value: any, _: number): void => {
+        value.createdAt = new Date(value.createdAt);
+        value.creatorId = value.creator;
 
-const formatPosts = (posts: any): PostCardProps[] => {
-  return posts.map(((value: any, _: number): void => {
-    value.createdAt = new Date(value.createdAt);
-    value.creatorId = value.creator;
-
-    return value;
-  }));
+        return value;
+      }))
+      .map((post: any, i: number) => {
+        return <PostCard key={i} {...post} />;
+      })
 }
 
 export const updatePost = async function (postId: number, verifyCreator: number, newTitle: string, newDescription: string): Promise<string | null> {

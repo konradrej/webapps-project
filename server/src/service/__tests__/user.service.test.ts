@@ -13,6 +13,7 @@ let createUser = (id?: number): User => {
         description: "",
         email: `test${id}@example.com`,
         createdAt: new Date,
+        updatedAt: new Date,
     }
 }
 

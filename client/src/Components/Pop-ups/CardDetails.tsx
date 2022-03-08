@@ -34,8 +34,10 @@ export default class CardDetailsPopUp extends React.Component<Props>{
     this.setState({updateState: false})
   }
 
-  onCloseDelete = () => {
+  onCloseDelete = (closeAll: boolean = false) => {
     this.setState({deleteState: false})
+    if(closeAll && this.props.onClose)
+      this.props.onClose();
   }
 
   render() {

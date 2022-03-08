@@ -1,10 +1,6 @@
 import axios from "axios";
-import {User as IUser} from "../../../server/src/model/user.interface"
 
-export interface User extends Omit<IUser, "password"> {
-}
-
-export const getCurrentUser = async function (): Promise<User | null> {
+export const getCurrentUser = async function (): Promise<Object | null> {
   let ret = await axios.get(process.env.REACT_APP_BASE_API_URL + "/user/session", {withCredentials: true});
   if (ret.status !== 200) {
     return null;
@@ -13,7 +9,23 @@ export const getCurrentUser = async function (): Promise<User | null> {
   return ret.data;
 }
 
-export const signupUser = async function (username: string, password: string, email: string): Promise<User | null> {
+export const updateCurrentUser = async function(changes: {imageUrl?: string, description?: string}): Promise<any>{
+  if(changes.imageUrl || changes.description) {
+    let ret = await axios.put(process.env.REACT_APP_BASE_API_URL + "/user/update", {
+      profileImageUrl: changes.imageUrl,
+      description: changes.description,
+    }, {withCredentials: true});
+
+    if (ret.status !== 200) {
+      return null;
+    }
+
+    return ret.data;
+  }
+  throw Error("Must either set Image Url or Description")
+}
+
+export const signupUser = async function (username: string, password: string, email: string): Promise<Object | null> {
   let ret = await axios.post(process.env.REACT_APP_BASE_API_URL + "/user/sign-up", {
     username: username,
     password: password,
@@ -30,7 +42,7 @@ export const signupUser = async function (username: string, password: string, em
   return null;
 }
 
-export const loginUser = async function (username: string, password: string): Promise<User | null> {
+export const loginUser = async function (username: string, password: string): Promise<Object | null> {
   let ret = await axios.post(process.env.REACT_APP_BASE_API_URL + "/user/login", {
     username: username,
     password: password

@@ -1,7 +1,7 @@
 import { createConnection } from "mongoose";
 
 export const conn = createConnection(
-  "mongodb://" +
+  "mongodb+srv://" +
   process.env.MONGODB_USERNAME +
   ":" +
   process.env.MONGODB_PASSWORD +

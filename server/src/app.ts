@@ -1,12 +1,10 @@
 import Express from "express";
 import cors from "cors";
-import "reflect-metadata";
-
-import {makeUserRouter} from "./router/user.router";
-import {makePostRouter, postRouter} from "./router/post.router";
-
 import path from "path";
 import session from "express-session";
+
+import {userRouter} from "./router/user.router";
+import {postRouter} from "./router/post.router";
 
 export const app: Express.Express = Express();
 
@@ -17,7 +15,9 @@ app.use(session({
   cookie: {
     httpOnly: true,
     sameSite: "strict",
-  }
+  },
+  resave: false,
+  saveUninitialized: false,
 }))
 
 app.get("/", (req: Express.Request, res: Express.Response) => {
@@ -33,6 +33,6 @@ app.use(cors(process.env?.TS_NODE_DEV ? {
   "optionsSuccessStatus": 204
 } : {}));
 
-app.use("/user", makeUserRouter());
+app.use("/user", userRouter());
 app.use("/post", postRouter());
 

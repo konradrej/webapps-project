@@ -3,49 +3,70 @@ import {Button} from 'react-bootstrap';
 import PopUp from './Pop-up';
 import './PopUp.css'
 import {AuthContext} from '../../AuthContext';
-import {updatePost} from '../../Api/Posts';
 import EventBus from "../../Api/EventBus";
+import {updateCurrentUser} from "../../Api/Auth";
 
 type Props = {
   onClose: Function,
-  postId: number
+  description: string,
+  profileImageUrl: string,
 }
 
 
-export default class UpdatePostPopUp extends React.Component<Props> {
+export default class UpdateUserPopup extends React.Component<Props> {
 
-  private popUpTitle: string = "Edit this post";
+  private popUpTitle: string = "Edit Profile";
   private cancelText: string = "Cancel"
-  private updateText: string = "Update post";
-  private userPostTitle: string = "New title";
-  private userDescription: string = "New description";
-  private titlePlaceholder: string = "Add your title";
-  private descriptionPlaceholder: string = "Tell everyone what your picture is about";
+  private updateText: string = "Update User";
+  private titleImageUrl: string = "New Profile Image";
+  private placeholderImageUrl: string = "New Image URL..."
+  private titleDescription: string = "New description";
+  private placeholderDescription: string = "New Description..."
+
+  constructor(props: Props) {
+    super(props);
+
+    this.state.inputImageUrl = props.profileImageUrl;
+    this.state.inputDescription = props.description;
+  }
 
   state = {
-    inputPostTitle: "",
-    inputPostDescription: "",
+    inputImageUrl: "",
+    inputDescription: "",
     message: ""
   }
 
-  onChangePostTitle = (e: React.FormEvent<HTMLInputElement>): void => {
-    this.setState({inputPostTitle: e.currentTarget.value});
+  onChangeImageUrl = (e: React.FormEvent<HTMLInputElement>): void => {
+    this.setState({inputImageUrl: e.currentTarget.value});
   };
 
   onChangeDescription = (e: React.FormEvent<HTMLInputElement>): void => {
-    this.setState({inputPostDescription: e.currentTarget.value});
+    this.setState({inputDescription: e.currentTarget.value});
   };
 
   onUpdateHandler = (currentUser?: number) => {
-    this.setState({errorMsg: ""})
+    this.setState({message: ""})
     if (currentUser) {
-      updatePost(this.props.postId, currentUser, this.state.inputPostTitle, this.state.inputPostDescription)
+      let updateObj: any = {};
+
+      if (this.props.profileImageUrl != this.state.inputImageUrl)
+        updateObj["imageUrl"] = this.state.inputImageUrl
+
+      if (this.props.description != this.state.inputDescription)
+        updateObj["description"] = this.state.inputDescription
+
+      if (Object.keys(updateObj).length < 1) {
+        this.setState({message: "Change either image or description"})
+        return
+      }
+
+      updateCurrentUser(updateObj)
           .then(() => {
             EventBus.trigger("REFRESH_POSTS", null);
             this.props.onClose()
           })
     } else {
-      this.setState({message: "You must be logged in"})
+      this.setState({message: "Could not update user"})
     }
   }
 
@@ -56,21 +77,21 @@ export default class UpdatePostPopUp extends React.Component<Props> {
             <h2><b>{this.popUpTitle}</b></h2>
             <div className="input-content">
               <div className="input-sub-content">
-                <h4><b>{this.userPostTitle}</b></h4>
+                <h4><b>{this.titleImageUrl}</b></h4>
                 <input
                     type="text"
-                    value={this.state.inputPostTitle}
-                    placeholder={this.titlePlaceholder}
-                    onChange={this.onChangePostTitle}
+                    value={this.state.inputImageUrl}
+                    onChange={this.onChangeImageUrl}
+                    placeholder={this.placeholderImageUrl}
                     data-testid="title-input"/>
               </div>
               <div className="input-sub-content">
-                <h4><b>{this.userDescription}</b></h4>
+                <h4><b>{this.titleDescription}</b></h4>
                 <input
                     type="text"
-                    value={this.state.inputPostDescription}
-                    placeholder={this.descriptionPlaceholder}
+                    value={this.state.inputDescription}
                     onChange={this.onChangeDescription}
+                    placeholder={this.placeholderDescription}
                     data-testid="description-input"/>
               </div>
               <div className="pop-up-button-container">

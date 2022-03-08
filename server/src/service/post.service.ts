@@ -1,5 +1,4 @@
 import { Post } from "../model/post.interface";
-import {Lifecycle, registry} from "tsyringe";
 
 export interface IPostService {
   getPosts(order: string): Promise<Array<Post>>
@@ -12,11 +11,6 @@ export interface IPostService {
   searchPosts (search: string): Promise<Post[]>
 }
 
-@registry([{
-  token: "PostService",
-  useClass: PostService,
-  options: {lifecycle: Lifecycle.Singleton} // Tsyringe has problem with default parameter, registering singleton without injectable
-}])
 export class PostService implements IPostService {
   private posts: { [key: number]: Post };
   private postIdCounter: number = 0;
@@ -64,7 +58,7 @@ export class PostService implements IPostService {
       description: description,
       imageUrl: imageUrl,
       createdAt: new Date(),
-      modifiedAt: new Date(),
+      updatedAt: new Date(),
       creator: creator
     }
 
@@ -87,7 +81,7 @@ export class PostService implements IPostService {
     if (newTitle) {
       this.posts[id].title = newTitle;
     }
-    this.posts[id].modifiedAt = new Date();
+    this.posts[id].updatedAt = new Date();
     return true;
   }
 
