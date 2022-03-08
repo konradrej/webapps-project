@@ -1,26 +1,31 @@
 import { IPostService } from "./post.service";
 import { postModel } from "../db/post.model";
 import { Post } from "../model/post.interface";
+import { Model } from "mongoose";
 
 export class PostDBService implements IPostService{
+  private model;
+  constructor(model: Model<Post, {}, {}>){
+    this.model = model;
+  }
   async getPosts(order: string): Promise<Post[]> {
     switch (order) {
       // Title A-Z
       case "title-ascending": {
-        return Object.values(await postModel.find()).sort(
+        return Object.values(await this.model.find()).sort(
           (a, b) => a.title < b.title ? -1 : 1
         )
       }
       // Title Z-A
       case "title-descending": {
-        return Object.values(await postModel.find()).sort(
+        return Object.values(await this.model.find()).sort(
           (a, b) => a.title < b.title ? 1 : -1
         )
       }
       // Most recent first
       case "recent-descending":
       default: {
-        return Object.values(await postModel.find()).sort(
+        return Object.values(await this.model.find()).sort(
           (a, b) => a.createdAt < b.createdAt ? 1 : -1
         );
       }
@@ -28,7 +33,7 @@ export class PostDBService implements IPostService{
   }
 
   async createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
-    return await postModel.create({
+    return await this.model.create({
       id : new Date().valueOf(), //Change this?
       title : title,
       description : description,
@@ -38,24 +43,24 @@ export class PostDBService implements IPostService{
   }
 
   async updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean> {
-    if(!(await postModel.exists({id : id}))){
+    if(!(await this.model.exists({id : id}))){
       throw Error("Post not found");
     }
-    if(!(await postModel.exists({id : id , creator : verifyCreator}))){
+    if(!(await this.model.exists({id : id , creator : verifyCreator}))){
       throw Error("Specified user is not creator");
     }
     if(newDescription){
-      await postModel.updateOne({id : id }, {description : newDescription});
+      await this.model.updateOne({id : id }, {description : newDescription});
     }
     if(newTitle){
-      await postModel.updateOne({id : id }, {title : newTitle});
+      await this.model.updateOne({id : id }, {title : newTitle});
     }
 
-    await postModel.updateOne({id : id }, {modifiedAt : new Date()});
+    await this.model.updateOne({id : id }, {modifiedAt : new Date()});
     return true;
   }
   async getPost(id: number): Promise<Post> {
-    const post: Post | null  = await postModel.findOne({id : id})
+    const post: Post | null  = await this.model.findOne({id : id})
     if(!post){
       throw Error("Post not found");
     }
@@ -68,23 +73,23 @@ export class PostDBService implements IPostService{
   }
 
   async getUsersPosts(userId: number): Promise<Post[]> {
-    return await postModel.find({creator : userId});
+    return await this.model.find({creator : userId});
   }
 
   async deletePost(id: number, verifyCreator: number): Promise<boolean> {
-    if(!(await postModel.exists({id : id}))){
+    if(!(await this.model.exists({id : id}))){
       throw Error("Post not found");
     }
-    if(!(await postModel.exists({id : id , creator : verifyCreator}))){
+    if(!(await this.model.exists({id : id , creator : verifyCreator}))){
       throw Error("Specified user is not creator");
     }
-    await postModel.deleteOne({id : id})
+    await this.model.deleteOne({id : id})
     return true;
   }
 
   async searchPosts(search: string): Promise<Post[]> {
     const searchResult: Post[] = [];
-    const dbPosts: Post[] = await postModel.find();
+    const dbPosts: Post[] = await this.model.find();
 
     dbPosts.forEach((post: Post) => {
       const titleArray: string[] = post.title.toLowerCase().split(" ");
@@ -104,5 +109,5 @@ export class PostDBService implements IPostService{
 }
 
 export function makePostDBService (){
-  return new PostDBService();
+  return new PostDBService(postModel);
 }

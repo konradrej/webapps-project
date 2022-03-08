@@ -1,8 +1,8 @@
-import { Schema, Model } from "mongoose";
+import { Schema } from "mongoose";
 import { Post } from "../model/post.interface";
 import { conn } from "./conn";
 
-const PostSchema : Schema = new Schema({
+export const PostSchema : Schema = new Schema({
   id : {
     type : Number,
     required : true,

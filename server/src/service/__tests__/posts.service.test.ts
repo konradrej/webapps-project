@@ -31,8 +31,8 @@ test("Create a post and update the post with new properties", async () => {
 
 test("Create a post with new properties, update the post with another user and update a post that does not exist", async () => {
   const postService = new PostService({});
-  return await postService.createPost("postTitle", "postDescription", "postURL", 0).then( async (_ : Post) => {
-    expect(postService.updatePost( 1, "newPostTitle", "postDescription" , 1)).rejects.toThrowError(new Error("Specified user is not creator"));
+  return await postService.createPost("postTitle", "postDescription", "postURL", 0).then( async (post : Post) => {
+    expect(postService.updatePost( post.id, "newPostTitle", "postDescription" , 1)).rejects.toThrowError(new Error("Specified user is not creator"));
     expect(postService.updatePost(3, "newTitle", "newDescription", 0)).rejects.toThrowError(new Error("Post not found"))
   })
 });
@@ -40,10 +40,10 @@ test("Create a post with new properties, update the post with another user and u
 test("Create four posts with different titles in different point in time and check the sorting", async () => {
   const postService = new PostService({});
 
-  postService.createPost("dPostTitle", "postDescription", "postURL", 0);
-  postService.createPost("cPostTitle", "postDescription", "postURL", 0);
-  postService.createPost("aPostTitle", "postDescription", "postURL", 0);
-  postService.createPost("bPostTitle", "postDescription", "postURL", 0);
+  await postService.createPost("dPostTitle", "postDescription", "postURL", 0);
+  await postService.createPost("cPostTitle", "postDescription", "postURL", 0);
+  await postService.createPost("aPostTitle", "postDescription", "postURL", 0);
+  await postService.createPost("bPostTitle", "postDescription", "postURL", 0);
 
   return await postService.getPosts("title-ascending").then(async (alphabetic : Post []) => {
     expect(alphabetic[0].title).toBe("aPostTitle");
@@ -72,10 +72,10 @@ test("Create four posts with different titles in different point in time and che
 
 test("Create a couple of posts with different creator and get all posts of the given user id", async () => {
   const postService = new PostService({});
-  postService.createPost("dPostTitle", "postDescription", "postURL", 0);
-  postService.createPost("cPostTitle", "postDescription", "postURL", 1);
-  postService.createPost("aPostTitle", "postDescription", "postURL", 1);
-  postService.createPost("bPostTitle", "postDescription", "postURL", 2);
+  await postService.createPost("dPostTitle", "postDescription", "postURL", 0);
+  await postService.createPost("cPostTitle", "postDescription", "postURL", 1);
+  await postService.createPost("aPostTitle", "postDescription", "postURL", 1);
+  await postService.createPost("bPostTitle", "postDescription", "postURL", 2);
 
   return await postService.getUsersPosts(1).then((posts) => {
     expect(posts.length).toBe(2);
