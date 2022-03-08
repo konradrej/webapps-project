@@ -78,7 +78,7 @@ test("Setup a inmemory database and creating a post and try to update with inval
   })
 });
 
-test("Setup a inmemory database and creating a post and try to update with invalid id and creator", async () => {
+test("Setup a inmemory database and creating 4 posts and check the order of the posts", async () => {
   const mongod = await MongoMemoryServer.create();
   const uri = mongod.getUri();
   const testConn = createConnection(uri)
