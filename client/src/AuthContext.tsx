@@ -1,8 +1,8 @@
 import React, { createContext, useState, FC, useEffect } from "react";
-import { getCurrentUser, loginUser, logoutUser, signupUser, User } from "./Api/Auth";
+import { getCurrentUser, loginUser, logoutUser, signupUser } from "./Api/Auth";
 
 export interface AuthContextState {
-  currentUser?: User;
+  currentUser?: any;
   login: (username: string, password: string) => Promise<boolean>;
   register: (username: string, password: string, email: string) => Promise<boolean>;
   logout: () => Promise<boolean>;

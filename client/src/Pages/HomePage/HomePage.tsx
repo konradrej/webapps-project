@@ -5,6 +5,7 @@ import SortSelector from "../../Components/SortSelector/SortSelector";
 import styles from "./HomePage.module.css";
 import PopUp from "../../Components/Pop-ups/Pop-up";
 import { getPosts } from "../../Api/Posts";
+import EventBus from "../../Api/EventBus";
 
 export type Props = {
   
@@ -12,14 +13,17 @@ export type Props = {
 
 type State = {
   items: JSX.Element[],
-  errorPopup?: JSX.Element
+  errorPopup?: JSX.Element,
+  eventKey: string
 }
 
 export default class HomePage extends React.Component<Props>{
   state: State = {
     items: [],
-    errorPopup: undefined
+    errorPopup: undefined,
+    eventKey: ""
   }
+  eventListeners: {[event: string] : number} = {};
 
   getPosts = async (order?: string): Promise<void> => {
     getPosts(order ?? "").then((items: JSX.Element[]) => {
@@ -40,13 +44,19 @@ export default class HomePage extends React.Component<Props>{
   }
 
   onSelect = (eventKey: string): void => {
+    this.setState({eventKey: eventKey})
     this.getPosts(eventKey);
   }
 
   componentDidMount() {
-    this.getPosts();
+    this.getPosts(this.state.eventKey);
+    this.eventListeners["REFRESH_POSTS"] = EventBus.addListener("REFRESH_POSTS", () => this.getPosts(this.state.eventKey));
   }
- 
+
+  componentWillUnmount() {
+    EventBus.removeListener("REFRESH_POSTS", this.eventListeners["REFRESH_POSTS"])
+  }
+
   render() {
     return (
       <>

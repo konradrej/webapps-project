@@ -116,7 +116,7 @@ test("Expect searchPosts to return only matching posts sorted by recent order", 
         "description": "Description",
         "imageUrl": "URL",
         "createdAt": new Date("2022-02-22T10:51:18.979Z"),
-        "modifiedAt": new Date("2022-02-22T10:51:18.979Z"),
+        "updatedAt": new Date("2022-02-22T10:51:18.979Z"),
         "creator": 0
     },
     3: {
@@ -125,7 +125,7 @@ test("Expect searchPosts to return only matching posts sorted by recent order", 
         "description": "Description",
         "imageUrl": "URL",
         "createdAt": new Date("2022-02-22T10:51:13.530Z"),
-        "modifiedAt": new Date("2022-02-22T10:51:13.530Z"),
+        "updatedAt": new Date("2022-02-22T10:51:13.530Z"),
         "creator": 0
     },
     2: {
@@ -134,7 +134,7 @@ test("Expect searchPosts to return only matching posts sorted by recent order", 
         "description": "Description",
         "imageUrl": "URL",
         "createdAt": new Date("2022-02-22T10:51:08.373Z"),
-        "modifiedAt": new Date("2022-02-22T10:51:08.373Z"),
+        "updatedAt": new Date("2022-02-22T10:51:08.373Z"),
         "creator": 0
     },
     1: {
@@ -143,7 +143,7 @@ test("Expect searchPosts to return only matching posts sorted by recent order", 
         "description": "Description",
         "imageUrl": "URL",
         "createdAt": new Date("2022-02-22T10:51:03.680Z"),
-        "modifiedAt": new Date("2022-02-22T10:51:03.680Z"),
+        "updatedAt": new Date("2022-02-22T10:51:03.680Z"),
         "creator": 0
     }
   };

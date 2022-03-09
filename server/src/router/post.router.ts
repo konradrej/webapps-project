@@ -1,10 +1,8 @@
 import Express from "express";
 import { PostController } from "../controller/post.controller";
 import { Post } from "../model/post.interface";
-import {IPostService, PostService} from "../service/post.service";
+import {IPostService} from "../service/post.service";
 import { makePostDBService } from "../service/post.db.service";
-
-//= container.resolve(PostService)
 
 export function makePostRouter(postService : IPostService ) : Express.Express {
   const postRouter: Express.Express = Express();

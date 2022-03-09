@@ -87,7 +87,7 @@ test("A POST request to / should send a response of post successfully created", 
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.post("/").send({ title: "titleTest", description: "desscriptionTest", imageUrl: "imageTest", creator: 0 }).then((res) => {
+  return request.post("/").send({ title: "titleTest", description: "desscriptionTest", imageUrl: "https://valid.image.url", creator: 0 }).then((res) => {
     expect(res.statusCode).toBe(201)
   })
 })
@@ -99,7 +99,7 @@ test("A POST request to / should fail when using MockPostServiceFails", () => {
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.post("/").send({ title: "Title", description: "Description", imageUrl: "imageTest", creator: 0 }).then((res) => {
+  return request.post("/").send({ title: "Title", description: "Description", imageUrl: "https://valid.image.url", creator: 0 }).then((res) => {
     expect(res.statusCode).toBe(400);
     expect(res.body).toEqual({status: "Could not create post", reason: "MockPostServiceFails"})
   })

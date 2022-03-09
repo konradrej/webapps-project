@@ -56,7 +56,6 @@ export class PostDBService implements IPostService{
       await this.model.updateOne({id : id }, {title : newTitle});
     }
 
-    await this.model.updateOne({id : id }, {modifiedAt : new Date()});
     return true;
   }
   async getPost(id: number): Promise<Post> {
@@ -73,7 +72,7 @@ export class PostDBService implements IPostService{
   }
 
   async getUsersPosts(userId: number): Promise<Post[]> {
-    return await this.model.find({creator : userId});
+    return this.model.find({creator : userId}).sort({createdAt: "descending"});
   }
 
   async deletePost(id: number, verifyCreator: number): Promise<boolean> {

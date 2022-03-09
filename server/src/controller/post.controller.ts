@@ -1,3 +1,4 @@
+
 export class PostController {
   static validateCreatePost = async (title: string, imageUrl: string, creator: number): Promise<void> => {
     if (!title) {
@@ -6,14 +7,16 @@ export class PostController {
     if (!creator && creator !== 0) {
       throw new Error("Missing creator");
     }
+
     if (!imageUrl) {
       throw new Error("Missing image");
+    } else {
+      try {
+        new URL(imageUrl);
+      } catch (err) {
+        throw Error("Bad URL");
+      }
     }
-    /*TODO Check if jpeg png 
-    var allowed = /(\.jpg|\.jpeg|\.png)$/i;
-    if(!allowed.exec(imageUrl)){
-      throw Error ("Wrong format");
-    }*/
   }
 
   static validateUpdatePost = async (creator: number): Promise<void> => {
