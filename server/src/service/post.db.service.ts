@@ -2,6 +2,8 @@ import { IPostService } from "./post.service";
 import { postModel } from "../db/post.model";
 import { Post } from "../model/post.interface";
 import { Model } from "mongoose";
+import { userModel } from "../db/user.model";
+import { User } from "../model/user.interface";
 
 export class PostDBService implements IPostService{
   private model;
@@ -12,33 +14,31 @@ export class PostDBService implements IPostService{
     switch (order) {
       // Title A-Z
       case "title-ascending": {
-        return Object.values(await this.model.find()).sort(
-          (a, b) => a.title < b.title ? -1 : 1
-        )
+        return Object.values(await this.model.find().populate("creator"))
+        .sort((a, b) => a.title < b.title ? -1 : 1)
       }
       // Title Z-A
       case "title-descending": {
-        return Object.values(await this.model.find()).sort(
-          (a, b) => a.title < b.title ? 1 : -1
-        )
+        return Object.values(await this.model.find().populate("creator"))
+        .sort((a, b) => a.title < b.title ? 1 : -1)
       }
       // Most recent first
       case "recent-descending":
       default: {
-        return Object.values(await this.model.find()).sort(
-          (a, b) => a.createdAt < b.createdAt ? 1 : -1
-        );
+        return Object.values(await this.model.find().populate("creator"))
+        .sort((a, b) => a.createdAt < b.createdAt ? 1 : -1)
       }
     }
   }
 
   async createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
+    const userCreator: User | null = await userModel.findOne({id: creator})
     return await this.model.create({
       id : new Date().valueOf(), //Change this?
       title : title,
       description : description,
       imageUrl : imageUrl,
-      creator : creator
+      creator : userCreator
     })
   }
 
@@ -72,7 +72,9 @@ export class PostDBService implements IPostService{
   }
 
   async getUsersPosts(userId: number): Promise<Post[]> {
-    return this.model.find({creator : userId}).sort({createdAt: "descending"});
+    const user: User | null = await userModel.findOne({id: userId})
+    return await this.model.find({creator : user}).populate("creator")
+    .sort({createdAt: "descending"});
   }
 
   async deletePost(id: number, verifyCreator: number): Promise<boolean> {

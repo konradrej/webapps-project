@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import mongoose,{ Schema } from "mongoose";
 import { Post } from "../model/post.interface";
 import { conn } from "./conn";
 
@@ -20,8 +20,8 @@ export const PostSchema : Schema = new Schema({
     required : true,
   },
   creator : {
-    type : Number,
-    required : true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
   }
 }, {
   timestamps: true

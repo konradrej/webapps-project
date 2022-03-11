@@ -128,16 +128,9 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
     try {
       const id: number = Number(req.params.id);
       const user = await userService.findById(id);
-
       if (user) {
         res.status(200).send({
-          user: {
-            id: user.id,
-            username: user.username,
-            profileImageUrl: user.profileImageUrl,
-            description: user.description,
-            createdAt: user.createdAt,
-          },
+          user: user,
           posts: await postService.getUsersPosts(user.id)
         });
       } else {

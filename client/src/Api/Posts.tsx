@@ -34,7 +34,9 @@ export const createItems = (posts: PostCardProps[]): JSX.Element[] => {
   return posts
       .map(((value: any, _: number): void => {
         value.createdAt = new Date(value.createdAt);
-        value.creatorId = value.creator;
+        value.creatorId = value.creator.id;
+        value.creatorUsername  = value.creator.username;
+        value.creatorProfileImageUrl = value.creator.profileImageUrl;
 
         return value;
       }))
