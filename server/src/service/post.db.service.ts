@@ -92,7 +92,7 @@ export class PostDBService implements IPostService{
 
   async searchPosts(search: string): Promise<Post[]> {
     const searchResult: Post[] = [];
-    const dbPosts: Post[] = await this.model.find();
+    const dbPosts: Post[] = await this.model.find().populate("creator");
 
     dbPosts.forEach((post: Post) => {
       const titleArray: string[] = post.title.toLowerCase().split(" ");
