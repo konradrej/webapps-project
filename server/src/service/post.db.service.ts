@@ -43,10 +43,11 @@ export class PostDBService implements IPostService{
   }
 
   async updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean> {
+    const userCreator: User | null = await userModel.findOne({id: verifyCreator})
     if(!(await this.model.exists({id : id}))){
       throw Error("Post not found");
     }
-    if(!(await this.model.exists({id : id , creator : verifyCreator}))){
+    if(!(await this.model.exists({id : id , creator : userCreator}))){
       throw Error("Specified user is not creator");
     }
     if(newDescription){
@@ -78,10 +79,11 @@ export class PostDBService implements IPostService{
   }
 
   async deletePost(id: number, verifyCreator: number): Promise<boolean> {
+    const userCreator: User | null = await userModel.findOne({id: verifyCreator})
     if(!(await this.model.exists({id : id}))){
       throw Error("Post not found");
     }
-    if(!(await this.model.exists({id : id , creator : verifyCreator}))){
+    if(!(await this.model.exists({id : id , creator : userCreator}))){
       throw Error("Specified user is not creator");
     }
     await this.model.deleteOne({id : id})
