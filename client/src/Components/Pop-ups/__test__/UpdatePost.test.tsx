@@ -1,6 +1,12 @@
 import UpdatePostPopUp from '../UpdatePost';
-import { render as secondRender, screen } from '@testing-library/react';
+import {render as secondRender, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import EventBus from "../../../Api/EventBus";
+import {updatePost} from "../../../Api/Posts";
+import CreatePostPopUp from "../CreatePost";
+
+jest.mock('../../../Api/Posts');
+jest.mock('../../../Api/EventBus');
 
 describe("Update post input values", () => {
  
@@ -24,3 +30,32 @@ describe("Update post input values", () => {
     expect(inputEl).toHaveAttribute("type", "text");
   }); 
 });
+
+test("UpdatePost should emit to Eventbus if update succeeded", async () => {
+  secondRender(<UpdatePostPopUp onClose={() => {}}  postId={1}/>);
+
+  userEvent.type(screen.getByTestId("title-input"), "Title");
+  userEvent.type(screen.getByTestId("description-input"), "new post description");
+
+  (updatePost as jest.Mocked<any>).mockResolvedValue("123");
+  userEvent.click(screen.getByTestId("submit-button"));
+  await waitFor(() =>
+      expect(updatePost).toHaveBeenCalled()
+  )
+  expect(EventBus.trigger).toHaveBeenCalledTimes(1)
+})
+
+
+test("UpdatePost should show error message if update failed", async () => {
+  const {container} = secondRender(<UpdatePostPopUp onClose={() => {}}  postId={1}/>);
+
+  userEvent.type(screen.getByTestId("title-input"), "Title");
+  userEvent.type(screen.getByTestId("description-input"), "new post description");
+
+  (updatePost as jest.Mocked<any>).mockRejectedValue(new Error("Mock failure"))
+  userEvent.click(screen.getByTestId("submit-button"));
+  await waitFor(() =>
+      expect(updatePost).toHaveBeenCalled()
+  )
+  expect(container.querySelector(".alert.alert-danger")?.textContent).toEqual("Mock failure")
+})

@@ -2,9 +2,9 @@ import React from 'react';
 import {Button} from 'react-bootstrap';
 import PopUp from './Pop-up';
 import './PopUp.css'
-import {AuthContext} from '../../AuthContext';
 import EventBus from "../../Api/EventBus";
 import {updateCurrentUser} from "../../Api/Auth";
+import {validateImage} from "../../Api/Utils";
 
 type Props = {
   onClose: Function,
@@ -44,30 +44,34 @@ export default class UpdateUserPopup extends React.Component<Props> {
     this.setState({inputDescription: e.currentTarget.value});
   };
 
-  onUpdateHandler = (currentUser?: number) => {
+  onUpdateHandler = async () => {
     this.setState({message: ""})
-    if (currentUser) {
-      let updateObj: any = {};
 
-      if (this.props.profileImageUrl != this.state.inputImageUrl)
+    let updateObj: any = {};
+    if (this.props.profileImageUrl != this.state.inputImageUrl) {
+      let imageValidation = await validateImage(this.state.inputImageUrl);
+      if(imageValidation.status) {
         updateObj["imageUrl"] = this.state.inputImageUrl
-
-      if (this.props.description != this.state.inputDescription)
-        updateObj["description"] = this.state.inputDescription
-
-      if (Object.keys(updateObj).length < 1) {
-        this.setState({message: "Change either image or description"})
-        return
+      }else{
+        this.setState({message: "Image error: "+imageValidation.message});
+        return;
       }
-
-      updateCurrentUser(updateObj)
-          .then(() => {
-            EventBus.trigger("REFRESH_POSTS", null);
-            this.props.onClose()
-          })
-    } else {
-      this.setState({message: "Could not update user"})
     }
+
+    if (this.props.description != this.state.inputDescription)
+      updateObj["description"] = this.state.inputDescription
+
+    if (Object.keys(updateObj).length < 1) {
+      this.setState({message: "Change either image or description"})
+      return
+    }
+
+    updateCurrentUser(updateObj)
+        .then(() => {
+          EventBus.trigger("REFRESH_POSTS", null);
+          this.props.onClose()
+        })
+        .catch((error) => this.setState({message: error.message}))
   }
 
   render() {
@@ -83,7 +87,7 @@ export default class UpdateUserPopup extends React.Component<Props> {
                     value={this.state.inputImageUrl}
                     onChange={this.onChangeImageUrl}
                     placeholder={this.placeholderImageUrl}
-                    data-testid="title-input"/>
+                    data-testid="imageURL-input"/>
               </div>
               <div className="input-sub-content">
                 <h4><b>{this.titleDescription}</b></h4>
@@ -96,14 +100,9 @@ export default class UpdateUserPopup extends React.Component<Props> {
               </div>
               <div className="pop-up-button-container">
                 <Button className="pop-up-button" onClick={() => this.props.onClose()}>{this.cancelText}</Button>
-                <AuthContext.Consumer>
-                  {context => (
-                      <>
-                        <Button className="pop-up-button"
-                                onClick={() => this.onUpdateHandler.bind(this)(context.currentUser?.id)}>{this.updateText}</Button>
-                      </>
-                  )}
-                </AuthContext.Consumer>
+                <Button className="pop-up-button"
+                        onClick={() => this.onUpdateHandler.bind(this)()}
+                        data-testid="submit-button">{this.updateText}</Button>
               </div>
               {
                 this.state.message.length > 0 ?

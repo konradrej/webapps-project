@@ -24,7 +24,7 @@ export default class DeletePostPopup extends React.Component<Props> {
   onDeleteHandler = (currentUser?: number) => {
     this.setState({errorMsg: ""})
     if (currentUser) {
-      deletePost(this.props.postId, currentUser)
+      deletePost(this.props.postId)
           .then(() => {
             EventBus.trigger("REFRESH_POSTS", null);
             this.props.onClose(true)

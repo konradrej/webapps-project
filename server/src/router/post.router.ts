@@ -1,10 +1,12 @@
 import Express from "express";
-import { PostController } from "../controller/post.controller";
-import { Post } from "../model/post.interface";
+import {PostController} from "../controller/post.controller";
+import {Post} from "../model/post.interface";
 import {IPostService} from "../service/post.service";
-import { makePostDBService } from "../service/post.db.service";
+import {makePostDBService} from "../service/post.db.service";
+import {isLoggedIn} from "../middleware/auth.middleware";
+import assert from "assert";
 
-export function makePostRouter(postService : IPostService ) : Express.Express {
+export function makePostRouter(postService: IPostService): Express.Express {
   const postRouter: Express.Express = Express();
 
   postRouter.get("/", async (req: Express.Request, res: Express.Response): Promise<void> => {
@@ -19,12 +21,14 @@ export function makePostRouter(postService : IPostService ) : Express.Express {
     }
   })
 
-  postRouter.post("/", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.post("/", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
+      assert(req.session.currentUser, "No user");
+      const creator: number = req.session.currentUser.id;
+
       const title: string = req.body.title;
       const description: string = req.body.description;
       const imageUrl: string = req.body.imageUrl;
-      const creator: number = req.body.creator;
 
       PostController.validateCreatePost(title, imageUrl, creator).then((): Promise<Post> => {
         return postService.createPost(title, description, imageUrl, creator);
@@ -54,17 +58,19 @@ export function makePostRouter(postService : IPostService ) : Express.Express {
     }
   })
 
-  postRouter.put("/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.put("/:id", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
+      assert(req.session.currentUser, "No user");
+      const creator: number = req.session.currentUser.id;
+
       const id: number = parseInt(req.params.id);
       const title: string = req.body.newTitle;
       const description: string = req.body.newDescription;
-      const creator: number = req.body.verifyCreator;
 
       PostController.validateUpdatePost(creator).then((): Promise<boolean> => {
         return postService.updatePost(id, title, description, creator);
       }).then((success: boolean): void => {
-        if(success) {
+        if (success) {
           res.status(200).send({status: "Post updated"});
         }
       }).catch((e: any): void => {
@@ -89,36 +95,16 @@ export function makePostRouter(postService : IPostService ) : Express.Express {
     }
   })
 
-  /*
-  postRouter.get("/getUserPosts/:id", async (req: Express.Request, res: Express.Response): Promise<void> => {
+  postRouter.delete('/:id', isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      const UserId: number = parseInt(req.params.id);
-      postController.validateGetUserPosts(UserId).then(() =>{
-        postService.getUsersPosts(UserId).then((userPosts: Post[]) => {
-          if(userPosts){
-            res.status(200).send(userPosts)
-          }
-        }).catch((e: any): void => {
-          res.status(404).send({status: "Post not found", reason: e.message})
-      }).catch((e:any): void => {
-        res.status(400).send({status: "Validation failed", reason: e.message})
-      })
-    } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
-    }
-  })
-  */
-
-  
-  postRouter.delete('/:id', async (req: Express.Request, res: Express.Response): Promise<void> => {
-    try {
+      assert(req.session.currentUser, "No user");
+      const creator: number = req.session.currentUser.id;
       const id: number = parseInt(req.params.id);
-      const creator: number = req.body.verifyCreator;
 
       PostController.validateDeletePost(id, creator).then((): Promise<boolean> => {
         return postService.deletePost(id, creator);
       }).then((success: boolean): void => {
-        if(success) {
+        if (success) {
           res.status(200).send({status: "Post deleted"});
         }
       }).catch((e: any): void => {
@@ -128,7 +114,7 @@ export function makePostRouter(postService : IPostService ) : Express.Express {
       res.status(500).send({status: "Server error", reason: e.message});
     }
   })
-  
+
   return postRouter;
 }
 

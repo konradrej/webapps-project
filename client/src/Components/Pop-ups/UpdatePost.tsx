@@ -2,7 +2,6 @@ import React from 'react';
 import {Button} from 'react-bootstrap';
 import PopUp from './Pop-up';
 import './PopUp.css'
-import {AuthContext} from '../../AuthContext';
 import {updatePost} from '../../Api/Posts';
 import EventBus from "../../Api/EventBus";
 
@@ -10,7 +9,6 @@ type Props = {
   onClose: Function,
   postId: number
 }
-
 
 export default class UpdatePostPopUp extends React.Component<Props> {
 
@@ -36,17 +34,14 @@ export default class UpdatePostPopUp extends React.Component<Props> {
     this.setState({inputPostDescription: e.currentTarget.value});
   };
 
-  onUpdateHandler = (currentUser?: number) => {
+  onUpdateHandler = () => {
     this.setState({errorMsg: ""})
-    if (currentUser) {
-      updatePost(this.props.postId, currentUser, this.state.inputPostTitle, this.state.inputPostDescription)
-          .then(() => {
-            EventBus.trigger("REFRESH_POSTS", null);
-            this.props.onClose()
-          })
-    } else {
-      this.setState({message: "You must be logged in"})
-    }
+    updatePost(this.props.postId, this.state.inputPostTitle, this.state.inputPostDescription)
+        .then(() => {
+          EventBus.trigger("REFRESH_POSTS", null);
+          this.props.onClose()
+        })
+        .catch((error) => this.setState({message: error.message}))
   }
 
   render() {
@@ -75,14 +70,9 @@ export default class UpdatePostPopUp extends React.Component<Props> {
               </div>
               <div className="pop-up-button-container">
                 <Button className="pop-up-button" onClick={() => this.props.onClose()}>{this.cancelText}</Button>
-                <AuthContext.Consumer>
-                  {context => (
-                      <>
-                        <Button className="pop-up-button"
-                                onClick={() => this.onUpdateHandler.bind(this)(context.currentUser?.id)}>{this.updateText}</Button>
-                      </>
-                  )}
-                </AuthContext.Consumer>
+                <Button className="pop-up-button"
+                        onClick={() => this.onUpdateHandler.bind(this)()}
+                        data-testid="submit-button">{this.updateText}</Button>
               </div>
               {
                 this.state.message.length > 0 ?
