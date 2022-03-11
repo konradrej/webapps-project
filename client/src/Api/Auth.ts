@@ -5,7 +5,6 @@ export const getCurrentUser = async function (): Promise<Object | null> {
   if (ret.status !== 200) {
     return null;
   }
-
   return ret.data;
 }
 

@@ -17,7 +17,7 @@ describe('These tests verify if a request has been called)', () => {
 
     mockedAxios.put.mockResolvedValueOnce(mockedResponse)
     expect(axios.put).not.toHaveBeenCalled();
-    await updatePost(1, 1, "newTitle", "newDescription");
+    await updatePost(1, "newTitle", "newDescription");
     expect(axios.put).toHaveBeenCalled();
   });
 
@@ -33,7 +33,7 @@ describe('These tests verify if a request has been called)', () => {
 
     mockedAxios.delete.mockResolvedValueOnce(mockedResponse)
     expect(axios.delete).not.toHaveBeenCalled();
-    await deletePost(1, 1);
+    await deletePost(1);
     expect(axios.delete).toHaveBeenCalled();
   });
 });
