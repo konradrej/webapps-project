@@ -1,9 +1,21 @@
 import Express from "express";
 import SuperTest from "supertest";
-
+import session from "express-session";
+import { User } from "../../model/user.interface";
 import { makePostRouter } from "../post.router";
 import { IPostService, } from "../../service/post.service";
 import { Post } from "../../model/post.interface";
+
+const mockUser: User = {
+  id: 1,
+  username: "test",
+  password: "test",
+  email: "test@test.com",
+  profileImageUrl: "test",
+  description: "",
+  createdAt: new Date,
+  updatedAt: new Date,
+}
 
 class MockPostService implements IPostService {
   constructor() {
@@ -80,26 +92,47 @@ function makeMockPostServiceFails(): MockPostServiceFails {
   return new MockPostServiceFails();
 }
 
-test("A POST request to / should send a response of post successfully created", () => {
-  const postService: IPostService = makeMockPostService()
-  const router: Express.Express = Express();
+let router: Express.Express,
+    hasSession: boolean,
+    /** Set whether session should be mocked or not */
+    setSession = function (bool: boolean) {
+      hasSession = bool;
+    };
+
+
+beforeEach(() => {
+  router = Express();
   router.use(Express.json());
+  router.use(session({
+    secret: "test",
+    resave: false,
+    saveUninitialized: false,
+  }));
+
+  router.use((req, res, next) => {
+    req.session.currentUser = hasSession ? mockUser : null;
+    next();
+  })
+});
+
+test("A POST request to / should send a response of post successfully created", () => {
+  setSession(true);
+  const postService: IPostService = makeMockPostService()
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.post("/").send({ title: "titleTest", description: "desscriptionTest", imageUrl: "https://valid.image.url", creator: 0 }).then((res) => {
+  return request.post("/").send({ title: "titleTest", description: "desscriptionTest", imageUrl: "https://valid.image.url" }).then((res) => {
     expect(res.statusCode).toBe(201)
   })
 })
 
 test("A POST request to / should fail when using MockPostServiceFails", () => {
+  setSession(true);
   const postService: IPostService = makeMockPostServiceFails()
-  const router: Express.Express = Express();
-  router.use(Express.json());
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.post("/").send({ title: "Title", description: "Description", imageUrl: "https://valid.image.url", creator: 0 }).then((res) => {
+  return request.post("/").send({ title: "Title", description: "Description", imageUrl: "https://valid.image.url" }).then((res) => {
     expect(res.statusCode).toBe(400);
     expect(res.body).toEqual({status: "Could not create post", reason: "MockPostServiceFails"})
   })
@@ -107,8 +140,6 @@ test("A POST request to / should fail when using MockPostServiceFails", () => {
 
 test("A GET request to / should get all posts and sorted by the query", () => {
   const postService: IPostService = makeMockPostService()
-  const router: Express.Express = Express();
-  router.use(Express.json());
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -120,8 +151,6 @@ test("A GET request to / should get all posts and sorted by the query", () => {
 
 test("A GET request to /1 should successfully get a (empty)post", () => {
   const postService: IPostService = makeMockPostService()
-  const router: Express.Express = Express();
-  router.use(Express.json());
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -133,8 +162,6 @@ test("A GET request to /1 should successfully get a (empty)post", () => {
 
 test("A GET request to /1 should give status code 400 when using makeMockPostServiceFails", () => {
   const postService: IPostService = makeMockPostServiceFails()
-  const router: Express.Express = Express();
-  router.use(Express.json());
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -145,9 +172,8 @@ test("A GET request to /1 should give status code 400 when using makeMockPostSer
 })
 
 test("A PUT request to /1 should give status code 200 ", () => {
+  setSession(true);
   const postService: IPostService = makeMockPostService()
-  const router: Express.Express = Express();
-  router.use(Express.json());
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -158,9 +184,8 @@ test("A PUT request to /1 should give status code 200 ", () => {
 })
 
 test("A PUT request to /1 should give status code 400 when using makeMockPostServiceFails", () => {
+  setSession(true);
   const postService: IPostService = makeMockPostServiceFails()
-  const router: Express.Express = Express();
-  router.use(Express.json());
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -171,9 +196,8 @@ test("A PUT request to /1 should give status code 400 when using makeMockPostSer
 })
 
 test("A DELETE request to /1 should give status code 400 when using makeMockPostServiceFails", () => {
+  setSession(true);
   const postService: IPostService = makeMockPostServiceFails()
-  const router: Express.Express = Express();
-  router.use(Express.json());
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -184,9 +208,8 @@ test("A DELETE request to /1 should give status code 400 when using makeMockPost
 })
 
 test("A DELETE request to /1 should give status code 200", () => {
+  setSession(true);
   const postService: IPostService = makeMockPostService()
-  const router: Express.Express = Express();
-  router.use(Express.json());
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -197,8 +220,6 @@ test("A DELETE request to /1 should give status code 200", () => {
 
 test("A GET request to /search without search query parameter should return an error", () => {
     const postService: MockPostService = makeMockPostServiceFails();
-    const router: Express.Express = Express();
-    router.use(Express.json());
     router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -210,8 +231,6 @@ test("A GET request to /search without search query parameter should return an e
 
 test("A GET request to /search with a falsy (empty/no value) search query parameter should return an error", () => {
     const postService: MockPostService = makeMockPostServiceFails();
-    const router: Express.Express = Express();
-    router.use(Express.json());
     router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
@@ -223,8 +242,6 @@ test("A GET request to /search with a falsy (empty/no value) search query parame
 
 test("A GET request to /search with search parameter (non falsy value) should return response code 200", () => {
     const postService: MockPostService = makeMockPostService();
-    const router: Express.Express = Express();
-    router.use(Express.json());
     router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 

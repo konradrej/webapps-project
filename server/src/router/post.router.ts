@@ -25,11 +25,11 @@ export function makePostRouter(postService: IPostService): Express.Express {
     try {
       assert(req.session.currentUser, "No user");
       const creator: number = req.session.currentUser.id;
+      
 
       const title: string = req.body.title;
       const description: string = req.body.description;
       const imageUrl: string = req.body.imageUrl;
-
       PostController.validateCreatePost(title, imageUrl, creator).then((): Promise<Post> => {
         return postService.createPost(title, description, imageUrl, creator);
       }).then((createdPost: Post): void => {
