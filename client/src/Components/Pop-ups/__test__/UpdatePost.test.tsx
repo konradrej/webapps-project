@@ -3,7 +3,6 @@ import {render as secondRender, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import EventBus from "../../../Api/EventBus";
 import {updatePost} from "../../../Api/Posts";
-import CreatePostPopUp from "../CreatePost";
 
 jest.mock('../../../Api/Posts');
 jest.mock('../../../Api/EventBus');
@@ -58,4 +57,12 @@ test("UpdatePost should show error message if update failed", async () => {
       expect(updatePost).toHaveBeenCalled()
   )
   expect(container.querySelector(".alert.alert-danger")?.textContent).toEqual("Mock failure")
+})
+
+
+test("Close UpdatePost popup", async () => {
+  let popUpClose : boolean = false;
+  secondRender(<UpdatePostPopUp onClose={() => {popUpClose = true}}  postId={1}/>);
+  userEvent.click(screen.getByTestId("cancel-button"));
+  expect(popUpClose).toBe(true);
 })

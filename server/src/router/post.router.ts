@@ -26,7 +26,6 @@ export function makePostRouter(postService: IPostService): Express.Express {
       assert(req.session.currentUser, "No user");
       const creator: number = req.session.currentUser.id;
       
-
       const title: string = req.body.title;
       const description: string = req.body.description;
       const imageUrl: string = req.body.imageUrl;

@@ -99,7 +99,6 @@ let router: Express.Express,
       hasSession = bool;
     };
 
-
 beforeEach(() => {
   router = Express();
   router.use(Express.json());
@@ -115,7 +114,7 @@ beforeEach(() => {
   })
 });
 
-test("A POST request to / should send a response of post successfully created", () => {
+test("A POST request to / should send a response of post successfully created", async () => {
   setSession(true);
   const postService: IPostService = makeMockPostService()
   router.use(makePostRouter(postService));
@@ -126,7 +125,7 @@ test("A POST request to / should send a response of post successfully created", 
   })
 })
 
-test("A POST request to / should fail when using MockPostServiceFails", () => {
+test("A POST request to / should fail when using MockPostServiceFails", async () => {
   setSession(true);
   const postService: IPostService = makeMockPostServiceFails()
   router.use(makePostRouter(postService));
@@ -138,7 +137,7 @@ test("A POST request to / should fail when using MockPostServiceFails", () => {
   })
 })
 
-test("A GET request to / should get all posts and sorted by the query", () => {
+test("A GET request to / should get all posts and sorted by the query", async () => {
   const postService: IPostService = makeMockPostService()
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
@@ -149,105 +148,96 @@ test("A GET request to / should get all posts and sorted by the query", () => {
   })
 })
 
-test("A GET request to /1 should successfully get a (empty)post", () => {
+test("A GET request to /1 should successfully get a (empty)post", async () => {
   const postService: IPostService = makeMockPostService()
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.get("/1").send({ id: 1 }).then((res) => {
-    expect(res.statusCode).toBe(200)
-    expect(res.body).toEqual({})
-  })
+  const res = await request.get("/1").send({ id: 1 });
+  expect(res.statusCode).toBe(200);
+  expect(res.body).toEqual({});
 })
 
-test("A GET request to /1 should give status code 400 when using makeMockPostServiceFails", () => {
+test("A GET request to /1 should give status code 400 when using makeMockPostServiceFails", async () => {
   const postService: IPostService = makeMockPostServiceFails()
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.get("/1").send({ id: 1 }).then((res) => {
-    expect(res.statusCode).toBe(400)
-    expect(res.body).toEqual({status: "Post not found", reason: "MockPostServiceFails"})
-  })
+  const res = await request.get("/1").send({ id: 1 });
+  expect(res.statusCode).toBe(400);
+  expect(res.body).toEqual({ status: "Post not found", reason: "MockPostServiceFails" });
 })
 
-test("A PUT request to /1 should give status code 200 ", () => {
-  setSession(true);
-  const postService: IPostService = makeMockPostService()
-  router.use(makePostRouter(postService));
-  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
-
-  return request.put("/1").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
-    expect(res.statusCode).toBe(200)
-    expect(res.body).toEqual({status: "Post updated"})
-  })
-})
-
-test("A PUT request to /1 should give status code 400 when using makeMockPostServiceFails", () => {
-  setSession(true);
-  const postService: IPostService = makeMockPostServiceFails()
-  router.use(makePostRouter(postService));
-  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
-
-  return request.put("/1").send({ id: 1, newTitle:"newTitle", newDescription:"newDescription", verifyCreator: 5 }).then((res) => {
-    expect(res.statusCode).toBe(400)
-    expect(res.body).toEqual({status: "Could not update post", reason: "MockPostServiceFails"})
-  })
-})
-
-test("A DELETE request to /1 should give status code 400 when using makeMockPostServiceFails", () => {
-  setSession(true);
-  const postService: IPostService = makeMockPostServiceFails()
-  router.use(makePostRouter(postService));
-  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
-
-  return request.delete("/1").send({ id: 1, verifyCreator: 1 }).then((res) => {
-    expect(res.statusCode).toBe(400)
-    expect(res.body).toEqual({status: "Could not delete post", reason: "MockPostServiceFails"})
-  })
-})
-
-test("A DELETE request to /1 should give status code 200", () => {
+test("A PUT request to /1 should give status code 200 ", async () => {
   setSession(true);
   const postService: IPostService = makeMockPostService()
   router.use(makePostRouter(postService));
   let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-  return request.delete("/1").send({ id: 1, verifyCreator: 1 }).then((res) => {
-    expect(res.statusCode).toBe(200)
-  })
+  const res = await request.put("/1").send({ id: 1, newTitle: "newTitle", newDescription: "newDescription" });
+  expect(res.statusCode).toBe(200);
+  expect(res.body).toEqual({ status: "Post updated" });
 })
 
-test("A GET request to /search without search query parameter should return an error", () => {
+test("A PUT request to /1 should give status code 400 when using makeMockPostServiceFails", async () => {
+  setSession(true);
+  const postService: IPostService = makeMockPostServiceFails()
+  router.use(makePostRouter(postService));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+  const res = await request.put("/1").send({ id: 1, newTitle: "newTitle", newDescription: "newDescription" });
+  expect(res.statusCode).toBe(400);
+  expect(res.body).toEqual({ status: "Could not update post", reason: "MockPostServiceFails" });
+})
+
+test("A DELETE request to /1 should give status code 400 when using makeMockPostServiceFails", async () => {
+  setSession(true);
+  const postService: IPostService = makeMockPostServiceFails()
+  router.use(makePostRouter(postService));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+  const res = await request.delete("/1").send({ id: 1, verifyCreator: 1 });
+  expect(res.statusCode).toBe(400);
+  expect(res.body).toEqual({ status: "Could not delete post", reason: "MockPostServiceFails" });
+})
+
+test("A DELETE request to /1 should give status code 200", async () => {
+  setSession(true);
+  const postService: IPostService = makeMockPostService()
+  router.use(makePostRouter(postService));
+  let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
+
+  const res = await request.delete("/1").send({ id: 1, verifyCreator: 1 });
+  expect(res.statusCode).toBe(200);
+})
+
+test("A GET request to /search without search query parameter should return an error", async () => {
     const postService: MockPostService = makeMockPostServiceFails();
     router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-    return request.get("/search").query("").then((res) => {
-        expect(res.statusCode).toBe(400);
-        expect(res.body).toEqual({status: "Error searching for posts", reason: "Missing search query"})
-    })
+    const res = await request.get("/search").query("");
+  expect(res.statusCode).toBe(400);
+  expect(res.body).toEqual({ status: "Error searching for posts", reason: "Missing search query" });
 })
 
-test("A GET request to /search with a falsy (empty/no value) search query parameter should return an error", () => {
+test("A GET request to /search with a falsy (empty/no value) search query parameter should return an error", async () => {
     const postService: MockPostService = makeMockPostServiceFails();
     router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-    return request.get("/search").query({"search": ""}).then((res) => {
-        expect(res.statusCode).toBe(400);
-        expect(res.body).toEqual({status: "Error searching for posts", reason: "Missing search query"})
-    })
+    const res = await request.get("/search").query({ "search": "" });
+  expect(res.statusCode).toBe(400);
+  expect(res.body).toEqual({ status: "Error searching for posts", reason: "Missing search query" });
 })
 
-test("A GET request to /search with search parameter (non falsy value) should return response code 200", () => {
+test("A GET request to /search with search parameter (non falsy value) should return response code 200", async () => {
     const postService: MockPostService = makeMockPostService();
     router.use(makePostRouter(postService));
     let request: SuperTest.SuperTest<SuperTest.Test> = SuperTest(router);
 
-    return request.get("/search").query({"search": "test"}).then((res) => {
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual([]);
-    })
+    const res = await request.get("/search").query({ "search": "test" });
+  expect(res.statusCode).toBe(200);
+  expect(res.body).toEqual([]);
 })
 

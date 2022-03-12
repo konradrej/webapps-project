@@ -7,21 +7,21 @@ type Props = {
 }
 
 export default class PopUp extends React.Component<Props>{
-  private showPopUp : boolean = true;
 
   onCloseHandler = () => {
-    this.showPopUp = false;
     this.setState({})
 
-    if(this.props.onClose)
+    if (this.props.onClose)
       this.props.onClose()
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <div className={'background'}>
         <div className='popUpContainer'>
-          <span className='closeButton' onClick={ this.onCloseHandler }>&times;</span>
+          <span
+            className='closeButton'
+            onClick={this.onCloseHandler}>&times;</span>
           {this.props.children}
         </div>
       </div>
