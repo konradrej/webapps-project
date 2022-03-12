@@ -96,7 +96,7 @@ export default class SignUpPopUp extends React.Component<Props> {
             <div className="pop-up-button-container">
               <Button
                 className="pop-up-button"
-                onClick={this.props.onClose()}>
+                onClick={() => this.props.onClose()}>
                 {this.goBackText}
               </Button>
               <AuthContext.Consumer>

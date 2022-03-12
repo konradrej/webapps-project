@@ -106,12 +106,14 @@ background: #FF4C29;
 .post-content {
   overflow-y: auto;
   max-height: 600px;
+  max-width: 1000px;
+  min-width: 400px;
 }
 
 img.post-image {
-
   float: left;
   margin-right: 20px;
+  max-width: 65%;
   object-fit: contain;
   border-radius: 0.625em;
   box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 75%);
