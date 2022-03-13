@@ -1,3 +1,8 @@
+/**
+ * Provides User definition for mongoose and couples
+ * the schema with the User model.
+ */
+
 import mongoose from "mongoose";
 import {conn} from "./conn";
 import {User} from "../model/user.interface";

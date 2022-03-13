@@ -1,3 +1,7 @@
+/**
+ * Define the User model and its fields.
+ */
+
 export interface User {
   id: number;
   username: string;

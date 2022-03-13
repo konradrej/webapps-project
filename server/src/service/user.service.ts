@@ -1,3 +1,8 @@
+/**
+ * Service to handle user related features such as login,
+ * logout, register etc. Stores data in memory.
+ */
+
 import {User} from "../model/user.interface";
 import * as bcrypt from "bcrypt";
 

@@ -1,3 +1,7 @@
+/**
+ * Provides middleware to check if user is/is not authenticated.
+ */
+
 import Express, {NextFunction} from "express";
 
 export function isLoggedIn(req: Express.Request, res: Express.Response, next : NextFunction) {

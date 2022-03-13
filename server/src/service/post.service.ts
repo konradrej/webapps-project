@@ -1,4 +1,10 @@
-import { Post } from "../model/post.interface";
+/**
+ * Service to handle post related features such as creating,
+ * updating, deleting posts and different ways to retrieve
+ * posts. Stores data in memory.
+ */
+
+ import { Post } from "../model/post.interface";
 
 export interface IPostService {
   getPosts(order: string): Promise<Array<Post>>

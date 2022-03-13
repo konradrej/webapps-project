@@ -1,3 +1,8 @@
+/**
+ * Provides Post definition for mongoose and couples
+ * the schema with the Post model.
+ */
+
 import mongoose,{ Schema } from "mongoose";
 import { Post } from "../model/post.interface";
 import { conn } from "./conn";

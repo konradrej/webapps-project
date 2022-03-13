@@ -1,3 +1,7 @@
+/**
+ * Handles creation of express app, adding middleware and routes.
+ */
+
 import Express from "express";
 import cors from "cors";
 import path from "path";

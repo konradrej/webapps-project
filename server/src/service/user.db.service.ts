@@ -1,3 +1,8 @@
+/**
+ * Service to handle user related features such as login,
+ * logout, register etc. Works with mongoose and database.
+ */
+
 import {User} from "../model/user.interface";
 import * as bcrypt from "bcrypt";
 import {IUserService,IUpdateObject} from "./user.service";

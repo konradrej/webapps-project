@@ -1,3 +1,7 @@
+/**
+ * Provides validation methods for User routes.
+ */
+
 export class UserController {
   static validateSignup = async (username: string, password: string, email: string): Promise<void> => {
     if (!/^[a-zA-Z0-9-_]+$/.test(username))

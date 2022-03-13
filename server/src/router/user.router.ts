@@ -1,3 +1,8 @@
+/**
+ * This file setups routes for users, using controller
+ * and service to perform its actions.
+ */
+
 import Express from "express";
 import {IUserService, IUpdateObject} from "../service/user.service";
 import {NotLoggedIn, isLoggedIn} from "../middleware/auth.middleware";

@@ -1,3 +1,7 @@
+/**
+ * Define the Post model and its fields.
+ */
+
 export interface Post {
   id: number;
   title: string;

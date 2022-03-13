@@ -1,3 +1,9 @@
+/**
+ * Service to handle post related features such as creating,
+ * updating, deleting posts and different ways to retrieve
+ * posts. Works with mongoose and database.
+ */
+
 import { IPostService } from "./post.service";
 import { postModel } from "../db/post.model";
 import { Post } from "../model/post.interface";

@@ -1,3 +1,8 @@
+/**
+ * This file setups routes for posts, using controller
+ * and service to perform its actions.
+ */
+
 import Express from "express";
 import {PostController} from "../controller/post.controller";
 import {Post} from "../model/post.interface";

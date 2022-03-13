@@ -1,3 +1,7 @@
+/**
+ * Provides connection object to remote MongoDB instance.
+ */
+
 import { createConnection } from "mongoose";
 
 export const conn = createConnection(

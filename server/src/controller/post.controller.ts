@@ -1,3 +1,6 @@
+/**
+ * Provides validation methods for Post routes.
+ */
 
 export class PostController {
   static validateCreatePost = async (title: string, imageUrl: string, creator: number): Promise<void> => {
