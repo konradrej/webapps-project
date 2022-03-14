@@ -30,21 +30,18 @@ export class PostDBService implements IPostService{
 
   async getPosts(order: string): Promise<Post[]> {
     switch (order) {
-      // Title A-Z
       case "title-ascending": {
         return Object.values(
           await this.model.find().sort({
             title: "ascending"
           }).populate("creator"))
       }
-      // Title Z-A
       case "title-descending": {
         return Object.values(
           await this.model.find().sort({
             title: "descending"
           }).populate("creator"))
       }
-      // Most recent first
       case "recent-descending":
       default: {
         return Object.values(
@@ -58,7 +55,7 @@ export class PostDBService implements IPostService{
   async createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
     const userCreator: User | null = await userModel.findOne({id: creator})
     return await this.model.create({
-      id : new Date().valueOf(), //Change this?
+      id : new Date().valueOf(),
       title : title,
       description : description,
       imageUrl : imageUrl,
@@ -91,7 +88,6 @@ export class PostDBService implements IPostService{
     return post;
   }
 
-  //Wont be needing this one?
   async findById(id: number): Promise<Post | null> {
     throw new Error("Method not implemented.");
   }
