@@ -2,10 +2,10 @@ import Express from "express";
 import SuperTest from "supertest";
 
 import {makeUserRouter} from "../user.router";
-import {IUserService} from "../../service/user.service";
+import {IUserService} from "../../service/user.db.service";
 import {User} from "../../model/user.interface";
 import session from "express-session";
-import {IPostService} from "../../service/post.service";
+import {IPostService} from "../../service/post.db.service";
 import {Post} from "../../model/post.interface";
 
 class MockUserService implements IUserService {

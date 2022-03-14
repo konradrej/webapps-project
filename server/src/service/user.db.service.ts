@@ -5,11 +5,30 @@
 
 import {User} from "../model/user.interface";
 import * as bcrypt from "bcrypt";
-import {IUserService,IUpdateObject} from "./user.service";
 import {userModel} from "../db/user.model";
 import mongoose from "mongoose";
 
 const SALTROUNDS: number = 5;
+
+export interface IUserService {
+  findById(id: number): Promise<User | null>
+
+  findByUsername(username: string): Promise<User | null>
+
+  login(username: string, password: string): Promise<User | null>
+
+  register(username: string, password: string, email: string): Promise<User>
+
+  update(id: number, updateObject: IUpdateObject): Promise<boolean>
+
+  setPassword(id: number, password: string): Promise<boolean>
+}
+
+export interface IUpdateObject {
+  email?: string,
+  description?: string,
+  profileImageUrl?: string
+}
 
 export class UserService implements IUserService {
   private readonly userModel : mongoose.Model<User>;

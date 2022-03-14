@@ -4,12 +4,12 @@
  */
 
 import Express from "express";
-import {IUserService, IUpdateObject} from "../service/user.service";
+import {IUserService, IUpdateObject} from "../service/user.db.service";
 import {NotLoggedIn, isLoggedIn} from "../middleware/auth.middleware";
 import assert from "assert";
 import {User} from "../model/user.interface";
 import {UserController} from "../controller/user.controller";
-import {IPostService} from "../service/post.service";
+import {IPostService} from "../service/post.db.service";
 import {makePostDBService} from "../service/post.db.service";
 import {makeUserDBService} from "../service/user.db.service";
 

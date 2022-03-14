@@ -4,12 +4,22 @@
  * posts. Works with mongoose and database.
  */
 
-import { IPostService } from "./post.service";
 import { postModel } from "../db/post.model";
 import { Post } from "../model/post.interface";
 import { Model } from "mongoose";
 import { userModel } from "../db/user.model";
 import { User } from "../model/user.interface";
+
+export interface IPostService {
+  getPosts(order: string): Promise<Array<Post>>
+  createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post>
+  updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>
+  getPost (id: number) : Promise<Post | null>
+  findById(id: number): Promise<Post | null>
+  getUsersPosts(userId: number): Promise<Array<Post>>
+  deletePost(id : number, verifyCreator : number) : Promise<boolean>
+  searchPosts (search: string): Promise<Post[]>
+}
 
 export class PostDBService implements IPostService{
   private model;
