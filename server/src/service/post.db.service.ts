@@ -55,19 +55,11 @@ export class PostDBService implements IPostService {
   async createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
     const userCreator: User | null = await userModel.findOne({ id: creator })
     return await this.model.create({
-<<<<<<< HEAD
-      id: new Date().valueOf(), //Change this?
+      id: new Date().valueOf(),
       title: title,
       description: description,
       imageUrl: imageUrl,
       creator: userCreator
-=======
-      id : new Date().valueOf(),
-      title : title,
-      description : description,
-      imageUrl : imageUrl,
-      creator : userCreator
->>>>>>> fa73468b589300142d292bce03fa6661348e61f2
     })
   }
 
