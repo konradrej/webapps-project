@@ -13,26 +13,34 @@ import { User } from "../model/user.interface";
 
 export class PostDBService implements IPostService{
   private model;
+  
   constructor(model: Model<Post, {}, {}>){
     this.model = model;
   }
+
   async getPosts(order: string): Promise<Post[]> {
     switch (order) {
       // Title A-Z
       case "title-ascending": {
-        return Object.values(await this.model.find().populate("creator"))
-        .sort((a, b) => a.title < b.title ? -1 : 1)
+        return Object.values(
+          await this.model.find().sort({
+            title: "ascending"
+          }).populate("creator"))
       }
       // Title Z-A
       case "title-descending": {
-        return Object.values(await this.model.find().populate("creator"))
-        .sort((a, b) => a.title < b.title ? 1 : -1)
+        return Object.values(
+          await this.model.find().sort({
+            title: "descending"
+          }).populate("creator"))
       }
       // Most recent first
       case "recent-descending":
       default: {
-        return Object.values(await this.model.find().populate("creator"))
-        .sort((a, b) => a.createdAt < b.createdAt ? 1 : -1)
+        return Object.values(
+          await this.model.find().sort({
+            createdAt: "descending"
+          }).populate("creator"))
       }
     }
   }
