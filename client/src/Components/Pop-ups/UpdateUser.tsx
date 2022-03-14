@@ -3,12 +3,12 @@
  */
 
 import React from 'react';
-import {Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import PopUp from './Pop-up';
 import './PopUp.css'
 import EventBus from "../../Api/EventBus";
-import {updateCurrentUser} from "../../Api/Auth";
-import {validateImage} from "../../Api/Utils";
+import { updateCurrentUser } from "../../Api/Auth";
+import { validateImage } from "../../Api/Utils";
 
 type Props = {
   onClose: Function,
@@ -41,23 +41,23 @@ export default class UpdateUserPopup extends React.Component<Props> {
   }
 
   onChangeImageUrl = (e: React.FormEvent<HTMLInputElement>): void => {
-    this.setState({inputImageUrl: e.currentTarget.value});
+    this.setState({ inputImageUrl: e.currentTarget.value });
   };
 
   onChangeDescription = (e: React.FormEvent<HTMLInputElement>): void => {
-    this.setState({inputDescription: e.currentTarget.value});
+    this.setState({ inputDescription: e.currentTarget.value });
   };
 
   onUpdateHandler = async () => {
-    this.setState({message: ""})
+    this.setState({ message: "" })
 
     let updateObj: any = {};
     if (this.props.profileImageUrl != this.state.inputImageUrl) {
       let imageValidation = await validateImage(this.state.inputImageUrl);
-      if(imageValidation.status) {
+      if (imageValidation.status) {
         updateObj["imageUrl"] = this.state.inputImageUrl
-      }else{
-        this.setState({message: "Image error: "+imageValidation.message});
+      } else {
+        this.setState({ message: "Image error: " + imageValidation.message });
         return;
       }
     }
@@ -66,58 +66,58 @@ export default class UpdateUserPopup extends React.Component<Props> {
       updateObj["description"] = this.state.inputDescription
 
     if (Object.keys(updateObj).length < 1) {
-      this.setState({message: "Change either image or description"})
+      this.setState({ message: "Change either image or description" })
       return
     }
 
     updateCurrentUser(updateObj)
-        .then(() => {
-          EventBus.trigger("REFRESH_POSTS", null);
-          this.props.onClose()
-        })
-        .catch((error) => this.setState({message: error.message}))
+      .then(() => {
+        EventBus.trigger("REFRESH_POSTS", null);
+        this.props.onClose()
+      })
+      .catch((error) => this.setState({ message: error.message }))
   }
 
   render() {
     return (
-        <PopUp onClose={this.props.onClose}>
-          <form className="form-pop-up">
-            <h2><b>{this.popUpTitle}</b></h2>
-            <div className="input-content">
-              <div className="input-sub-content">
-                <h4><b>{this.titleImageUrl}</b></h4>
-                <input
-                    type="text"
-                    value={this.state.inputImageUrl}
-                    onChange={this.onChangeImageUrl}
-                    placeholder={this.placeholderImageUrl}
-                    data-testid="imageURL-input"/>
-              </div>
-              <div className="input-sub-content">
-                <h4><b>{this.titleDescription}</b></h4>
-                <input
-                    type="text"
-                    value={this.state.inputDescription}
-                    onChange={this.onChangeDescription}
-                    placeholder={this.placeholderDescription}
-                    data-testid="description-input"/>
-              </div>
-              <div className="pop-up-button-container">
-                <Button className="pop-up-button" onClick={() => this.props.onClose()}>{this.cancelText}</Button>
-                <Button className="pop-up-button"
-                        onClick={() => this.onUpdateHandler.bind(this)()}
-                        data-testid="submit-button">{this.updateText}</Button>
-              </div>
-              {
-                this.state.message.length > 0 ?
-                    <div className="alert alert-danger">
-                      {this.state.message}
-                    </div>
-                    : this.state.message
-              }
+      <PopUp onClose={this.props.onClose}>
+        <form className="form-pop-up">
+          <h2><b>{this.popUpTitle}</b></h2>
+          <div className="input-content">
+            <div className="input-sub-content">
+              <h4><b>{this.titleImageUrl}</b></h4>
+              <input
+                type="text"
+                value={this.state.inputImageUrl}
+                onChange={this.onChangeImageUrl}
+                placeholder={this.placeholderImageUrl}
+                data-testid="imageURL-input" />
             </div>
-          </form>
-        </PopUp>
+            <div className="input-sub-content">
+              <h4><b>{this.titleDescription}</b></h4>
+              <input
+                type="text"
+                value={this.state.inputDescription}
+                onChange={this.onChangeDescription}
+                placeholder={this.placeholderDescription}
+                data-testid="description-input" />
+            </div>
+            <div className="pop-up-button-container">
+              <Button className="pop-up-button" onClick={() => this.props.onClose()}>{this.cancelText}</Button>
+              <Button className="pop-up-button"
+                onClick={() => this.onUpdateHandler.bind(this)()}
+                data-testid="submit-button">{this.updateText}</Button>
+            </div>
+            {
+              this.state.message.length > 0 ?
+                <div className="alert alert-danger">
+                  {this.state.message}
+                </div>
+                : this.state.message
+            }
+          </div>
+        </form>
+      </PopUp>
     )
   }
 }

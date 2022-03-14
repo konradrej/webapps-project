@@ -13,7 +13,7 @@ import { getPosts } from "../../Api/Posts";
 import EventBus from "../../Api/EventBus";
 
 export type Props = {
-  
+
 }
 
 type State = {
@@ -28,7 +28,7 @@ export default class HomePage extends React.Component<Props>{
     errorPopup: undefined,
     eventKey: ""
   }
-  eventListeners: {[event: string] : number} = {};
+  eventListeners: { [event: string]: number } = {};
 
   getPosts = async (order?: string): Promise<void> => {
     getPosts(order ?? "").then((items: JSX.Element[]) => {
@@ -49,7 +49,7 @@ export default class HomePage extends React.Component<Props>{
   }
 
   onSelect = (eventKey: string): void => {
-    this.setState({eventKey: eventKey})
+    this.setState({ eventKey: eventKey })
     this.getPosts(eventKey);
   }
 
@@ -66,7 +66,7 @@ export default class HomePage extends React.Component<Props>{
     return (
       <>
         <Container>
-          <SortSelector className={styles.selector + " text-end "} onSelect={this.onSelect}/>
+          <SortSelector className={styles.selector + " text-end "} onSelect={this.onSelect} />
           <ItemGrid items={this.state.items} />
         </Container>
         {this.state.errorPopup ?? null}

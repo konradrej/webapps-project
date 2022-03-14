@@ -36,12 +36,12 @@ export default class CardDetailsPopUp extends React.Component<Props>{
   }
 
   onCloseUpdate = () => {
-    this.setState({updateState: false})
+    this.setState({ updateState: false })
   }
 
   onCloseDelete = (closeAll: boolean = false) => {
-    this.setState({deleteState: false})
-    if(closeAll && this.props.onClose)
+    this.setState({ deleteState: false })
+    if (closeAll && this.props.onClose)
       this.props.onClose();
   }
 
@@ -63,14 +63,14 @@ export default class CardDetailsPopUp extends React.Component<Props>{
               <p>{this.props.postDescription}</p>
             </div>
             <div className='pop-up-button-container'>
-              {(this.state.updateState) ? <UpdatePostPopUp onClose={this.onCloseUpdate} postId={this.props.postId}/> : null}
-              {(this.state.deleteState) ? <DeletePostPopup onClose={this.onCloseDelete} postId={this.props.postId}/> : null}
+              {(this.state.updateState) ? <UpdatePostPopUp onClose={this.onCloseUpdate} postId={this.props.postId} /> : null}
+              {(this.state.deleteState) ? <DeletePostPopup onClose={this.onCloseDelete} postId={this.props.postId} /> : null}
               <AuthContext.Consumer>
-                {(context) =>(
-                  (context.currentUser?.id === this.props.userId )?
-                    <>              
-                      <Button variant="outline-primary" onClick={() => this.setState({updateState: true})}>Edit</Button>
-                      <Button variant="outline-danger" onClick={() => this.setState({deleteState: true})}>Delete</Button>
+                {(context) => (
+                  (context.currentUser?.id === this.props.userId) ?
+                    <>
+                      <Button variant="outline-primary" onClick={() => this.setState({ updateState: true })}>Edit</Button>
+                      <Button variant="outline-danger" onClick={() => this.setState({ deleteState: true })}>Delete</Button>
                     </> :
                     null
                 )}

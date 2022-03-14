@@ -22,8 +22,8 @@ test("Setup a inmemory database and creating a post and getting the post with th
   const testConn = createConnection(uri)
   const testModel = testConn.model<Post>("Post", PostSchema)
   const postService = new PostDBService(testModel);
-  return await postService.createPost("postTitle", "postDescription", "postURL", 0).then( async (res : Post) => {
-    const post : Post = await postService.getPost(res.id);
+  return await postService.createPost("postTitle", "postDescription", "postURL", 0).then(async (res: Post) => {
+    const post: Post = await postService.getPost(res.id);
     expect(res.id).toEqual(post.id);
     expect(res.createdAt).toEqual(post.createdAt);
     await mongod.stop();
@@ -36,10 +36,10 @@ test("Setup a inmemory database and creating a post and getting the post with th
   const testConn = createConnection(uri)
   const testModel = testConn.model<Post>("Post", PostSchema)
   const postService = new PostDBService(testModel);
-  return postService.createPost("testpostTitle", "postDescription", "postURL", 0).then( async (post : Post) => {
-    await postService.updatePost( post.id, "newPostTitle", "newPostDescription" , 0).then(async (res : boolean) => {
+  return postService.createPost("testpostTitle", "postDescription", "postURL", 0).then(async (post: Post) => {
+    await postService.updatePost(post.id, "newPostTitle", "newPostDescription", 0).then(async (res: boolean) => {
       expect(res).toBe(true);
-      const updatedPost : Post = await postService.getPost(post.id);
+      const updatedPost: Post = await postService.getPost(post.id);
       expect(updatedPost.id).toEqual(post.id);
       expect(updatedPost.title).toEqual("newPostTitle");
       expect(updatedPost.description).toEqual("newPostDescription");
@@ -54,10 +54,10 @@ test("Setup a inmemory database and creating a post and updating the post with n
   const testConn = createConnection(uri)
   const testModel = testConn.model<Post>("Post", PostSchema)
   const postService = new PostDBService(testModel);
-  return postService.createPost("testpostTitle", "postDescription", "postURL", 0).then( async (post : Post) => {
-    await postService.updatePost( post.id, "newPostTitle", "newPostDescription" , 0).then(async (res : boolean) => {
+  return postService.createPost("testpostTitle", "postDescription", "postURL", 0).then(async (post: Post) => {
+    await postService.updatePost(post.id, "newPostTitle", "newPostDescription", 0).then(async (res: boolean) => {
       expect(res).toBe(true);
-      const updatedPost : Post = await postService.getPost(post.id);
+      const updatedPost: Post = await postService.getPost(post.id);
       expect(updatedPost.id).toEqual(post.id);
       expect(updatedPost.title).toEqual("newPostTitle");
       expect(updatedPost.description).toEqual("newPostDescription");

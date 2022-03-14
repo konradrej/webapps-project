@@ -7,8 +7,8 @@ import cors from "cors";
 import path from "path";
 import session from "express-session";
 
-import {userRouter} from "./router/user.router";
-import {postRouter} from "./router/post.router";
+import { userRouter } from "./router/user.router";
+import { postRouter } from "./router/post.router";
 
 export const app: Express.Express = Express();
 

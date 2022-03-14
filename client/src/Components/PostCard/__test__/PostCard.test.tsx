@@ -2,7 +2,7 @@ import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 import PostCard from "../PostCard";
 
-let container : HTMLElement | null = null;
+let container: HTMLElement | null = null;
 
 beforeEach(() => {
   container = document.createElement("div");
@@ -10,7 +10,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  if(container)
+  if (container)
     unmountComponentAtNode(container);
 
   container?.remove();
@@ -51,16 +51,16 @@ it("check if onclick on .card opens CardDetails and contains description", () =>
       creatorProfileUrl: "",
       creatorProfileImageUrl: "https://via.placeholder.com/150"
     }
-    
+
     render(<><PostCard {...props} /><div id="popup-container"></div></>, container);
   })
   expect(document.body.children.length).toBe(1);
 
-  const cardImgTop : HTMLElement | null = document.querySelector(".card-img-top");
+  const cardImgTop: HTMLElement | null = document.querySelector(".card-img-top");
   expect(container).toContainElement(cardImgTop);
 
   act(() => {
-    cardImgTop?.dispatchEvent(new MouseEvent("click", { bubbles : true }));
+    cardImgTop?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   })
   expect(document.body.children.length).toBe(2);
 })
