@@ -1,7 +1,6 @@
 import SuperTest from "supertest";
 import {MongoMemoryServer} from "mongodb-memory-server";
 import mongoose, {Connection} from "mongoose";
-import mock = jest.mock;
 
 let app: Express.Application,
     mockConnection: Connection,
@@ -27,8 +26,6 @@ async function setupLogin(): Promise<{ userId: number, cookies: [] }> {
     cookies: cookies
   }
 }
-
-
 
 beforeAll(async () => {
   server = await MongoMemoryServer.create();
