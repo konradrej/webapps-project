@@ -26,7 +26,7 @@ const ItemGrid = (props: Props) => {
   return (
     <>
       <Card className={styles.card}>
-        <Card.Img variant="top" src={props.imageUrl} alt="" onClick={() => setShowCardDetails(true) } />
+        <Card.Img variant="top" src={props.imageUrl} alt="" onClick={() => setShowCardDetails(true)} />
         <Card.Body>
           <Card.Title>{props.title}</Card.Title>
           <Card.Subtitle className={styles["card-subtitle"]}>
