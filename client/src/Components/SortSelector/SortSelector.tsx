@@ -8,11 +8,11 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import { BsSortDown, BsSortAlphaDown, BsSortAlphaUp } from "react-icons/bs";
 
 export type Props = {
-  className?: string,
-  onSelect?: Function,
+  className? : string,
+  onSelect? : Function,
   sortOptions?: {
     selectedOption: string,
-    options: { icon: JSX.Element, type: string, text: string }[]
+    options: {icon: JSX.Element, type: string, text: string}[]
   }
 }
 
@@ -39,16 +39,16 @@ export default class SortSelector extends React.Component<Props>{
     selectedOption: (this.props.sortOptions?.selectedOption ?? options[0].type)
   }
 
-  onSelect = (eventKey: any): void => {
+  onSelect = (eventKey: any) : void => {
     const type = eventKey.substring(eventKey.lastIndexOf("/") + 1);
 
-    this.setState({ selectedOption: type })
+    this.setState({selectedOption: type})
 
-    if (this.props.onSelect)
+    if(this.props.onSelect)
       this.props.onSelect(type);
   }
 
-  render(): JSX.Element {
+  render() : JSX.Element {
     return (
       <DropdownButton id="dropdown-basic-button" title="Sort by" className={this.props.className} onSelect={this.onSelect}>
         {

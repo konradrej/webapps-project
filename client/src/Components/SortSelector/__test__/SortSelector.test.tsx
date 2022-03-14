@@ -2,7 +2,7 @@ import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 import SortSelector from "../SortSelector";
 
-let container: HTMLElement | null = null;
+let container : HTMLElement | null = null;
 
 beforeEach(() => {
   container = document.createElement("div");
@@ -10,7 +10,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  if (container)
+  if(container)
     unmountComponentAtNode(container);
 
   container?.remove();
@@ -18,7 +18,7 @@ afterEach(() => {
 })
 
 it("check if onSelect prop gets called when choosing an option in the dropdown", async () => {
-  const onSelect = jest.fn((eventKey): void => { })
+  const onSelect = jest.fn((eventKey) : void => {})
 
   act(() => {
     render(<SortSelector onSelect={onSelect} />, container);
@@ -28,7 +28,7 @@ it("check if onSelect prop gets called when choosing an option in the dropdown",
   expect(selectElement).toBeDefined();
 
   await act(async () => {
-    selectElement?.children[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    selectElement?.children[0].dispatchEvent(new MouseEvent("click", { bubbles : true }));
   })
   expect(selectElement?.children[1]).toBeDefined();
 
@@ -36,7 +36,7 @@ it("check if onSelect prop gets called when choosing an option in the dropdown",
   expect(optionTwo).toBeDefined();
 
   act(() => {
-    optionTwo?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    optionTwo?.dispatchEvent(new MouseEvent("click", { bubbles : true}));
   })
   expect(onSelect).toBeCalledTimes(1);
 })
@@ -75,7 +75,7 @@ it("check if sortOptions prop gets applied", async () => {
   expect(selectElement).toBeDefined();
 
   await act(async () => {
-    selectElement?.children[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    selectElement?.children[0].dispatchEvent(new MouseEvent("click", { bubbles : true }));
   })
 
   const optionContainer = selectElement?.children[1];

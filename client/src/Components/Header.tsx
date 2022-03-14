@@ -24,10 +24,10 @@ const Header = () => {
   const [inputSearch, setInputSearch] = useState<string>("");
 
   useEffect(() => {
-    if (submit) {
+    if(submit){
       setSubmit(false);
 
-      if (inputSearch)
+      if(inputSearch)
         navigate("/search?search=" + inputSearch);
     }
   }, [submit, inputSearch, navigate])
@@ -43,7 +43,7 @@ const Header = () => {
           <Link to="/" className="navbar-brand-link"><Navbar.Brand>Navbar</Navbar.Brand></Link>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
-            <Form className="d-flex pt-3 pt-md-0" onSubmit={(e) => { e.preventDefault(); setSubmit(true); }}>
+            <Form className="d-flex pt-3 pt-md-0" onSubmit={(e) => {e.preventDefault(); setSubmit(true);}}>
               <FormControl
                 type="search"
                 placeholder="Search"
@@ -51,7 +51,7 @@ const Header = () => {
                 aria-label="Search"
                 name="search"
                 value={inputSearch}
-                onChange={(e) => { setInputSearch(e.currentTarget.value) }}
+                onChange={(e) => {setInputSearch(e.currentTarget.value)}}
               />
               <Button className="me-2"
                 variant="outline-success" type="submit">Search</Button>
