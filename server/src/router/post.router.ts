@@ -28,8 +28,8 @@ export function makePostRouter(postService: IPostService): Express.Express {
 
   postRouter.post("/", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      assert(req.session.currentUser, "No user");
-      const creator: number = req.session.currentUser.id;
+      assert(req.session.currentUserId, "No user");
+      const creator: number = req.session.currentUserId;
       
       const title: string = req.body.title;
       const description: string = req.body.description;
@@ -64,8 +64,8 @@ export function makePostRouter(postService: IPostService): Express.Express {
 
   postRouter.put("/:id", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      assert(req.session.currentUser, "No user");
-      const creator: number = req.session.currentUser.id;
+      assert(req.session.currentUserId, "No user");
+      const creator: number = req.session.currentUserId;
 
       const id: number = parseInt(req.params.id);
       const title: string = req.body.newTitle;
@@ -101,8 +101,8 @@ export function makePostRouter(postService: IPostService): Express.Express {
 
   postRouter.delete('/:id', isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      assert(req.session.currentUser, "No user");
-      const creator: number = req.session.currentUser.id;
+      assert(req.session.currentUserId, "No user");
+      const creator: number = req.session.currentUserId;
       const id: number = parseInt(req.params.id);
 
       PostController.validateDeletePost(id, creator).then((): Promise<boolean> => {

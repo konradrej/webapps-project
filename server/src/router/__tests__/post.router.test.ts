@@ -109,7 +109,7 @@ beforeEach(() => {
   }));
 
   router.use((req, res, next) => {
-    req.session.currentUser = hasSession ? mockUser : null;
+    req.session.currentUserId = hasSession ? 1 : null;
     next();
   })
 });
