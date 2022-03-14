@@ -1,3 +1,8 @@
+/**
+ * Component for displaying providided items in a
+ * masonry style grid.
+ */
+
 import Masonry from "react-masonry-css";
 import styles from "./ItemGrid.module.css";
 

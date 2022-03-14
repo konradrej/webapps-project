@@ -1,3 +1,7 @@
+/**
+ * Node entry point, setups React and React router.
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';

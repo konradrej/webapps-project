@@ -1,3 +1,7 @@
+/**
+ * Base popup built for being extended.
+ */
+
 import React from 'react';
 import './PopUp.css'
 

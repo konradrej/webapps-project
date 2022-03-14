@@ -1,3 +1,7 @@
+/**
+ * Component for displaying a single post.
+ */
+
 import { useState } from "react";
 import { Card } from "react-bootstrap";
 import ReactDOM from "react-dom";

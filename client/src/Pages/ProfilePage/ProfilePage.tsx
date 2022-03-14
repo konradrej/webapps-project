@@ -1,3 +1,8 @@
+/**
+ * Profile page component, retrieves user posts and
+ * related data such as description and displays it.
+ */
+
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./Profile.module.css";

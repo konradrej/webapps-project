@@ -1,3 +1,7 @@
+/**
+ * Functions for handling unsplash related api call.
+ */
+
 import axios, { AxiosResponse } from "axios";
 import styles from "./Unsplash.module.css";
 

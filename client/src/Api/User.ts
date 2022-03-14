@@ -1,3 +1,7 @@
+/**
+ * Functions for handling user related api calls.
+ */
+
 import axios from "axios";
 
 export const showUser = async function (id: number): Promise<{ user: any, posts: any[] }> {

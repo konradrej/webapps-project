@@ -1,3 +1,7 @@
+/**
+ * Contains an event bus where listeners can register for certain events.
+ */
+
 class Eventbus {
   private id: number = 0;
   private listeners: { [event: string]: { [id: number]: CallableFunction } } = {};

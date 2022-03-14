@@ -1,3 +1,7 @@
+/**
+ * Error page component, displays an error message.
+ */
+
 import React from "react";
 
 export type Props = {

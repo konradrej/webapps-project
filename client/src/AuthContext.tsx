@@ -1,3 +1,8 @@
+/**
+ * Handles auth context to be able to display different
+ * content based on login status.
+ */
+
 import React, { createContext, useState, FC, useEffect } from "react";
 import { getCurrentUser, loginUser, logoutUser, signupUser } from "./Api/Auth";
 

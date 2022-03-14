@@ -1,3 +1,7 @@
+/**
+ * Functions for handling api calls related to posts.
+ */
+
 import axios, {AxiosResponse} from "axios";
 import PostCard, {Props as PostCardProps} from "../Components/PostCard/PostCard";
 

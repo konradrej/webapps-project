@@ -1,3 +1,7 @@
+/**
+ * Popup for creating a new post.
+ */
+
 import React from 'react';
 import {Button} from 'react-bootstrap';
 import PopUp from './Pop-up';

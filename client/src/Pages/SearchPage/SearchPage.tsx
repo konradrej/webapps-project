@@ -1,3 +1,8 @@
+/**
+ * Search page component, uses api to perform search
+ * calls and displays retrieved data.
+ */
+
 import { useEffect, useMemo, useState } from "react";
 import { Container, Spinner } from "react-bootstrap";
 import ItemGrid from "../../Components/ItemGrid/ItemGrid";

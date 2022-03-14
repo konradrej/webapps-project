@@ -1,3 +1,7 @@
+/**
+ * A variety of utility functions.
+ */
+
 import axios from "axios";
 
 /**

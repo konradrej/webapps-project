@@ -1,3 +1,9 @@
+/**
+ * Component representing the header, displays branding, search
+ * and menu as well as login/register and logout/profile page
+ * depending on login status.
+ */
+
 import { useEffect, useState } from "react";
 import { Container, Nav, Navbar, Form, FormControl, Button } from "react-bootstrap";
 import SignUpPopUp from "./Pop-ups/SignUp";

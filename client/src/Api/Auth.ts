@@ -1,3 +1,7 @@
+/**
+ * Functions for auth related api calls.
+ */
+
 import axios from "axios";
 
 export const getCurrentUser = async function (): Promise<Object | null> {

@@ -1,3 +1,8 @@
+/**
+ * Home page component, retrieves posts according to sort
+ * type and displays the retrieved posts.
+ */
+
 import React from "react";
 import Container from "react-bootstrap/Container";
 import ItemGrid from "../../Components/ItemGrid/ItemGrid";

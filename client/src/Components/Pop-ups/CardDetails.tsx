@@ -1,3 +1,8 @@
+/**
+ * Popup for displaying extended information
+ * about a post.
+ */
+
 import React from 'react';
 import PopUp from './Pop-up';
 import 'bootstrap/dist/css/bootstrap.min.css'
