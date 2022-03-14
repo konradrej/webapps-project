@@ -3,7 +3,7 @@
  */
 
 // https://stackoverflow.com/a/65696437
-declare module 'express-session' {
+export declare module 'express-session' {
   interface Session {
     currentUserId: number | null
   }
