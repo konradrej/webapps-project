@@ -106,7 +106,7 @@ beforeEach(() => {
   }));
 
   router.use((req, res, next) => {
-    req.session.currentUser = hasSession ? <User>{} : null;
+    req.session.currentUserId = hasSession ? 1 : null;
     next();
   })
 

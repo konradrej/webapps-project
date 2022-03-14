@@ -5,7 +5,7 @@
 import Express, { NextFunction } from "express";
 
 export function isLoggedIn(req: Express.Request, res: Express.Response, next: NextFunction) {
-  if (req.session.currentUser) {
+  if (req.session.currentUserId) {
     next()
   } else {
     res.status(403).send({ status: "Forbidden", reason: "Not logged in" });
@@ -13,7 +13,7 @@ export function isLoggedIn(req: Express.Request, res: Express.Response, next: Ne
 }
 
 export function NotLoggedIn(req: Express.Request, res: Express.Response, next: NextFunction) {
-  if (!req.session.currentUser) {
+  if (!req.session.currentUserId) {
     next()
   } else {
     res.status(403).send({ status: "Forbidden", reason: "Already logged in" });

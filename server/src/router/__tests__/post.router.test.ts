@@ -3,7 +3,7 @@ import SuperTest from "supertest";
 import session from "express-session";
 import { User } from "../../model/user.interface";
 import { makePostRouter } from "../post.router";
-import { IPostService, } from "../../service/post.service";
+import { IPostService, } from "../../service/post.db.service";
 import { Post } from "../../model/post.interface";
 
 const mockUser: User = {
@@ -109,7 +109,7 @@ beforeEach(() => {
   }));
 
   router.use((req, res, next) => {
-    req.session.currentUser = hasSession ? mockUser : null;
+    req.session.currentUserId = hasSession ? 1 : null;
     next();
   })
 });

@@ -23,7 +23,7 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
     userService.login(username, password)
       .then((user: User | null) => {
         if (user) {
-          req.session.currentUser = user;
+          req.session.currentUserId = user.id;
           res.status(200).send({ status: "Authorized" });
         } else {
           res.status(401).send({ status: "Unauthorized", reason: "Invalid Credentials" });
@@ -41,7 +41,7 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
         .then(async () => {
           let user = await userService.register(username, password, email)
           if (user) {
-            req.session.currentUser = user;
+            req.session.currentUserId = user.id;
             res.status(201).send({
               status: "User created",
             });
@@ -67,8 +67,8 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
 
   userRouter.put("/update", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      assert(req.session.currentUser, "No user");
-      const id: number = req.session.currentUser.id;
+      assert(req.session.currentUserId, "No user");
+      const id: number = req.session.currentUserId;
 
       const updateObject: IUpdateObject = {};
       const email: string = req.body.email;
@@ -96,8 +96,8 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
 
   userRouter.put("/update/password", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-      assert(req.session.currentUser, "No user");
-      const id: number = req.session.currentUser.id;
+      assert(req.session.currentUserId, "No user");
+      const id: number = req.session.currentUserId;
       const password: string = req.body.password;
 
       let updated = await userService.setPassword(id, password)
@@ -111,10 +111,11 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
     }
   })
 
-  userRouter.get("/session", isLoggedIn, (req: Express.Request, res: Express.Response) => {
+  userRouter.get("/session", isLoggedIn, async (req: Express.Request, res: Express.Response) => {
     try {
-      assert(req.session.currentUser, "No user");
-      let user = req.session.currentUser
+      assert(req.session.currentUserId, "No user");
+      const user = await userService.findById(req.session.currentUserId);
+      assert(user, "No user found");
 
       res.status(200).send({
         id: user.id,

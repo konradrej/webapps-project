@@ -163,6 +163,7 @@ describe('As a logged in user', () => {
       .send()
 
     expect(getNewProfile.status).toBe(200);
+    expect(getNewProfile.body).toMatchObject(newData);
   })
 });
 

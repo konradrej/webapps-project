@@ -5,11 +5,30 @@
 
 import { User } from "../model/user.interface";
 import * as bcrypt from "bcrypt";
-import { IUserService, IUpdateObject } from "./user.service";
 import { userModel } from "../db/user.model";
 import mongoose from "mongoose";
 
 const SALTROUNDS: number = 5;
+
+export interface IUserService {
+  findById(id: number): Promise<User | null>
+
+  findByUsername(username: string): Promise<User | null>
+
+  login(username: string, password: string): Promise<User | null>
+
+  register(username: string, password: string, email: string): Promise<User>
+
+  update(id: number, updateObject: IUpdateObject): Promise<boolean>
+
+  setPassword(id: number, password: string): Promise<boolean>
+}
+
+export interface IUpdateObject {
+  email?: string,
+  description?: string,
+  profileImageUrl?: string
+}
 
 export class UserService implements IUserService {
   private readonly userModel: mongoose.Model<User>;
@@ -18,28 +37,15 @@ export class UserService implements IUserService {
   constructor(userModel: mongoose.Model<User>) {
     this.userModel = userModel;
   }
-  /**
-   * Find user with specified id
-   * @param id
-   */
+
   async findById(id: number): Promise<User | null> {
     return this.userModel.findOne({ id: id }).exec();
   }
 
-  /**
-   * Find user with specified username
-   * @param username
-   */
   async findByUsername(username: string): Promise<User | null> {
     return this.userModel.findOne({ username: username }).exec();
   }
 
-  /**
-   * Login as user
-   * @param username username
-   * @param password user's password
-   * @return user logged in user or if it fails null
-   */
   async login(username: string, password: string): Promise<User | null> {
     const user: User | null = await this.findByUsername(username);
 
@@ -49,12 +55,6 @@ export class UserService implements IUserService {
     return user;
   }
 
-  /**
-   * Registers users
-   * @param username username
-   * @param password password
-   * @param email email
-   */
   async register(username: string, password: string, email: string): Promise<User> {
     if (await this.findByUsername(username))
       throw Error("Username must be unique")
@@ -70,11 +70,6 @@ export class UserService implements IUserService {
     });
   }
 
-  /**
-   * More dynamic update function
-   * @param id
-   * @param obj
-   */
   async update(id: number, obj: IUpdateObject): Promise<boolean> {
     const user = await this.findById(id);
     if (!user) return false
