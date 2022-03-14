@@ -3,28 +3,28 @@
  * the schema with the Post model.
  */
 
-import mongoose,{ Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { Post } from "../model/post.interface";
 import { conn } from "./conn";
 
-export const PostSchema : Schema = new Schema({
-  id : {
-    type : Number,
-    required : true,
-    unique : true,
+export const PostSchema: Schema = new Schema({
+  id: {
+    type: Number,
+    required: true,
+    unique: true,
   },
-  title : {
-    type : String,
-    required : true,
+  title: {
+    type: String,
+    required: true,
   },
-  description : {
-    type : String,
+  description: {
+    type: String,
   },
-  imageUrl : {
-    type : String,
-    required : true,
+  imageUrl: {
+    type: String,
+    required: true,
   },
-  creator : {
+  creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
   }

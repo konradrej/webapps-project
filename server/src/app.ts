@@ -7,15 +7,19 @@ import cors from "cors";
 import path from "path";
 import session from "express-session";
 
-import {userRouter} from "./router/user.router";
-import {postRouter} from "./router/post.router";
+import { userRouter } from "./router/user.router";
+import { postRouter } from "./router/post.router";
 
 export const app: Express.Express = Express();
 
 app.use(Express.static(path.join(__dirname, "../../client/build")));
 
+if(!process.env?.EXPRESS_SESSION_SECRET){
+  throw Error("Must set express session secret")
+}
+
 app.use(session({
-  secret: 'random-secret-here', // Secret should be a env var
+  secret: process.env.EXPRESS_SESSION_SECRET, // Secret should be a env var
   cookie: {
     httpOnly: true,
     sameSite: "strict",

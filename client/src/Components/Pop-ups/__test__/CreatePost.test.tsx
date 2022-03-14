@@ -1,9 +1,9 @@
-import {render as secondRender, screen, waitFor} from '@testing-library/react';
+import { render as secondRender, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CreatePostPopUp from "../CreatePost";
 import axios from "axios";
 import EventBus from "../../../Api/EventBus";
-import {createPost} from "../../../Api/Posts";
+import { createPost } from "../../../Api/Posts";
 
 jest.mock("axios")
 jest.mock('../../../Api/Posts');
@@ -13,7 +13,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 describe("Create post input values", () => {
 
   test('Input of the title', () => {
-    secondRender(<CreatePostPopUp onClose={() => {}} />);
+    secondRender(<CreatePostPopUp onClose={() => { }} />);
 
     const inputEl = screen.getByTestId("title-input");
     userEvent.type(inputEl, "This is a title");
@@ -23,7 +23,7 @@ describe("Create post input values", () => {
   });
 
   test('Input of the description', () => {
-    secondRender(<CreatePostPopUp onClose={() => {}} />);
+    secondRender(<CreatePostPopUp onClose={() => { }} />);
 
     const inputEl = screen.getByTestId("description-input");
     userEvent.type(inputEl, "This is a description");
@@ -33,7 +33,7 @@ describe("Create post input values", () => {
   });
 
   test('Input of the imageUrl', () => {
-    secondRender(<CreatePostPopUp onClose={() => {}} />);
+    secondRender(<CreatePostPopUp onClose={() => { }} />);
 
     const inputEl = screen.getByTestId("imageURL-input");
     userEvent.type(inputEl, "http://localhost/image");
@@ -45,7 +45,7 @@ describe("Create post input values", () => {
 
 
 test("CreatePost emits an error if one of the inputs are empty", () => {
-  const {container} = secondRender(<CreatePostPopUp onClose={() => {}} />);
+  const { container } = secondRender(<CreatePostPopUp onClose={() => { }} />);
 
   userEvent.paste(screen.getByTestId("title-input"), "");
   userEvent.type(screen.getByTestId("description-input"), "hello there");
@@ -57,7 +57,7 @@ test("CreatePost emits an error if one of the inputs are empty", () => {
 
 
 test("CreatePost should fail if URL is invalid", async () => {
-  const {container} = secondRender(<CreatePostPopUp onClose={() => {}} />);
+  const { container } = secondRender(<CreatePostPopUp onClose={() => { }} />);
 
   userEvent.type(screen.getByTestId("title-input"), "New Test");
   userEvent.type(screen.getByTestId("description-input"), "hello there");
@@ -65,13 +65,13 @@ test("CreatePost should fail if URL is invalid", async () => {
   userEvent.click(screen.getByTestId("submit-button"));
 
   await waitFor(() =>
-      expect(container.querySelector(".alert.alert-danger")).toBeTruthy()
+    expect(container.querySelector(".alert.alert-danger")).toBeTruthy()
   )
   expect(container.querySelector(".alert.alert-danger")?.textContent).toEqual("Image error: Invalid Url")
 })
 
 test("CreatePost should emit an error if URL is not an image", async () => {
-  const {container} = secondRender(<CreatePostPopUp onClose={() => {}} />);
+  const { container } = secondRender(<CreatePostPopUp onClose={() => { }} />);
 
   userEvent.type(screen.getByTestId("title-input"), "New Test");
   userEvent.type(screen.getByTestId("description-input"), "hello there");
@@ -85,13 +85,13 @@ test("CreatePost should emit an error if URL is not an image", async () => {
 
   userEvent.click(screen.getByTestId("submit-button"));
   await waitFor(() =>
-      expect(container.querySelector(".alert.alert-danger")).toBeTruthy()
+    expect(container.querySelector(".alert.alert-danger")).toBeTruthy()
   )
   expect(container.querySelector(".alert.alert-danger")?.textContent).toContain("Image error: ")
 })
 
 test("CreatePost should emit to Eventbus if create succeeded", async () => {
-  secondRender(<CreatePostPopUp onClose={() => {}} />);
+  secondRender(<CreatePostPopUp onClose={() => { }} />);
 
   userEvent.type(screen.getByTestId("title-input"), "New Test");
   userEvent.type(screen.getByTestId("description-input"), "hello there");
@@ -106,7 +106,7 @@ test("CreatePost should emit to Eventbus if create succeeded", async () => {
   (createPost as jest.Mocked<any>).mockResolvedValue("123");
   userEvent.click(screen.getByTestId("submit-button"));
   await waitFor(() =>
-      expect(createPost).toHaveBeenCalled()
+    expect(createPost).toHaveBeenCalled()
   )
   expect(EventBus.trigger).toHaveBeenCalledTimes(1)
 })

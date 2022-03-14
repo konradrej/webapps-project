@@ -7,8 +7,8 @@ import Masonry from "react-masonry-css";
 import styles from "./ItemGrid.module.css";
 
 export type Props = {
-  items: JSX.Element[], 
-  breakpointColumns?: { default : number, [key : number] : number }
+  items: JSX.Element[],
+  breakpointColumns?: { default: number, [key: number]: number }
 }
 
 const breakpointColumns = {
@@ -30,9 +30,9 @@ const ItemGrid = (props: Props) => {
           props.items.map((item: any, _: number) => {
             return item;
           })
-        }   
+        }
       </Masonry>
-      {props.items.length === 0 ? <div style={{textAlign: "center"}}>No items to display.</div> : null}
+      {props.items.length === 0 ? <div style={{ textAlign: "center" }}>No items to display.</div> : null}
     </>
   )
 }
