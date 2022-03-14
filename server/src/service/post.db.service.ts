@@ -11,10 +11,10 @@ import { Model } from "mongoose";
 import { userModel } from "../db/user.model";
 import { User } from "../model/user.interface";
 
-export class PostDBService implements IPostService{
+export class PostDBService implements IPostService {
   private model;
-  
-  constructor(model: Model<Post, {}, {}>){
+
+  constructor(model: Model<Post, {}, {}>) {
     this.model = model;
   }
 
@@ -46,36 +46,36 @@ export class PostDBService implements IPostService{
   }
 
   async createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
-    const userCreator: User | null = await userModel.findOne({id: creator})
+    const userCreator: User | null = await userModel.findOne({ id: creator })
     return await this.model.create({
-      id : new Date().valueOf(), //Change this?
-      title : title,
-      description : description,
-      imageUrl : imageUrl,
-      creator : userCreator
+      id: new Date().valueOf(), //Change this?
+      title: title,
+      description: description,
+      imageUrl: imageUrl,
+      creator: userCreator
     })
   }
 
   async updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean> {
-    const userCreator: User | null = await userModel.findOne({id: verifyCreator})
-    if(!(await this.model.exists({id : id}))){
+    const userCreator: User | null = await userModel.findOne({ id: verifyCreator })
+    if (!(await this.model.exists({ id: id }))) {
       throw Error("Post not found");
     }
-    if(!(await this.model.exists({id : id , creator : userCreator}))){
+    if (!(await this.model.exists({ id: id, creator: userCreator }))) {
       throw Error("Specified user is not creator");
     }
-    if(newDescription){
-      await this.model.updateOne({id : id }, {description : newDescription});
+    if (newDescription) {
+      await this.model.updateOne({ id: id }, { description: newDescription });
     }
-    if(newTitle){
-      await this.model.updateOne({id : id }, {title : newTitle});
+    if (newTitle) {
+      await this.model.updateOne({ id: id }, { title: newTitle });
     }
 
     return true;
   }
   async getPost(id: number): Promise<Post> {
-    const post: Post | null  = await this.model.findOne({id : id})
-    if(!post){
+    const post: Post | null = await this.model.findOne({ id: id })
+    if (!post) {
       throw Error("Post not found");
     }
     return post;
@@ -87,20 +87,20 @@ export class PostDBService implements IPostService{
   }
 
   async getUsersPosts(userId: number): Promise<Post[]> {
-    const user: User | null = await userModel.findOne({id: userId})
-    return await this.model.find({creator : user}).populate("creator")
-    .sort({createdAt: "descending"});
+    const user: User | null = await userModel.findOne({ id: userId })
+    return await this.model.find({ creator: user }).populate("creator")
+      .sort({ createdAt: "descending" });
   }
 
   async deletePost(id: number, verifyCreator: number): Promise<boolean> {
-    const userCreator: User | null = await userModel.findOne({id: verifyCreator})
-    if(!(await this.model.exists({id : id}))){
+    const userCreator: User | null = await userModel.findOne({ id: verifyCreator })
+    if (!(await this.model.exists({ id: id }))) {
       throw Error("Post not found");
     }
-    if(!(await this.model.exists({id : id , creator : userCreator}))){
+    if (!(await this.model.exists({ id: id, creator: userCreator }))) {
       throw Error("Specified user is not creator");
     }
-    await this.model.deleteOne({id : id})
+    await this.model.deleteOne({ id: id })
     return true;
   }
 
@@ -112,7 +112,7 @@ export class PostDBService implements IPostService{
       const titleArray: string[] = post.title.toLowerCase().split(" ");
       const searchArray: string[] = search.toLowerCase().split(" ");
 
-      if(titleArray.some((val: string) => searchArray.includes(val))){
+      if (titleArray.some((val: string) => searchArray.includes(val))) {
         searchResult.push(post);
       }
     });
@@ -125,6 +125,6 @@ export class PostDBService implements IPostService{
   }
 }
 
-export function makePostDBService (){
+export function makePostDBService() {
   return new PostDBService(postModel);
 }

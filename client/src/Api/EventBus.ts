@@ -16,7 +16,7 @@ class Eventbus {
 
   addListener(event: string, fn: CallableFunction): number {
     let id = this.id++
-    if(!this.listeners[event]){
+    if (!this.listeners[event]) {
       this.listeners[event] = {};
     }
     this.listeners[event][id] = fn;

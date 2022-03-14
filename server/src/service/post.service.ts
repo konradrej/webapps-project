@@ -4,17 +4,17 @@
  * posts. Stores data in memory.
  */
 
- import { Post } from "../model/post.interface";
+import { Post } from "../model/post.interface";
 
 export interface IPostService {
   getPosts(order: string): Promise<Array<Post>>
   createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post>
   updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>
-  getPost (id: number) : Promise<Post | null>
+  getPost(id: number): Promise<Post | null>
   findById(id: number): Promise<Post | null>
   getUsersPosts(userId: number): Promise<Array<Post>>
-  deletePost(id : number, verifyCreator : number) : Promise<boolean>
-  searchPosts (search: string): Promise<Post[]>
+  deletePost(id: number, verifyCreator: number): Promise<boolean>
+  searchPosts(search: string): Promise<Post[]>
 }
 
 export class PostService implements IPostService {
@@ -31,7 +31,7 @@ export class PostService implements IPostService {
     return this.posts[id] ?? null;
   }
   // Return all posts given order
-  async getPosts(order: string) : Promise<Post[]> {
+  async getPosts(order: string): Promise<Post[]> {
     switch (order) {
       // Title A-Z
       case "title-ascending": {
@@ -56,7 +56,7 @@ export class PostService implements IPostService {
   }
 
   // Returns the new post if successfully created
-  async createPost (title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
+  async createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
     this.postIdCounter++;
     const newPost: Post = {
       id: this.postIdCounter,
@@ -73,12 +73,12 @@ export class PostService implements IPostService {
   }
 
   // Returns true if post is updated given id and user id
-  async updatePost (id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>{
+  async updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean> {
     const post: Post | null = await this.findById(id);
-    if (!post){
+    if (!post) {
       throw Error("Post not found");
     }
-    if(this.posts[id].creator !== verifyCreator){
+    if (this.posts[id].creator !== verifyCreator) {
       throw Error("Specified user is not creator");
     }
     if (newDescription) {
@@ -92,7 +92,7 @@ export class PostService implements IPostService {
   }
 
   // Get post given post id
-  async getPost (id: number): Promise<Post>{
+  async getPost(id: number): Promise<Post> {
     if (await this.findById(id)) {
       return this.posts[id];
     }
@@ -100,18 +100,18 @@ export class PostService implements IPostService {
   }
 
   // Get all post of the given UserId
-  async getUsersPosts (userId: number): Promise<Post[]>{
+  async getUsersPosts(userId: number): Promise<Post[]> {
     const allPosts = Object.values(this.posts);
     return allPosts.filter((post) => post.creator == userId)
   }
-  
+
   // Returns true if post is deleted given id and user id
-  async deletePost (id: number, verifyCreator: number): Promise<boolean>{
+  async deletePost(id: number, verifyCreator: number): Promise<boolean> {
     const post: Post | null = await this.findById(id);
-    if(!post){
+    if (!post) {
       throw Error("Post not found");
     }
-    if(this.posts[id].creator !== verifyCreator){
+    if (this.posts[id].creator !== verifyCreator) {
       throw Error("Specified user is not creator");
     }
     delete this.posts[id];
@@ -119,14 +119,14 @@ export class PostService implements IPostService {
   }
 
   // Returns array with posts matching the search string with most recent being first
-  async searchPosts (search: string): Promise<Post[]> {
+  async searchPosts(search: string): Promise<Post[]> {
     const searchResult: Post[] = [];
-    
+
     Object.values(this.posts).forEach((post: Post) => {
       const titleArray: string[] = post.title.toLowerCase().split(" ");
       const searchArray: string[] = search.toLowerCase().split(" ");
 
-      if(titleArray.some((val: string) => searchArray.includes(val))){
+      if (titleArray.some((val: string) => searchArray.includes(val))) {
         searchResult.push(post);
       }
     });

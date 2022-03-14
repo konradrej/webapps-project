@@ -2,7 +2,7 @@ import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 import ItemGrid from "../ItemGrid";
 
-let container : HTMLElement | null = null;
+let container: HTMLElement | null = null;
 
 beforeEach(() => {
   container = document.createElement("div");
@@ -10,7 +10,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  if(container)
+  if (container)
     unmountComponentAtNode(container);
 
   container?.remove();
@@ -29,12 +29,12 @@ it("check if posts prop gets rendered", () => {
     render(<ItemGrid items={items} />, container);
   })
 
-  const itemGrid : Element | undefined = container?.children[0];
+  const itemGrid: Element | undefined = container?.children[0];
   expect(itemGrid).toBeDefined();
-  
+
   let postCount: number = 0;
-  for(let i: number = 0; i < (itemGrid?.children.length ?? 0); i++){
-    if(itemGrid && itemGrid.children[i] && itemGrid.children[i].children){
+  for (let i: number = 0; i < (itemGrid?.children.length ?? 0); i++) {
+    if (itemGrid && itemGrid.children[i] && itemGrid.children[i].children) {
       postCount += itemGrid.children[i].children.length;
     }
   }
@@ -49,7 +49,7 @@ it("check if breakpoints prop gets applied", () => {
     <div key={2} />,
   ];
 
-  const breakpointColumns: { default : number, [key : number] : number } = {
+  const breakpointColumns: { default: number, [key: number]: number } = {
     default: 3,
     200: 2,
     100: 1

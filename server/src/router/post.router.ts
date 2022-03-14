@@ -4,11 +4,11 @@
  */
 
 import Express from "express";
-import {PostController} from "../controller/post.controller";
-import {Post} from "../model/post.interface";
-import {IPostService} from "../service/post.service";
-import {makePostDBService} from "../service/post.db.service";
-import {isLoggedIn} from "../middleware/auth.middleware";
+import { PostController } from "../controller/post.controller";
+import { Post } from "../model/post.interface";
+import { IPostService } from "../service/post.service";
+import { makePostDBService } from "../service/post.db.service";
+import { isLoggedIn } from "../middleware/auth.middleware";
 import assert from "assert";
 
 export function makePostRouter(postService: IPostService): Express.Express {
@@ -22,7 +22,7 @@ export function makePostRouter(postService: IPostService): Express.Express {
         res.status(200).send(posts);
       })
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
@@ -30,7 +30,7 @@ export function makePostRouter(postService: IPostService): Express.Express {
     try {
       assert(req.session.currentUser, "No user");
       const creator: number = req.session.currentUser.id;
-      
+
       const title: string = req.body.title;
       const description: string = req.body.description;
       const imageUrl: string = req.body.imageUrl;
@@ -39,10 +39,10 @@ export function makePostRouter(postService: IPostService): Express.Express {
       }).then((createdPost: Post): void => {
         res.status(201).send(createdPost);
       }).catch((e: any): void => {
-        res.status(400).send({status: "Could not create post", reason: e.message});
+        res.status(400).send({ status: "Could not create post", reason: e.message });
       })
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
@@ -55,10 +55,10 @@ export function makePostRouter(postService: IPostService): Express.Express {
       }).then((posts: Post[]): void => {
         res.status(200).send(posts);
       }).catch((e: any): void => {
-        res.status(400).send({status: "Error searching for posts", reason: e.message});
+        res.status(400).send({ status: "Error searching for posts", reason: e.message });
       })
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message})
+      res.status(500).send({ status: "Server error", reason: e.message })
     }
   })
 
@@ -75,13 +75,13 @@ export function makePostRouter(postService: IPostService): Express.Express {
         return postService.updatePost(id, title, description, creator);
       }).then((success: boolean): void => {
         if (success) {
-          res.status(200).send({status: "Post updated"});
+          res.status(200).send({ status: "Post updated" });
         }
       }).catch((e: any): void => {
-        res.status(400).send({status: "Could not update post", reason: e.message});
+        res.status(400).send({ status: "Could not update post", reason: e.message });
       })
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
@@ -92,10 +92,10 @@ export function makePostRouter(postService: IPostService): Express.Express {
       postService.getPost(id).then((post: Post | null): void => {
         res.status(200).send(post)
       }).catch((e: any): void => {
-        res.status(400).send({status: "Post not found", reason: e.message})
+        res.status(400).send({ status: "Post not found", reason: e.message })
       })
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
@@ -109,13 +109,13 @@ export function makePostRouter(postService: IPostService): Express.Express {
         return postService.deletePost(id, creator);
       }).then((success: boolean): void => {
         if (success) {
-          res.status(200).send({status: "Post deleted"});
+          res.status(200).send({ status: "Post deleted" });
         }
       }).catch((e: any): void => {
-        res.status(400).send({status: "Could not delete post", reason: e.message});
+        res.status(400).send({ status: "Could not delete post", reason: e.message });
       })
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 

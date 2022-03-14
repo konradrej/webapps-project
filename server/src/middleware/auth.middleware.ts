@@ -2,20 +2,20 @@
  * Provides middleware to check if user is/is not authenticated.
  */
 
-import Express, {NextFunction} from "express";
+import Express, { NextFunction } from "express";
 
-export function isLoggedIn(req: Express.Request, res: Express.Response, next : NextFunction) {
-  if(req.session.currentUser){
+export function isLoggedIn(req: Express.Request, res: Express.Response, next: NextFunction) {
+  if (req.session.currentUser) {
     next()
-  }else{
-    res.status(403).send({status: "Forbidden", reason: "Not logged in"});
+  } else {
+    res.status(403).send({ status: "Forbidden", reason: "Not logged in" });
   }
 }
 
-export function NotLoggedIn(req: Express.Request, res: Express.Response, next : NextFunction) {
-  if(!req.session.currentUser){
+export function NotLoggedIn(req: Express.Request, res: Express.Response, next: NextFunction) {
+  if (!req.session.currentUser) {
     next()
-  }else{
-    res.status(403).send({status: "Forbidden", reason: "Already logged in"});
+  } else {
+    res.status(403).send({ status: "Forbidden", reason: "Already logged in" });
   }
 }

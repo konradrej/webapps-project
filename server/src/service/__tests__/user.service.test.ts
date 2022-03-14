@@ -1,6 +1,6 @@
-import {User} from "../../model/user.interface";
-import {UserService} from "../user.service";
-import {randomInt} from "crypto";
+import { User } from "../../model/user.interface";
+import { UserService } from "../user.service";
+import { randomInt } from "crypto";
 import * as bcrypt from "bcrypt"
 
 let createUser = (id?: number): User => {
@@ -34,7 +34,7 @@ test("User registration and login", async () => {
 
     let user = await us.register("test", "password123", "test1@example.com");
     await expect(us.login("test", "password123")).resolves.toEqual(user)
-    await expect(us.login("test","123fail")).resolves.toBeNull()
+    await expect(us.login("test", "123fail")).resolves.toBeNull()
 })
 
 test("Find user by username should return the correct user", () => {
@@ -62,7 +62,7 @@ test("Creating a user should validate and return a user object", async () => {
 test("Update should update the correct user and fail if unapproved key is in updateObject", async () => {
     let users = createUsers(500);
     const us = new UserService(users);
-    
+
     let id = users[200].id;
     await expect(us.update(id, {
         description: "Update user " + id,

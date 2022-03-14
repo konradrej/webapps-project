@@ -3,7 +3,7 @@
  * logout, register etc. Stores data in memory.
  */
 
-import {User} from "../model/user.interface";
+import { User } from "../model/user.interface";
 import * as bcrypt from "bcrypt";
 
 const SALTROUNDS: number = 5;

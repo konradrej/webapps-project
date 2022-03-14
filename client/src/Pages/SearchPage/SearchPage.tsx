@@ -13,7 +13,7 @@ import { searchPosts } from "../../Api/Posts";
 import { searchUnsplash } from "../../Api/Unsplash";
 
 export type Props = {
-  
+
 }
 
 const SearchPage = (_: Props) => {
@@ -65,7 +65,7 @@ const SearchPage = (_: Props) => {
         }
       </Container>
       {errorPopup ?
-        <PopUp onClose={() => {setErrorPopup(false)}}>
+        <PopUp onClose={() => { setErrorPopup(false) }}>
           <span>Unable to get posts.</span>
           <br />
           <span>Please try again later.</span>

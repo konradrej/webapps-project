@@ -5,7 +5,7 @@ jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const mockedResponse: AxiosResponse = {
-  data: {status: "OK"},
+  data: { status: "OK" },
   status: 200,
   statusText: 'OK',
   headers: {},
@@ -36,5 +36,5 @@ describe('These tests verify if a request has been called)', () => {
     await expect(deletePost(1)).resolves.toEqual("OK");
     expect(axios.delete).toHaveBeenCalled();
   });
-  
+
 });

@@ -4,8 +4,8 @@
  */
 
 import mongoose from "mongoose";
-import {conn} from "./conn";
-import {User} from "../model/user.interface";
+import { conn } from "./conn";
+import { User } from "../model/user.interface";
 
 export const UserSchema: mongoose.Schema = new mongoose.Schema({
   id: {

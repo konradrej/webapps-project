@@ -4,14 +4,14 @@
  */
 
 import Express from "express";
-import {IUserService, IUpdateObject} from "../service/user.service";
-import {NotLoggedIn, isLoggedIn} from "../middleware/auth.middleware";
+import { IUserService, IUpdateObject } from "../service/user.service";
+import { NotLoggedIn, isLoggedIn } from "../middleware/auth.middleware";
 import assert from "assert";
-import {User} from "../model/user.interface";
-import {UserController} from "../controller/user.controller";
-import {IPostService} from "../service/post.service";
-import {makePostDBService} from "../service/post.db.service";
-import {makeUserDBService} from "../service/user.db.service";
+import { User } from "../model/user.interface";
+import { UserController } from "../controller/user.controller";
+import { IPostService } from "../service/post.service";
+import { makePostDBService } from "../service/post.db.service";
+import { makeUserDBService } from "../service/user.db.service";
 
 export function makeUserRouter(userService: IUserService, postService: IPostService): Express.Express {
   const userRouter: Express.Express = Express();
@@ -21,14 +21,14 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
     const password: string = req.body.password;
 
     userService.login(username, password)
-        .then((user: User | null) => {
-          if (user) {
-            req.session.currentUser = user;
-            res.status(200).send({status: "Authorized"});
-          } else {
-            res.status(401).send({status: "Unauthorized", reason: "Invalid Credentials"});
-          }
-        })
+      .then((user: User | null) => {
+        if (user) {
+          req.session.currentUser = user;
+          res.status(200).send({ status: "Authorized" });
+        } else {
+          res.status(401).send({ status: "Unauthorized", reason: "Invalid Credentials" });
+        }
+      })
   })
 
   userRouter.post("/sign-up", NotLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
@@ -38,30 +38,30 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
       const email: string = req.body.email;
 
       UserController.validateSignup(username, password, email)
-          .then(async () => {
-            let user = await userService.register(username, password, email)
-            if (user) {
-              req.session.currentUser = user;
-              res.status(201).send({
-                status: "User created",
-              });
-            }
-          })
-          .catch((e) => {
-            res.status(400).send({status: "User could not be created", reason: e.message});
-          })
+        .then(async () => {
+          let user = await userService.register(username, password, email)
+          if (user) {
+            req.session.currentUser = user;
+            res.status(201).send({
+              status: "User created",
+            });
+          }
+        })
+        .catch((e) => {
+          res.status(400).send({ status: "User could not be created", reason: e.message });
+        })
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
   userRouter.post("/logout", isLoggedIn, async (req: Express.Request, res: Express.Response): Promise<void> => {
-    try{
+    try {
       req.session.destroy(() => {
-        res.status(200).send({status: "User logged out"})
+        res.status(200).send({ status: "User logged out" })
       });
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
@@ -85,12 +85,12 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
         updateObject.profileImageUrl = profileImageUrl;
 
       if (Object.keys(updateObject).length > 0 && (await userService.update(id, updateObject))) {
-        res.status(200).send({status: "User updated"});
+        res.status(200).send({ status: "User updated" });
       } else {
-        res.status(400).send({status: "User could not be updated"});
+        res.status(400).send({ status: "User could not be updated" });
       }
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
@@ -102,12 +102,12 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
 
       let updated = await userService.setPassword(id, password)
       if (!updated) {
-        res.status(400).send({status: "Password could not be updated"});
+        res.status(400).send({ status: "Password could not be updated" });
       } else {
-        res.status(200).send({status: "Password updated"});
+        res.status(200).send({ status: "Password updated" });
       }
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
@@ -125,7 +125,7 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
         createdAt: user.createdAt,
       })
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 
@@ -139,10 +139,10 @@ export function makeUserRouter(userService: IUserService, postService: IPostServ
           posts: await postService.getUsersPosts(user.id)
         });
       } else {
-        res.status(404).send({status: "Invalid user"});
+        res.status(404).send({ status: "Invalid user" });
       }
     } catch (e: any) {
-      res.status(500).send({status: "Server error", reason: e.message});
+      res.status(500).send({ status: "Server error", reason: e.message });
     }
   })
 

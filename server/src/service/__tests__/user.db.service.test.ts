@@ -1,24 +1,24 @@
-import {MongoMemoryServer} from "mongodb-memory-server";
-import mongoose, {createConnection} from "mongoose";
-import {UserSchema} from "../../db/user.model";
-import {UserService} from "../user.db.service";
-import {User} from "../../model/user.interface";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose, { createConnection } from "mongoose";
+import { UserSchema } from "../../db/user.model";
+import { UserService } from "../user.db.service";
+import { User } from "../../model/user.interface";
 import * as bcrypt from "bcrypt";
 
-let createUsers = async (userService : UserService, count = 0): Promise<number> => {
+let createUsers = async (userService: UserService, count = 0): Promise<number> => {
   let created = 0;
-  for(let i = 0; i < count; i++) {
-     let user = await userService.register(`user_${created}`, `user_p_${created}`, `test${created}@example.com`);
-     if(user?.id){
-       created++;
-     }
+  for (let i = 0; i < count; i++) {
+    let user = await userService.register(`user_${created}`, `user_p_${created}`, `test${created}@example.com`);
+    if (user?.id) {
+      created++;
+    }
   }
   return created
 }
 
-let conn : mongoose.Connection,
-    mongoMemoryServer : MongoMemoryServer,
-    userService : UserService;
+let conn: mongoose.Connection,
+  mongoMemoryServer: MongoMemoryServer,
+  userService: UserService;
 
 beforeEach(async () => {
   mongoMemoryServer = await MongoMemoryServer.create();
@@ -30,8 +30,8 @@ beforeEach(async () => {
 
 test("User registration and login", async () => {
   let user = await userService.register("test", "password123", "test1@example.com");
-  await expect(userService.login("test", "password123")).resolves.toMatchObject({ username: user.username, id: user.id})
-  await expect(userService.login("test","123fail")).resolves.toBeNull()
+  await expect(userService.login("test", "password123")).resolves.toMatchObject({ username: user.username, id: user.id })
+  await expect(userService.login("test", "123fail")).resolves.toBeNull()
 })
 
 test("Creating a user should validate and return a user object", async () => {
@@ -50,17 +50,17 @@ test("Registration should enforce unique username constraint", async () => {
 
 
 test("Find user by username should return the correct user", async () => {
-  await createUsers(userService,50);
+  await createUsers(userService, 50);
   return userService.findByUsername(`user_21`)
-      .then((user: User | null) => {
-        expect(user?.email).toBe('test21@example.com');
-      })
+    .then((user: User | null) => {
+      expect(user?.email).toBe('test21@example.com');
+    })
 });
 
 test("Update should update the correct user and fail if unapproved key is in updateObject", async () => {
-  await createUsers(userService,50);
+  await createUsers(userService, 50);
   let user = await userService.findByUsername(`user_20`)
-  if(!user) throw Error("No user");
+  if (!user) throw Error("No user");
 
   await expect(userService.update(user.id, {
     description: "Update user " + user.id,
@@ -74,9 +74,9 @@ test("Update should update the correct user and fail if unapproved key is in upd
 });
 
 test("SetPassword should hash the new password and update the correct user", async () => {
-  await createUsers(userService,21);
+  await createUsers(userService, 21);
   let user = await userService.findByUsername(`user_20`)
-  if(!user) throw Error("No user");
+  if (!user) throw Error("No user");
 
   await expect(userService.setPassword(user.id, "new_test")).resolves.toBe(true);
   await expect(userService.login(user.username, "new_test")).resolves.toHaveProperty("id", user.id);

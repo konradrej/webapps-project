@@ -2,8 +2,8 @@
  * Functions for handling api calls related to posts.
  */
 
-import axios, {AxiosResponse} from "axios";
-import PostCard, {Props as PostCardProps} from "../Components/PostCard/PostCard";
+import axios, { AxiosResponse } from "axios";
+import PostCard, { Props as PostCardProps } from "../Components/PostCard/PostCard";
 
 export const getPosts = async function (order: string): Promise<JSX.Element[]> {
   return axios.get(process.env.REACT_APP_BASE_API_URL + "/post/", {
@@ -27,7 +27,7 @@ export const createPost = async function (title: string, description: string, im
     title: title,
     description: description,
     imageUrl: imageUrl
-  }, {withCredentials: true}).then((res: AxiosResponse) => {
+  }, { withCredentials: true }).then((res: AxiosResponse) => {
     return `${res.data.status}`
   }).catch((error) => {
     throw Error(`${error.response.data.status}, ${error.response.data.reason}`)
@@ -36,24 +36,24 @@ export const createPost = async function (title: string, description: string, im
 
 export const createItems = (posts: PostCardProps[]): JSX.Element[] => {
   return posts
-      .map(((value: any, _: number): void => {
-        value.createdAt = new Date(value.createdAt);
-        value.creatorId = value.creator.id;
-        value.creatorUsername  = value.creator.username;
-        value.creatorProfileImageUrl = value.creator.profileImageUrl;
+    .map(((value: any, _: number): void => {
+      value.createdAt = new Date(value.createdAt);
+      value.creatorId = value.creator.id;
+      value.creatorUsername = value.creator.username;
+      value.creatorProfileImageUrl = value.creator.profileImageUrl;
 
-        return value;
-      }))
-      .map((post: any, i: number) => {
-        return <PostCard key={i} {...post} />;
-      })
+      return value;
+    }))
+    .map((post: any, i: number) => {
+      return <PostCard key={i} {...post} />;
+    })
 }
 
 export const updatePost = async function (postId: number, newTitle: string, newDescription: string): Promise<string> {
   return await axios.put(process.env.REACT_APP_BASE_API_URL + `/post/${postId}`, {
     newTitle: newTitle,
     newDescription: newDescription
-  }, {withCredentials: true}).then((res: AxiosResponse) => {
+  }, { withCredentials: true }).then((res: AxiosResponse) => {
     return `${res.data.status}`
   }).catch((error) => {
     throw Error(`${error.response.data.status}, ${error.response.data.reason}`)
@@ -61,10 +61,10 @@ export const updatePost = async function (postId: number, newTitle: string, newD
 }
 
 export const deletePost = async function (postId: number): Promise<string> {
-  return await axios.delete(process.env.REACT_APP_BASE_API_URL + `/post/${postId}`, {withCredentials: true})
-      .then((res: AxiosResponse) => {
-        return `${res.data.status}`
-      }).catch((error) => {
-        throw Error(`${error.response.data.status}, ${error.response.data.reason}`)
-      });
+  return await axios.delete(process.env.REACT_APP_BASE_API_URL + `/post/${postId}`, { withCredentials: true })
+    .then((res: AxiosResponse) => {
+      return `${res.data.status}`
+    }).catch((error) => {
+      throw Error(`${error.response.data.status}, ${error.response.data.reason}`)
+    });
 }
