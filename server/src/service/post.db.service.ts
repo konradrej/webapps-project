@@ -4,12 +4,22 @@
  * posts. Works with mongoose and database.
  */
 
-import { IPostService } from "./post.service";
 import { postModel } from "../db/post.model";
 import { Post } from "../model/post.interface";
 import { Model } from "mongoose";
 import { userModel } from "../db/user.model";
 import { User } from "../model/user.interface";
+
+export interface IPostService {
+  getPosts(order: string): Promise<Array<Post>>
+  createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post>
+  updatePost(id: number, newTitle: string | null, newDescription: string | null, verifyCreator: number | null): Promise<boolean>
+  getPost (id: number) : Promise<Post | null>
+  findById(id: number): Promise<Post | null>
+  getUsersPosts(userId: number): Promise<Array<Post>>
+  deletePost(id : number, verifyCreator : number) : Promise<boolean>
+  searchPosts (search: string): Promise<Post[]>
+}
 
 export class PostDBService implements IPostService{
   private model;
@@ -20,21 +30,18 @@ export class PostDBService implements IPostService{
 
   async getPosts(order: string): Promise<Post[]> {
     switch (order) {
-      // Title A-Z
       case "title-ascending": {
         return Object.values(
           await this.model.find().sort({
             title: "ascending"
           }).populate("creator"))
       }
-      // Title Z-A
       case "title-descending": {
         return Object.values(
           await this.model.find().sort({
             title: "descending"
           }).populate("creator"))
       }
-      // Most recent first
       case "recent-descending":
       default: {
         return Object.values(
@@ -48,7 +55,7 @@ export class PostDBService implements IPostService{
   async createPost(title: string, description: string, imageUrl: string, creator: number): Promise<Post> {
     const userCreator: User | null = await userModel.findOne({id: creator})
     return await this.model.create({
-      id : new Date().valueOf(), //Change this?
+      id : new Date().valueOf(),
       title : title,
       description : description,
       imageUrl : imageUrl,
@@ -81,7 +88,6 @@ export class PostDBService implements IPostService{
     return post;
   }
 
-  //Wont be needing this one?
   async findById(id: number): Promise<Post | null> {
     throw new Error("Method not implemented.");
   }
