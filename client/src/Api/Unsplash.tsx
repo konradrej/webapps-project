@@ -17,7 +17,7 @@ export const searchUnsplash = async function (search: string): Promise<any> {
   return axios.get("https://api.unsplash.com/search/photos/", {
     params: {
       query: search,
-      client_id: "CLIENT_ACCESS_KEY",
+      client_id: process.env.REACT_APP_UNSPLASH_CLIENT_KEY,
       per_page: 25
     }
   }).then((res: AxiosResponse): UnsplashItem[] => {
