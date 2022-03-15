@@ -28,10 +28,6 @@ app.use(session({
   saveUninitialized: false,
 }))
 
-app.get("/", (req: Express.Request, res: Express.Response) => {
-  res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
-})
-
 app.use(Express.json());
 app.use(cors(process.env?.TS_NODE_DEV ? {
   "origin": "http://localhost:3000",
@@ -44,3 +40,6 @@ app.use(cors(process.env?.TS_NODE_DEV ? {
 app.use("/user", userRouter());
 app.use("/post", postRouter());
 
+app.get("/*", (req: Express.Request, res: Express.Response) => {
+  res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
+})
